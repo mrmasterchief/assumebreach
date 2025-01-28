@@ -1,0 +1,47 @@
+services:
+  frontend:
+    container_name: frontend
+    image: frontend
+    build:
+      context: ./frontend
+      dockerfile: frontend.dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+  backend:
+    container_name: backend
+    image: backend
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - EXPRESS_PORT = 4000
+      - EXPRESS_URL = http://localhost
+      - CLIENT_URL = http://localhost:5173
+      - DATABASE_NAME = "postgres"
+      - DATABASE_USER = "postgres"
+      - DATABASE_PASSWORD =  "postgres"
+      - DATABASE_HOST = "localhost"
+      - DATABASE_PORT = 5432
+      - NODE_ENV = "development"
+
+
+
+  db:
+    container_name: db
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
