@@ -1,21 +1,16 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import helmet from "helmet";
-import pool from "./config/db.js";
 import cookieParser from "cookie-parser";
-import {
-  doubleCsrfProtection,
-  generateToken,
-  csrfErrorHandler,
-} from "./middleware/csrf.js";
+import { doubleCsrfProtection } from "./middleware/csrf.js";
 import errorHandling from "./middleware/errorHandler.js";
+import helmetMiddleware from "./middleware/helmet.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.EXPRESS_PORT || 3000;
-const COOKIE_SECRET = process.env.COOKIE_SECRET || "cookie_secret";
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
 // Middleware
 app.use(
@@ -25,7 +20,8 @@ app.use(
   })
 );
 app.use(cookieParser(COOKIE_SECRET));
-app.use(helmet());
+app.use(helmetMiddleware);
+app.use(express.json());
 app.use(doubleCsrfProtection);
 
 // Error Handling Middleware
