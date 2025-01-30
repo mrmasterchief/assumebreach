@@ -1,19 +1,28 @@
-import '../styles/globals.css';
+import "../styles/globals.css";
 
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
-import Header from '@/components/nav/header';
-import HeaderMobile from '@/components/nav/header-mobile';
-import MarginWidthWrapper from '@/components/margin-width-wrapper';
-import PageWrapper from '@/components/page-wrapper';
-import SideNav from '@/components/nav/side-nav';
+import Header from "@/components/nav/header";
+import HeaderMobile from "@/components/nav/header-mobile";
+import MarginWidthWrapper from "@/components/margin-width-wrapper";
+import PageWrapper from "@/components/page-wrapper";
+import SideNav from "@/components/nav/side-nav";
+import { Viewport } from "next";
+import { ToastContainer } from 'react-toastify';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Assume Breach',
-  description: 'Confidence worn.',
+  title: "Assume Breach",
+  description: "Confidence worn.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  initialScale: 1,
+  width: "device-width",
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -30,7 +39,9 @@ export default function RootLayout({
             <MarginWidthWrapper>
               <Header />
               <HeaderMobile />
-              <PageWrapper>{children}</PageWrapper>
+              <PageWrapper>
+                <ToastContainer aria-label={'alert'} />
+                {children}</PageWrapper>
             </MarginWidthWrapper>
           </main>
         </div>

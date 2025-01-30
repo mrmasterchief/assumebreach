@@ -8,3 +8,5 @@ export type NavItem = {
   subMenuItems?: NavItem[];
   bottom?: boolean;
 };
+
+export type MessageTypes = "success" | "error";

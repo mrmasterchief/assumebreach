@@ -1,9 +1,17 @@
+'use client';
 import Image from "next/image";
+import { showMessage } from "@/components/messages/message";
+import { useEffect } from "react";
 
 export default function Home() {
+
+  useEffect(() => {
+    showMessage("Welcome to Assume Breach", "error");
+  }
+  , []);
   return (
     <>
-      <div className="relative h-[600px]">
+      <div className="relative h-[600px] !mt-0">
         <Image
           src="https://d1fufvy4xao6k9.cloudfront.net/images/blog/posts/2022/11/imagetools3.jpg"
           alt="hero"
