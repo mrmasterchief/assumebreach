@@ -1,17 +1,35 @@
-'use client';
+"use client";
 import { toast } from "react-toastify";
-import { MessageTypes } from "@/types";
+import { MessageTypes } from "./messagetypes";
 
-
-export const showMessage = (message: string, type: MessageTypes) => {
+export const showMessage = (
+  title: string | "Error",
+  description: string | "Something went wrong",
+  type: MessageTypes
+) => {
   switch (type) {
     case "success":
-      toast.success(message);
+      toast.success(
+        <div>
+          <p className="text-zinc-800 text-sm font-semibold">{title}</p>
+          <p>{description}</p>
+        </div>
+      );
       break;
     case "error":
-      toast.error(message);
+      toast.error(
+        <div>
+          <p className="text-zinc-800 text-sm font-semibold">{title}</p>
+          <p>{description}</p>
+        </div>
+      );
       break;
     default:
-      toast.error(message);
+      toast.error(
+        <div>
+          <p className="text-zinc-800 text-sm font-semibold">{title}</p>
+          <p>{description}</p>
+        </div>
+      );
   }
 };

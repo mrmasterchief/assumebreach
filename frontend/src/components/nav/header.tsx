@@ -1,26 +1,28 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
-import Link from 'next/link';
-import { useSelectedLayoutSegment } from 'next/navigation';
+import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
 
-import useScroll from '@/hooks/use-scroll';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import useScroll from "@/hooks/use-scroll";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import SearchBar from "../search/searchbar";
 
 const Header = () => {
   const scrolled = useScroll(5);
   const selectedLayout = useSelectedLayoutSegment();
+  const [showSearchBar, setShowSearchBar] = React.useState(false);
 
   return (
     <div
       className={cn(
         `sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200`,
         {
-          'border-b border-gray-200 bg-white/75 backdrop-blur-lg': scrolled,
-          'border-b border-gray-200 bg-white': selectedLayout,
-        },
+          "border-b border-gray-200 bg-white/75 backdrop-blur-lg": scrolled,
+          "border-b border-gray-200 bg-white": selectedLayout,
+        }
       )}
     >
       <div className="flex h-[80px] items-center justify-between px-4">
@@ -34,10 +36,27 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="hidden md:block">
-          <div className="h-8 w-8 rounded-full bg-zinc-300 flex items-center justify-center text-center">
-            <span className="font-semibold text-sm">HQ</span>
-          </div>
+        <div className="hidden md:block flex items-center space-x-5">
+          <button onClick={() => setShowSearchBar(!showSearchBar)}>
+            Search
+          </button>
+          <button>Account</button>
+          {showSearchBar && (
+            <div
+              className={`fixed inset-0 bg-opacity-75 backdrop-blur-md opacity-100 h-screen w-screen !ml-0 transition-opacity duration-200 ${
+                showSearchBar ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <div
+                className="absolute inset-0 bg-white opacity-0"
+                onClick={() => setShowSearchBar(false)}
+              ></div>
+              <SearchBar  setShowSearchBar={setShowSearchBar}/>
+              
+
+
+            </div>
+          )}
         </div>
       </div>
     </div>

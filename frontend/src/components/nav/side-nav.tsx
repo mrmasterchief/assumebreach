@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { SIDENAV_ITEMS } from "@/constants";
-import { NavItem } from "@/types";
+import { NavItem } from "./navtypes";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 

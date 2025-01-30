@@ -8,6 +8,7 @@ import HeaderMobile from "@/components/nav/header-mobile";
 import MarginWidthWrapper from "@/components/margin-width-wrapper";
 import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/side-nav";
+import Footer from "@/components/footer/footer";
 import { Viewport } from "next";
 import { ToastContainer } from 'react-toastify';
 
@@ -42,6 +43,7 @@ export default function RootLayout({
               <PageWrapper>
                 <ToastContainer aria-label={'alert'} />
                 {children}</PageWrapper>
+              <Footer />
             </MarginWidthWrapper>
           </main>
         </div>
