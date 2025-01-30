@@ -1,7 +1,10 @@
-export type SideNavItem = {
+import { JSX } from "react";
+
+export type NavItem = {
   title: string;
   path: string;
   icon?: JSX.Element;
   submenu?: boolean;
-  subMenuItems?: SideNavItem[];
+  subMenuItems?: NavItem[];
+  bottom?: boolean;
 };

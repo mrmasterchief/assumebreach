@@ -6,12 +6,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { SIDENAV_ITEMS } from '@/constants';
-import { SideNavItem } from '@/types';
+import { NavItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { motion, useCycle } from 'framer-motion';
 
 type MenuItemWithSubMenuProps = {
-  item: SideNavItem;
+  item: NavItem;
   toggleOpen: () => void;
 };
 

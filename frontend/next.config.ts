@@ -5,7 +5,15 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    domains: ['media.burford.co.uk'],
+    // for local development
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'd1fufvy4xao6k9.cloudfront.net',
+        port: '',
+      }
+      
+    ],
   },
 };
 

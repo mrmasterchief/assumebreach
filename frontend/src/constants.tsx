@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react';
 
-import { SideNavItem } from './types';
+import { NavItem } from './types';
 
-export const SIDENAV_ITEMS: SideNavItem[] = [
+export const SIDENAV_ITEMS: NavItem[] = [
   {
     title: 'Shirts',
     path: '/shirts',
@@ -24,18 +24,48 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     ],
   },
   {
-    title: 'Help',
-    path: '/help',
-    icon: <Icon icon="lucide:help-circle" width="24" height="24" />,
+    title: 'Suits',
+    path: '/suits',
+    submenu: true,
+    subMenuItems: [
+      { title: 'Formal', path: '/suits/formal' },
+      { title: 'Casual', path: '/suits/casual' },
+      { title: 'Tuxedos', path: '/suits/tuxedos' },
+    ],
+  },
+  {
+    title: 'Accessories',
+    path: '/accessories',
+  },
+  {
+    title: 'Account',
+    path: '/account',
+    icon: <Icon icon="bx:bx-user" width="24" height="24" />,
+    bottom: true,
   },
 ];
 
 
-export const FOOTER_LINKS = [
-  { title: 'About Us', path: '/about' },
-  { title: 'Contact', path: '/contact' },
-  { title: 'Privacy Policy', path: '/privacy' },
-  { title: 'Terms of Service', path: '/terms' },
-  { title: 'Accessibility', path: '/accessibility' },
-  { title: 'Scoreboard', path: '/scoreboard' },
+export const FOOTER_LINKS: NavItem[] = [
+  {
+    title: 'Customer Service',
+    path: '/customer-service',
+    submenu: true,
+    subMenuItems: [
+      { title: 'Contact Us', path: '/customer-service/contact-us' },
+      { title: 'Shipping', path: '/customer-service/shipping' },
+      { title: 'Returns', path: '/customer-service/returns' },
+      { title: 'FAQ', path: '/customer-service/faq' },
+    ],
+  },
+  {
+    title: 'About Us',
+    path: '/about-us',
+    submenu: true,
+    subMenuItems: [
+      { title: 'Our Story', path: '/about-us/our-story' },
+      { title: 'Careers', path: '/about-us/careers' },
+      { title: 'Press', path: '/about-us/press' },
+    ],
+  },
 ];
