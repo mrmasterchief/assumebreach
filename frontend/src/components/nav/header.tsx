@@ -8,7 +8,7 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import useScroll from "@/hooks/use-scroll";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import SearchBar from "../search/searchbar";
+import SearchBar from "../search/SearchBar";
 
 const Header = () => {
   const scrolled = useScroll(5);
@@ -41,22 +41,7 @@ const Header = () => {
             Search
           </button>
           <button>Account</button>
-          {showSearchBar && (
-            <div
-              className={`fixed inset-0 bg-opacity-75 backdrop-blur-md opacity-100 h-screen w-screen !ml-0 transition-opacity duration-200 ${
-                showSearchBar ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <div
-                className="absolute inset-0 bg-white opacity-0"
-                onClick={() => setShowSearchBar(false)}
-              ></div>
-              <SearchBar  setShowSearchBar={setShowSearchBar}/>
-              
-
-
-            </div>
-          )}
+          {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
         </div>
       </div>
     </div>

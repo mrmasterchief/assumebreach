@@ -24,10 +24,17 @@ app.use(helmetMiddleware);
 app.use(express.json());
 app.use(doubleCsrfProtection);
 
+// prefix for all routes
+
+
 // Error Handling Middleware
 app.use(errorHandling);
 
 // Server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+app.get("/api/v1/csrf-token", (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
 });

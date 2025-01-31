@@ -1,43 +1,55 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+import ProductCard from "../productcard/ProductCard";
 
-const SearchBar = ({ setShowSearchBar }: { setShowSearchBar: (show: boolean) => void }) => {
+const SearchBar = ({
+  setShowSearchBar,
+}: {
+  setShowSearchBar: (show: boolean) => void;
+}) => {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [visible, setVisible] = useState(false);
-  const searchBarRef = useRef<HTMLDivElement>(null); 
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
-  useEffect(() => {
-    setVisible(true);
-  }, []);
-
-  const handleClickOutside = (event:any) => {
-    if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
-      setShowSearchBar(false);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      searchBarRef.current &&
+      !searchBarRef.current.contains(event.target as Node) &&
+      event.target &&
+      !(event.target as HTMLElement).closest(".SearchCard")
+    ) {
+      setVisible(false);
+      setTimeout(() => {
+        setShowSearchBar(false);
+      }, 100);
     }
   };
-
   useEffect(() => {
+    setVisible(true);
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-
-
   return (
     <div
-      className={`fixed inset-0 bg-opacity-75 backdrop-blur-md opacity-100 h-screen w-screen !ml-0 transition-opacity duration-500 ${
+      className={`fixed inset-0 backdrop-blur-md transition-opacity duration-500 ease-in-out ${
         visible ? "opacity-100" : "opacity-0"
-      }`}>
+      }`}
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="w-full h-full flex top-[100px] justify-center absolute">
-        <div className="flex absolute flex-col h-fit w-full xs:w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] bg-ui-bg rounded-lg p-4">
-          <div className="w-full flex items-center gap-x-2 rounded-lg p-4 bg-[rgba(3,7,18,0.7)] text-ui-fg-on-color backdrop-blur-2xl rounded-rounded" ref={searchBarRef}> {/* Added ref here */}
+        <div
+          ref={searchBarRef}
+          className="flex absolute flex-col h-fit w-full xs:w-[90%] sm:w-[80%] md:w-[70%] lg:w-[55%] xl:w-[55%] 2xl:w-[50%] bg-ui-bg rounded-lg p-4"
+        >
+          <div className="w-full flex items-center gap-x-2 rounded-lg p-4 bg-[rgba(3,7,18,0.7)] text-ui-fg-on-color backdrop-blur-2xl rounded-rounded">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -55,10 +67,31 @@ const SearchBar = ({ setShowSearchBar }: { setShowSearchBar: (show: boolean) => 
             <input
               type="text"
               placeholder="Search"
-              className="txt-compact-large h-6 placeholder:text-ui-fg-on-color text-ui-fg-on-color placeholder:transition-colors focus:outline-none flex-1 bg-transparent focus:placeholder-opacity-50" // Added text-ui-fg-on-color here
+              className="txt-compact-large h-6 placeholder:text-ui-fg-on-color text-ui-fg-on-color placeholder:transition-colors focus:outline-none flex-1 bg-transparent focus:placeholder-opacity-50"
               value={search}
-              style={{ color: "#9ca3af" }} 
+              style={{ color: "#9ca3af" }}
               onChange={handleChange}
+            />
+          </div>
+
+          <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
+          <ProductCard
+              searchResult={{ title: "test", price: "test", image: "test" }}
+            />
+            <ProductCard
+              searchResult={{ title: "test", price: "test", image: "test" }}
+            />
+            <ProductCard
+              searchResult={{ title: "test", price: "test", image: "test" }}
+            />
+            <ProductCard
+              searchResult={{ title: "test", price: "test", image: "test" }}
+            />
+            <ProductCard
+              searchResult={{ title: "test", price: "test", image: "test" }}
+            />
+            <ProductCard
+              searchResult={{ title: "test", price: "test", image: "test" }}
             />
           </div>
         </div>

@@ -11,10 +11,13 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'd1fufvy4xao6k9.cloudfront.net',
         port: '',
-      }
-      
+      },
+  
     ],
   },
+  webpack5: true,
+  productionBrowserSourceMaps: true,
+  poweredByHeader: false,
 };
 
 export default nextConfig;

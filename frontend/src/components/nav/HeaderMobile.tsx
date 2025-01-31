@@ -5,11 +5,11 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { SIDENAV_ITEMS } from "@/constants";
-import { NavItem } from "./navtypes";
+import { SIDENAV_ITEMS } from "@/Constants";
+import { NavItem } from "./NavTypes";
 import { Icon } from "@iconify/react";
 import { motion, useCycle } from "framer-motion";
-import SearchBar from "../search/searchbar";
+import SearchBar from "../search/SearchBar";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -42,6 +42,17 @@ const HeaderMobile = () => {
   const [isOpen, toggleOpen] = useCycle(false, true);
   const [showSearchBar, setShowSearchBar] = useState(false);
 
+  useEffect(() => {
+    if (showSearchBar || isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showSearchBar]);
+
   return (
     <motion.nav
       initial={false}
@@ -62,9 +73,17 @@ const HeaderMobile = () => {
       >
         {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
         <MenuItem>
-          <button onClick={() => setShowSearchBar(!showSearchBar)}>
+          <Link
+            onClick={() => {
+              setShowSearchBar(!showSearchBar);
+              toggleOpen();
+            }}
+            href="#"
+            className="flex w-full text-2xl items-center space-x-2 mb-4"
+          >
+            <Icon icon="bx:bx-search" width="24" height="24" />
             Search
-          </button>
+          </Link>
         </MenuItem>
         {SIDENAV_ITEMS.map((item, idx) => {
           const isLastItem = idx === SIDENAV_ITEMS.length - 1;

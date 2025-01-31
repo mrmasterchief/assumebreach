@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "react-toastify";
-import { MessageTypes } from "./messagetypes";
+import { MessageTypes } from "./MessageTypes";
 
 export const showMessage = (
   title: string | "Error",

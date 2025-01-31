@@ -5,8 +5,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { SIDENAV_ITEMS } from "@/constants";
-import { NavItem } from "./navtypes";
+import { SIDENAV_ITEMS } from "@/Constants";
+import { NavItem } from "./NavTypes";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 
@@ -16,8 +16,7 @@ const SideNav = () => {
       <div className="flex flex-col space-y-6 w-full">
         <Link
           href="/"
-          className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6  border-zinc-200 h-[80px] w-full"
-        >
+          className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6  border-zinc-200 h-[80px] w-full">
           <Image src="/logo.png" alt="logo" width="50" height="50" />
           <span className="font-bold text-xl hidden md:flex">
             Assume Breach

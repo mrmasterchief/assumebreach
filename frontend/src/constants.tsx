@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 
-import { NavItem } from '@/components/nav/navtypes';
+import { NavItem } from '@/components/nav/NavTypes';
 
 export const SIDENAV_ITEMS: NavItem[] = [
   {

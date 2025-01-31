@@ -1,7 +1,20 @@
 'use client';
 import Image from "next/image";
+import React, {use, useEffect} from "react";
+import { axiosInstance } from "@/hooks/axios";
+import { showMessage } from "@/components/messages/Message";
 
 export default function Home() {
+
+  useEffect(() => {
+    try {
+      const response = axiosInstance.get("/api/v1/csrf-token");
+
+    } catch (error) {
+      console.log('kaas')
+      showMessage("Error", "Something went wrong", "error");
+    }
+  }, []);
 
 
   return (
