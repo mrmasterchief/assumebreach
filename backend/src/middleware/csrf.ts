@@ -1,8 +1,9 @@
 import { doubleCsrf } from "csrf-csrf";
+import { Request, Response, NextFunction } from "express";
 
 const { invalidCsrfTokenError, generateToken, doubleCsrfProtection } =
   doubleCsrf({
-    getSecret: () => process.env.CSRF_SECRET,
+    getSecret: () => process.env.CSRF_SECRET || "defaultSecret",
     cookieName: "csrfToken",
     cookieOptions: {
       signed: true,
@@ -14,8 +15,12 @@ const { invalidCsrfTokenError, generateToken, doubleCsrfProtection } =
     ignoredMethods: ["GET", "HEAD", "OPTIONS"],
   });
 
-const csrfErrorHandler = (err, req, res, next) => {
-  if (err.code === invalidCsrfTokenError) {
+interface CsrfError extends Error {
+  code: string;
+}
+
+const csrfErrorHandler = (err: CsrfError, req: Request, res: Response, next: NextFunction) => {
+  if (err.code === invalidCsrfTokenError.code) {
     return res.status(403).json({ message: "Invalid CSRF token" });
   }
   next(err);

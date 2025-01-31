@@ -36,5 +36,9 @@ app.listen(port, () => {
 });
 
 app.get("/api/v1/csrf-token", (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
+  if (req.csrfToken) {
+    res.json({ csrfToken: req.csrfToken() });
+  } else {
+    res.status(500).json({ error: "CSRF token generation failed" });
+  }
 });
