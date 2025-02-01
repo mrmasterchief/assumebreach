@@ -124,6 +124,7 @@ const MenuToggle = ({ toggle }: { toggle: any }) => (
   <button
     onClick={toggle}
     className="pointer-events-auto absolute right-4 top-[30px] z-30"
+    aria-label="Toggle Menu"
   >
     <svg width="23" height="23" viewBox="0 0 23 23">
       <Path
@@ -186,6 +187,7 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
       <MenuItem>
         <button
           className="flex w-full text-2xl"
+          aria-label="Toggle Submenu"
           onClick={() => setSubMenuOpen(!subMenuOpen)}
         >
           <div className="flex flex-row justify-between w-full items-center">

@@ -48,6 +48,7 @@ const MenuItem = ({ item }: { item: NavItem }) => {
         <>
           <button
             onClick={toggleSubMenu}
+            aria-label="Toggle Submenu"
             className={`flex flex-row items-center p-2 rounded-lg hover-bg-zinc-100 w-full justify-between hover:bg-zinc-100 ${
               pathname.includes(item.path) ? "bg-zinc-100" : ""
             }`}

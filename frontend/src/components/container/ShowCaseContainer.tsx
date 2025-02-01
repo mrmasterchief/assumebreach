@@ -17,8 +17,8 @@ const ShowCaseContainer = ({
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl">{headerTitle}</h2>
         <Link href="/kaas" passHref className="flex flex-row gap-2">
-          <p className="text-blue-500 hover:underline">View all</p>
-          <Icon icon="material-symbols:arrow-outward-rounded" className="text-blue-500"/>
+          <p className="text-blue-700 hover:underline">View all</p>
+          <Icon icon="material-symbols:arrow-outward-rounded" className="text-blue-700"/>
         </Link>
       </div>
       <div className="flex flex-row flex-wrap gap-4">

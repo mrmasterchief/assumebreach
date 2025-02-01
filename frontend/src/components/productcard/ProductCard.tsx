@@ -60,7 +60,7 @@ const ProductCard = ({
             ${searchResult.price}
           </p>
           {searchResult.discountPrice && (
-            <p className="font-normal font-sans txt-medium text-[#3b82f6]">
+            <p className="font-normal font-sans txt-medium text-[#094EBE]">
               ${searchResult.discountPrice}
             </p>
           )}

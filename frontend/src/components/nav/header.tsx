@@ -28,10 +28,10 @@ const Header = () => {
         </div>
 
         <div className="hidden md:block flex items-center space-x-5">
-          <button onClick={() => setShowSearchBar(!showSearchBar)}>
+          <button onClick={() => setShowSearchBar(!showSearchBar)} aria-label="search">
             Search
           </button>
-          <button>Cart (0)</button>
+          <button aria-label="cart">Cart (0)</button>
           {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
         </div>
       </div>
