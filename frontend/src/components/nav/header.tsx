@@ -31,7 +31,7 @@ const Header = () => {
           <button onClick={() => setShowSearchBar(!showSearchBar)}>
             Search
           </button>
-          <button>Account</button>
+          <button>Cart (0)</button>
           {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
         </div>
       </div>

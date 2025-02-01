@@ -13,6 +13,7 @@ const ProductCard = ({
     price: string;
     image: string;
     productID: string;
+    discountPrice?: string;
   };
   cardType: "search" | "product";
 }) => {
@@ -54,9 +55,16 @@ const ProductCard = ({
           <p className="font-normal font-sans txt-medium text-[#4b5563]">
             {searchResult.title}
           </p>
-          <p className="font-normal font-sans txt-medium text-[#9ca3af]">
+          <div className="flex flex-row gap-2">
+          <p className={`font-normal font-sans txt-medium ${searchResult.discountPrice ? 'line-through text-[#4b5563]' : 'text-[#4b5563]'}`}>
             ${searchResult.price}
           </p>
+          {searchResult.discountPrice && (
+            <p className="font-normal font-sans txt-medium text-[#3b82f6]">
+              ${searchResult.discountPrice}
+            </p>
+          )}
+          </div>
         </div>
       </div>
       </div>

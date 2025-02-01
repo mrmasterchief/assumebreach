@@ -36,8 +36,9 @@ export default function Home() {
           </div>
       </div>
       <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8">
-      <ShowCaseContainer headerTitle="Latest Drops" destination="/products" />
-      <ShowCaseContainer headerTitle="Weekly Picks" destination="/products" />
+      <ShowCaseContainer headerTitle="Latest Drops" destination="/products?category=drops" />
+      <ShowCaseContainer headerTitle="Weekly Picks" destination="/products?category=picks" />
+      <ShowCaseContainer headerTitle="Sale" destination="/products?category=sale" />
 
       </div>
 

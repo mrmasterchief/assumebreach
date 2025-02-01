@@ -5,37 +5,37 @@ import { NavItem } from '@/components/nav/NavTypes';
 export const SIDENAV_ITEMS: NavItem[] = [
   {
     title: 'Shirts',
-    path: '/shirts',
+    path: '/products?category=shirts',
     submenu: true,
     subMenuItems: [
-      { title: 'Girls', path: '/shirts/girls' },
-      { title: 'Boys', path: '/shirts/boys' },
-      { title: 'Unisex', path: '/shirts/unisex' },
+      { title: 'Girls', path: '/products?category=shirts&gender=girls' },
+      { title: 'Boys', path: '/products?category=shirts&gender=boys' },
+      { title: 'Unisex', path: '/products?category=shirts&gender=unisex' },
     ],
   },
   {
     title: 'Pants',
-    path: '/pants',
+    path: '/products?category=pants',
     submenu: true,
     subMenuItems: [
-      { title: 'Jeans', path: '/pants/jeans' },
-      { title: 'Shorts', path: '/pants/shorts' },
-      { title: 'Leggings', path: '/pants/leggings' },
+      { title: 'Jeans', path: '/products?category=pants&style=jeans' },
+      { title: 'Shorts', path: '/products?category=pants&style=shorts' },
+      { title: 'Leggings', path: '/products?category=pants&style=leggings' },
     ],
   },
   {
     title: 'Suits',
-    path: '/suits',
+    path: '/products?category=suits',
     submenu: true,
     subMenuItems: [
-      { title: 'Formal', path: '/suits/formal' },
-      { title: 'Casual', path: '/suits/casual' },
-      { title: 'Tuxedos', path: '/suits/tuxedos' },
+      { title: 'Formal', path: '/products?category=suits&style=formal' },
+      { title: 'Casual', path: '/products?category=suits&style=casual' },
+      { title: 'Tuxedos', path: '/products?category=suits&style=tuxedos' },
     ],
   },
   {
     title: 'Accessories',
-    path: '/accessories',
+    path: '/products?category=accessories',
   },
   {
     title: 'Account',

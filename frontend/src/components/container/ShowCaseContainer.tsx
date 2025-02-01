@@ -22,11 +22,13 @@ const ShowCaseContainer = ({
         </Link>
       </div>
       <div className="flex flex-row flex-wrap gap-4">
+        {destination !== "/products?category=sale" ?
+          <>
       <ProductCard
         cardType="product"
           searchResult={{
             title: "Product Title",
-            price: "100",
+            price: "99.99",
             image: "https://via.placeholder.com/150",
             productID: "1"
           }}
@@ -36,7 +38,7 @@ const ShowCaseContainer = ({
         cardType="product"
           searchResult={{
             title: "Product Title",
-            price: "100",
+            price: "99.99",
             image: "https://via.placeholder.com/150",
             productID: "1"
           }}
@@ -46,12 +48,50 @@ const ShowCaseContainer = ({
         cardType="product"
           searchResult={{
             title: "Product Title",
-            price: "100",
+            price: "99.99",
             image: "https://via.placeholder.com/150",
             productID: "1"
           }}
 
         />
+        </>
+         : 
+          <>
+          <ProductCard
+          cardType="product"
+            searchResult={{
+              title: "Product Title",
+              price: "99.99",
+              image: "https://via.placeholder.com/150",
+              productID: "1",
+              discountPrice: "79.99"
+            }}
+  
+          />
+          <ProductCard
+          cardType="product"
+            searchResult={{
+              title: "Product Title",
+              price: "99.99",
+              image: "https://via.placeholder.com/150",
+              productID: "1",
+              discountPrice: "79.99"
+            }}
+  
+          />
+          <ProductCard
+          cardType="product"
+            searchResult={{
+              title: "Product Title",
+              price: "99.99",
+              image: "https://via.placeholder.com/150",
+              productID: "1",
+              discountPrice: "79.99"
+            }}
+  
+          />
+          </>
+      }
       </div>
     </div>
   );
