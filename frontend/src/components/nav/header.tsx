@@ -3,16 +3,11 @@
 import React from "react";
 
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
 
-import useScroll from "@/hooks/use-scroll";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import SearchBar from "../search/SearchBar";
 
 const Header = () => {
-  const scrolled = useScroll(5);
-  const selectedLayout = useSelectedLayoutSegment();
   const [showSearchBar, setShowSearchBar] = React.useState(false);
 
   return (

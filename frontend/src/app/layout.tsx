@@ -10,7 +10,7 @@ import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/SideNav";
 import Footer from "@/components/footer/Footer";
 import { Viewport } from "next";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +31,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
       <body className={`bg-white`}>
@@ -42,8 +41,9 @@ export default function RootLayout({
               <Header />
               <HeaderMobile />
               <PageWrapper>
-                <ToastContainer aria-label={'alert'} />
-                {children}</PageWrapper>
+                <ToastContainer aria-label={"alert"} />
+                {children}
+              </PageWrapper>
               <Footer />
             </MarginWidthWrapper>
           </main>

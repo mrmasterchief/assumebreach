@@ -19,7 +19,7 @@ export default function Home() {
 
 
   return (
-    <>
+    <div className="flex flex-col bg-white">
       <div className="relative h-[600px]">
         <Image
           src="https://d1fufvy4xao6k9.cloudfront.net/images/blog/posts/2022/11/imagetools3.jpg"
@@ -35,10 +35,12 @@ export default function Home() {
           </div>
           </div>
       </div>
-      <div className="px-4 bg-white">
+      <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8">
       <ShowCaseContainer headerTitle="Latest Drops" destination="/products" />
+      <ShowCaseContainer headerTitle="Weekly Picks" destination="/products" />
+
       </div>
 
-    </>
+    </div>
   );
 }

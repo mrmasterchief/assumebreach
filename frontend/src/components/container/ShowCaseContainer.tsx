@@ -15,9 +15,9 @@ const ShowCaseContainer = ({
   return (
     <div className="flex flex-col w-full bg-white p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl">{headerTitle}</h2>
+        <h2 className="text-xl">{headerTitle}</h2>
         <Link href="/kaas" passHref className="flex flex-row gap-2">
-          <p className="text-blue-500 hover:underline">View All</p>
+          <p className="text-blue-500 hover:underline">View all</p>
           <Icon icon="material-symbols:arrow-outward-rounded" className="text-blue-500"/>
         </Link>
       </div>
@@ -28,6 +28,7 @@ const ShowCaseContainer = ({
             title: "Product Title",
             price: "100",
             image: "https://via.placeholder.com/150",
+            productID: "1"
           }}
 
         />
@@ -37,6 +38,7 @@ const ShowCaseContainer = ({
             title: "Product Title",
             price: "100",
             image: "https://via.placeholder.com/150",
+            productID: "1"
           }}
 
         />
@@ -46,6 +48,7 @@ const ShowCaseContainer = ({
             title: "Product Title",
             price: "100",
             image: "https://via.placeholder.com/150",
+            productID: "1"
           }}
 
         />

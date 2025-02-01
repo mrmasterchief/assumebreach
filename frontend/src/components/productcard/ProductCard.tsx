@@ -12,13 +12,14 @@ const ProductCard = ({
     title: string;
     price: string;
     image: string;
+    productID: string;
   };
   cardType: "search" | "product";
 }) => {
   return (
     cardType === "search" ? (
     <Link
-      href="/product/1"
+      href={`/products/${searchResult.productID}`} passHref
       className="bg-white rounded-lg flex sm:flex-col gap-2 w-full p-4 items-center sm:justify-center lg:w-[31.8%] rounded-large transition-shadow ease-in-out duration-150 shadow-md hover:shadow-lg"
     >
       <div className="rounded-lg w-20 h-20 sm:w-40 sm:h-40 relative overflow-hidden bg-[#f9fafb] ">
