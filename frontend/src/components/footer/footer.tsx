@@ -1,7 +1,7 @@
 'use client';
 
 
-import { FOOTER_LINKS } from '@/constants';
+import { FOOTER_LINKS } from '@/Constants';
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

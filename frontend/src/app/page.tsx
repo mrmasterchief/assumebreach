@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, {use, useEffect} from "react";
 import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
+import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 
 export default function Home() {
 
@@ -19,7 +20,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative h-[600px] !mt-0">
+      <div className="relative h-[600px]">
         <Image
           src="https://d1fufvy4xao6k9.cloudfront.net/images/blog/posts/2022/11/imagetools3.jpg"
           alt="hero"
@@ -33,6 +34,9 @@ export default function Home() {
             <p className="text-white">Confidence worn</p>
           </div>
           </div>
+      </div>
+      <div className="px-4 bg-white">
+      <ShowCaseContainer headerTitle="Latest Drops" destination="/products" />
       </div>
 
     </>

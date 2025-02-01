@@ -75,24 +75,12 @@ const SearchBar = ({
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
-          <ProductCard
-              searchResult={{ title: "test", price: "test", image: "test" }}
-            />
-            <ProductCard
-              searchResult={{ title: "test", price: "test", image: "test" }}
-            />
-            <ProductCard
-              searchResult={{ title: "test", price: "test", image: "test" }}
-            />
-            <ProductCard
-              searchResult={{ title: "test", price: "test", image: "test" }}
-            />
-            <ProductCard
-              searchResult={{ title: "test", price: "test", image: "test" }}
-            />
-            <ProductCard
-              searchResult={{ title: "test", price: "test", image: "test" }}
-            />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test" }} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test" }} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test" }} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test" }} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test" }} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test" }} />
           </div>
         </div>
       </div>

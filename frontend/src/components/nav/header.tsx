@@ -17,13 +17,9 @@ const Header = () => {
 
   return (
     <div
-      className={cn(
-        `sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200`,
-        {
-          "border-b border-gray-200 bg-white/75 backdrop-blur-lg": scrolled,
-          "border-b border-gray-200 bg-white": selectedLayout,
-        }
-      )}
+      className={
+        `sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`
+      }
     >
       <div className="flex h-[80px] items-center justify-between px-4">
         <div className="flex items-center space-x-4">
