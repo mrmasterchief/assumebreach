@@ -10,6 +10,7 @@ import { NavItem } from "./NavTypes";
 import { Icon } from "@iconify/react";
 import { motion, useCycle } from "framer-motion";
 import SearchBar from "../search/searchbar";
+import Cart from "../cart/Cart";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -37,14 +38,17 @@ const sidebar = {
 
 const Header = ({
   toggleSidenav,
+  cartItems,
 }: {
   toggleSidenav: (show: boolean) => void;
+  cartItems: Object[];
 }) => {
   const pathname = usePathname();
   const containerRef = useRef(null);
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
   const [showSearchBar, setShowSearchBar] = useState(false);
+  const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
     if (showSearchBar || isOpen) {
@@ -61,7 +65,7 @@ const Header = ({
     <div
       className={`sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`}
     >
-      <div className={`space-between max-w-[1920px] mx-auto`}>
+      <div className={`space-between max-w-[1440px] mx-auto`}>
         <motion.nav
           initial={false}
           animate={isOpen ? "open" : "closed"}
@@ -150,7 +154,20 @@ const Header = ({
             >
               Search
             </button>
-            <button aria-label="cart">Cart (0)</button>
+            <Link
+              aria-label="cart"
+              onMouseOver={() => {
+                setShowCart(true);
+              }}
+              href={"/cart"}
+            >
+              Cart ({cartItems?.length || 0})
+            </Link>
+            <Cart
+              showCart={showCart}
+              setShowCart={setShowCart}
+              cartItems={cartItems}
+            />
             {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
           </div>
         </div>

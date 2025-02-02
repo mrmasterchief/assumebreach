@@ -51,7 +51,7 @@ const SearchBar = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-[rgba(255,255,255,0.9)] transition-opacity duration-500 ease-in-out backdrop-filter backdrop-blur-lg  ${
+      className={`fixed inset-0 bg-[rgba(255,255,255,0.9)] transition-opacity duration-500 !ml-0 ease-in-out backdrop-filter backdrop-blur-lg  ${
         visible ? "opacity-100" : "opacity-0"
       }`}
       onClick={(e) => e.stopPropagation()}

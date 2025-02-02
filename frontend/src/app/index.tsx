@@ -11,6 +11,7 @@ import React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidenavOpen, setIsSidenavOpen] = React.useState(false);
+  const [cartItems, setCartItems] = React.useState([]);
   const toggleSidenav = () => {
     setIsSidenavOpen(!isSidenavOpen);
   };
@@ -23,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <main className="flex-1">
               <MarginWidthWrapper>
               {isSidenavOpen ? <SideNav toggleSidenav={toggleSidenav} /> : null}
-                <Header toggleSidenav={toggleSidenav} />
+                <Header toggleSidenav={toggleSidenav} cartItems={cartItems} />
                 <PageWrapper>
                   <ToastContainer aria-label={"alert"} />
                   {children}

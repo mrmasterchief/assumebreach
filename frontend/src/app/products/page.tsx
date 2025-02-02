@@ -10,9 +10,9 @@ export default function ProductsPage() {
 
   return (
     <div className="flex flex-col bg-white">
-      <div className="flex align-center justify-center w-full max-w-[1920px] mx-auto">
+      <div className="flex align-center justify-center w-full max-w-[1440px] mx-auto">
         <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8 w-full justify-center">
-          <div className="flex flex-row">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex flex-col w-1/4">
               <div className="flex flex-col gap-4 align-start justify-start">
                 <p>Sort by</p>

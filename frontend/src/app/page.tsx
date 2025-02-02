@@ -34,7 +34,7 @@ export default function Home() {
           </div>
           </div>
       </div>
-      <div className="flex align-center justify-center w-full max-w-[1920px] mx-auto">
+      <div className="flex align-center justify-center w-full max-w-[1440px] mx-auto">
       <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8 w-full ">
       <ShowCaseContainer headerTitle="Latest Drops" destination="/products?category=drops" type="discover" />
       <ShowCaseContainer headerTitle="Weekly Picks" destination="/products?category=picks" type="discover" />
