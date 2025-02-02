@@ -35,11 +35,12 @@ export default function Home() {
           </div>
           </div>
       </div>
-      <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8">
+      <div className="flex align-center justify-center w-full">
+      <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8 w-full 2xl:w-3/4">
       <ShowCaseContainer headerTitle="Latest Drops" destination="/products?category=drops" />
       <ShowCaseContainer headerTitle="Weekly Picks" destination="/products?category=picks" />
       <ShowCaseContainer headerTitle="Sale" destination="/products?category=sale" />
-
+      </div>
       </div>
 
     </div>

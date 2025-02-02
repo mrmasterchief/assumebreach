@@ -30,29 +30,26 @@ const ShowCaseContainer = ({
             title: "Product Title",
             price: "99.99",
             image: "https://via.placeholder.com/150",
-            productID: "1"
+            productID: "1",
           }}
-
         />
         <ProductCard
-        cardType="product"
+          cardType="product"
           searchResult={{
             title: "Product Title",
             price: "99.99",
             image: "https://via.placeholder.com/150",
-            productID: "1"
+            productID: "1",
           }}
-
         />
         <ProductCard
-        cardType="product"
+          cardType="product"
           searchResult={{
             title: "Product Title",
             price: "99.99",
             image: "https://via.placeholder.com/150",
-            productID: "1"
+            productID: "1",
           }}
-
         />
         </>
          : 

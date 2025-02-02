@@ -7,6 +7,7 @@ import Image from "next/image";
 const ProductCard = ({
   searchResult,
   cardType,
+  setShowSearchBar,
 }: {
   searchResult: {
     title: string;
@@ -16,14 +17,19 @@ const ProductCard = ({
     discountPrice?: string;
   };
   cardType: "search" | "product";
+  setShowSearchBar?: (show: boolean) => void;
 }) => {
-  return (
-    cardType === "search" ? (
+  return cardType === "search" ? (
     <Link
-      href={`/products/${searchResult.productID}`} passHref
-      className="bg-white rounded-lg flex sm:flex-col gap-2 w-full p-4 items-center sm:justify-center lg:w-[31.8%] rounded-large transition-shadow ease-in-out duration-150 shadow-md hover:shadow-lg"
+      href={`/products/${searchResult.productID}`}
+      passHref
+      onClick={() => setShowSearchBar && setShowSearchBar(false)}
+      className="bg-white rounded-lg flex sm:flex-col gap-2 w-full p-3 items-center sm:justify-center lg:w-[31.8%] rounded-large transition-shadow ease-in-out duration-150 hover:shadow-lg border border-gray-200 shadow-lg hover:shadow-xl"
     >
-      <div className="rounded-lg w-20 h-20 sm:w-40 sm:h-40 relative overflow-hidden bg-[#f9fafb] ">
+      <div
+        className="rounded-lg 
+       relative overflow-hidden bg-[#f9fafb] border border-gray-200 rounded-large group h-12 w-12 sm:h-full sm:w-full aspect-[1/1] shadow-md"
+      >
         <Image
           src="/blender.webp"
           layout="fill"
@@ -33,14 +39,14 @@ const ProductCard = ({
       </div>
       <div className="flex flex-col justify-between group">
         <div className="flex flex-col">
-          <p className="font-normal font-sans txt-medium text-ui-fg-subtle">
+          <p className="font-normal font-sans txt-medium text-[#4b5563]">
             {searchResult.title}
           </p>
         </div>
       </div>
     </Link>
-    ) : (
-      <div className="flex flex-col w-[48%] lg:w-[31.8%] gap-4">
+  ) : (
+    <div className="flex flex-col w-[46%] lg:w-[31.8%] gap-4">
       <div className="rounded-lg relative overflow-hidden p-4 bg-[#f9fafb] rounded-large transition-shadow ease-in-out duration-150 aspect-[11/14] w-full shadow-md hover:shadow-lg ">
         <Image
           src="/blender.webp"
@@ -67,9 +73,7 @@ const ProductCard = ({
           </div>
         </div>
       </div>
-      </div>
-    )
-
+    </div>
   );
 };
 

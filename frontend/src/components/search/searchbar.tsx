@@ -28,6 +28,9 @@ const SearchBar = ({
         setShowSearchBar(false);
       }, 100);
     }
+
+    
+    
   };
   useEffect(() => {
     setVisible(true);
@@ -37,9 +40,18 @@ const SearchBar = ({
     };
   }, []);
 
+  useEffect(() => {
+    if(visible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [visible])
+
+
   return (
     <div
-      className={`fixed inset-0 backdrop-blur-md transition-opacity duration-500 ease-in-out ${
+      className={`fixed inset-0 bg-[rgba(255,255,255,0.9)] transition-opacity duration-500 ease-in-out backdrop-filter backdrop-blur-lg  ${
         visible ? "opacity-100" : "opacity-0"
       }`}
       onClick={(e) => e.stopPropagation()}
@@ -49,7 +61,7 @@ const SearchBar = ({
           ref={searchBarRef}
           className="flex absolute flex-col h-fit w-full xs:w-[90%] sm:w-[80%] md:w-[70%] lg:w-[55%] xl:w-[55%] 2xl:w-[50%] bg-ui-bg rounded-lg p-4"
         >
-          <div className="w-full flex items-center gap-x-2 rounded-lg p-4 bg-[rgba(3,7,18,0.7)] text-ui-fg-on-color backdrop-blur-2xl rounded-rounded">
+          <div className="w-full flex items-center gap-x-2 rounded-lg p-4 bg-[#7e8085] backdrop-blur-2xl rounded-rounded">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -57,7 +69,7 @@ const SearchBar = ({
               fill="none"
             >
               <path
-                stroke="#9ca3af"
+                stroke="#f4f5f5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="1.5"
@@ -66,21 +78,22 @@ const SearchBar = ({
             </svg>
             <input
               type="text"
-              placeholder="Search"
-              className="txt-compact-large h-6 placeholder:text-ui-fg-on-color text-ui-fg-on-color placeholder:transition-colors focus:outline-none flex-1 bg-transparent focus:placeholder-opacity-50"
+              placeholder="Search products..."
+              className="txt-compact-large h-6 placeholder:transition-colors focus:outline-none flex-1 bg-transparent focus:placeholder-opacity-50 placeholder-[#f4f5f5]"
               value={search}
-              style={{ color: "#9ca3af" }}
+              style={{ color: "#f4f5f5" }}
               onChange={handleChange}
+              autoFocus
             />
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
           </div>
         </div>
       </div>
