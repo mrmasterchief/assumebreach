@@ -88,12 +88,12 @@ const SearchBar = ({
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
-          <ProductCard cardType="search" searchResult={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
+          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
+          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
           </div>
         </div>
       </div>
