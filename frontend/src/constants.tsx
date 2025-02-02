@@ -40,7 +40,7 @@ export const SIDENAV_ITEMS: NavItem[] = [
   {
     title: 'Account',
     path: '/account',
-    icon: <Icon icon="bx:bx-user" width="24" height="24" />,
+    icon: <Icon icon="bx:bx-user" width="24" height="24" color='white' />,
     bottom: true,
   },
 ];

@@ -14,7 +14,6 @@ const ShowCaseContainer = ({
   destination?: string;
   type: "related" | "discover";
 }) => {
-  console.log(type);
   return (
     <div className="flex flex-col w-full bg-white p-4">
       <div className="flex justify-between items-center mb-4">

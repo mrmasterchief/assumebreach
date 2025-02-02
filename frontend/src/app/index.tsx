@@ -1,6 +1,6 @@
 "use client";
 import "../styles/globals.css";
-import Header from "@/components/nav/header";
+import Header from "@/components/nav/Header";
 import MarginWidthWrapper from "@/components/margin-width-wrapper";
 import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/SideNav";
@@ -20,9 +20,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <html lang="en">
         <body className={`bg-white`}>
           <div className="flex ">
-            {isSidenavOpen ? <SideNav toggleSidenav={toggleSidenav} /> : null}
             <main className="flex-1">
               <MarginWidthWrapper>
+              {isSidenavOpen ? <SideNav toggleSidenav={toggleSidenav} /> : null}
                 <Header toggleSidenav={toggleSidenav} />
                 <PageWrapper>
                   <ToastContainer aria-label={"alert"} />

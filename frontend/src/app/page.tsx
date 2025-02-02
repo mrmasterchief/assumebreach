@@ -12,7 +12,6 @@ export default function Home() {
       const response = axiosInstance.get("/api/v1/csrf-token");
 
     } catch (error) {
-      console.log('kaas')
       showMessage("Error", "Something went wrong", "error");
     }
   }, []);
@@ -22,7 +21,7 @@ export default function Home() {
     <div className="flex flex-col bg-white">
       <div className="relative h-[600px]">
         <Image
-          src="https://d1fufvy4xao6k9.cloudfront.net/images/blog/posts/2022/11/imagetools3.jpg"
+          src="https://xsuit.com/cdn/shop/articles/suit_wearing_1200x1200_crop_center.webp?v=1720118555"
           alt="hero"
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}

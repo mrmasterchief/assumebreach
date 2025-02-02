@@ -58,96 +58,104 @@ const Header = ({
   }, [showSearchBar]);
 
   return (
-    <div       className={`sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`}
->
     <div
-      className={`space-between max-w-[1920px] mx-auto`}
+      className={`sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`}
     >
-      <motion.nav
-        initial={false}
-        animate={isOpen ? "open" : "closed"}
-        custom={height}
-        className={`fixed inset-0 z-50 w-full md:hidden ${
-          isOpen ? "" : "pointer-events-none"
-        }`}
-        ref={containerRef}
-      >
-        <motion.div
-          className="absolute inset-0 right-0 w-full bg-white"
-          variants={sidebar}
-        />
-        <motion.ul
-          variants={variants}
-          className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
+      <div className={`space-between max-w-[1920px] mx-auto`}>
+        <motion.nav
+          initial={false}
+          animate={isOpen ? "open" : "closed"}
+          custom={height}
+          className={`fixed inset-0 z-50 w-full md:hidden ${
+            isOpen ? "" : "pointer-events-none"
+          }`}
+          ref={containerRef}
         >
-          {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
-          <MenuItem>
-            <Link
-              onClick={() => {
-                setShowSearchBar(!showSearchBar);
-                toggleOpen();
-              }}
-              href="#"
-              className="flex w-full text-2xl items-center space-x-2 mb-4"
-            >
-              <Icon icon="bx:bx-search" width="24" height="24" />
-              Search
-            </Link>
-          </MenuItem>
-          {SIDENAV_ITEMS.map((item, idx) => {
-            const isLastItem = idx === SIDENAV_ITEMS.length - 1;
+          <motion.div
+            className="absolute inset-0 right-0 w-full bg-white"
+            variants={sidebar}
+          />
+          <motion.ul
+            variants={variants}
+            className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
+          >
+            {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
+            <MenuItem>
+              <Link
+                onClick={() => {
+                  setShowSearchBar(!showSearchBar);
+                  toggleOpen();
+                }}
+                href="#"
+                className="flex w-full text-2xl items-center space-x-2 mb-4"
+              >
+                <Icon icon="bx:bx-search" width="24" height="24" />
+                Search
+              </Link>
+            </MenuItem>
+            {SIDENAV_ITEMS.map((item, idx) => {
+              const isLastItem = idx === SIDENAV_ITEMS.length - 1;
 
-            return (
-              <div key={idx}>
-                {item.submenu ? (
-                  <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
-                ) : (
-                  <MenuItem>
-                    <Link
-                      href={item.path}
-                      onClick={() => toggleOpen()}
-                      className={`flex w-full text-2xl ${
-                        item.path === pathname ? "font-bold" : ""
-                      }`}
-                    >
-                      {item.title}
-                    </Link>
-                  </MenuItem>
-                )}
+              return (
+                <div key={idx}>
+                  {item.submenu ? (
+                    <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
+                  ) : (
+                    <MenuItem>
+                      <Link
+                        href={item.path}
+                        onClick={() => toggleOpen()}
+                        className={`flex w-full text-2xl ${
+                          item.path === pathname ? "font-bold" : ""
+                        }`}
+                      >
+                        {item.title}
+                      </Link>
+                    </MenuItem>
+                  )}
 
-                {!isLastItem && (
-                  <MenuItem className="my-3 h-px w-full bg-gray-300" />
-                )}
-              </div>
-            );
-          })}
-        </motion.ul>
-        <MenuToggle toggle={toggleOpen} />
-      </motion.nav>
-      <div className="flex h-[80px] items-center justify-between px-4">
-        <button onClick={() => toggleSidenav(true)} aria-label="Toggle Sidenav" className="hidden md:block">
-          Menu
-        </button>
-
-        <Link href="/" className="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2">
-          <span className="text-xl flex text-[#4b5563]">ASSUME BREACH</span>
-        </Link>
-
-        <div className="flex items-center space-x-5 justify-end w-full
-        ">
+                  {!isLastItem && (
+                    <MenuItem className="my-3 h-px w-full bg-gray-300" />
+                  )}
+                </div>
+              );
+            })}
+          </motion.ul>
+          <MenuToggle toggle={toggleOpen} />
+        </motion.nav>
+        <div className="flex h-[80px] items-center justify-between px-4">
           <button
-            onClick={() => setShowSearchBar(!showSearchBar)}
-            aria-label="search"
+            onClick={() => toggleSidenav(true)}
+            aria-label="Toggle Sidenav"
             className="hidden md:block"
           >
-            Search
+            Menu
           </button>
-          <button aria-label="cart">Cart (0)</button>
-          {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
+
+          <Link
+            href="/"
+            className="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2"
+          >
+            <span className="text-xl flex text-[#4b5563]">ASSUME BREACH</span>
+          </Link>
+
+          <div
+            className="flex items-center space-x-5 justify-end w-full
+        "
+          >
+            <button
+              onClick={() => setShowSearchBar(!showSearchBar)}
+              aria-label="search"
+              className="hidden md:block"
+            >
+              Search
+            </button>
+            <button aria-label="cart">Cart (0)</button>
+            {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
+          </div>
         </div>
       </div>
     </div>
-    </div>  
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,21 +14,42 @@ const SideNav = ({
 }: {
   toggleSidenav: (show: boolean) => void;
 }) => {
-  return (
-    <div className="md:w-60 bg-white h-full flex-1 fixed border-zinc-200 hidden md:flex absolute bg-white z-10"> 
-      <div className="flex flex-col space-y-6 w-full">
-        <Link
-          href="/"
-          className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6  border-zinc-200 h-[80px] w-full">
-          <span className="font-bold text-xl hidden md:flex">
-            Assume Breach
-          </span>
-        </Link>
+  const [visible, setVisible] = useState(false);
 
-        <div className="flex flex-col space-y-2  md:px-6 ">
-          {SIDENAV_ITEMS.map((item, idx) => {
-            return <MenuItem key={idx} item={item} />;
-          })}
+  const toggleVisible = () => {
+    setVisible(!visible);
+
+    setTimeout(() => {
+      toggleSidenav(false);
+    }, 300);
+  };
+
+  useEffect(() => {
+    setVisible(true);
+  }, []);
+  return (
+    <div
+      className={`fixed inset-0 transition-opacity duration-300 ease-in-out z-50 w-[20%] p-2  ${
+        visible ? "opacity-100" : "opacity-0"
+      }`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="w-full h-[99%] flex align-center absolute bg-[#818388] rounded flex-col">
+      <div className="flex flex-row justify-end w-[95%] mt-5">
+        <button
+          onClick={() => toggleVisible()}
+          aria-label="Close Sidebar"
+          className="p-2 rounded-lg hover:bg-[#525457]"
+        >
+          <Icon icon="ant-design:close-outlined" width="16" height="16" color="white" />
+        </button>
+        </div>
+        <div className="flex flex-col space-y-6 w-full h-full align-center justify-center">
+          <div className="flex flex-col space-y-2  md:px-6 ">
+            {SIDENAV_ITEMS.map((item, idx) => {
+              return <MenuItem key={idx} item={item} />;
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -51,17 +72,25 @@ const MenuItem = ({ item }: { item: NavItem }) => {
           <button
             onClick={toggleSubMenu}
             aria-label="Toggle Submenu"
-            className={`flex flex-row items-center p-2 rounded-lg hover-bg-zinc-100 w-full justify-between hover:bg-zinc-100 ${
-              pathname.includes(item.path) ? "bg-zinc-100" : ""
+            className={`flex flex-row items-center p-2 rounded-lg hover-bg-[#525457]
+               w-full justify-between hover:bg-[#525457] ${
+              pathname.includes(item.path) ? "bg-[#525457]" : ""
             }`}
           >
             <div className="flex flex-row space-x-4 items-center">
               {item.icon}
-              <span className="font-semibold text-xl  flex">{item.title}</span>
+              <span className="font-semibold text-2xl text-white flex">
+                {item.title}
+              </span>
             </div>
 
             <div className={`${subMenuOpen ? "rotate-180" : ""} flex`}>
-              <Icon icon="lucide:chevron-down" width="24" height="24" />
+              <Icon
+                icon="lucide:chevron-down"
+                width="24"
+                height="24"
+                color="white"
+              />
             </div>
           </button>
 
@@ -80,7 +109,7 @@ const MenuItem = ({ item }: { item: NavItem }) => {
                       subItem.path === pathname ? "font-bold" : ""
                     }`}
                   >
-                    <span>{subItem.title}</span>
+                    <span className="text-white">{subItem.title}</span>
                   </Link>
                 );
               })}
@@ -91,23 +120,27 @@ const MenuItem = ({ item }: { item: NavItem }) => {
         <div className="absolute bottom-0 w-full p-6 left-0 align-center">
           <Link
             href={item.path}
-            className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-zinc-100 ${
-              item.path === pathname ? "bg-zinc-100" : ""
+            className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#525457] ${
+              item.path === pathname ? "bg-[#525457]" : ""
             }`}
           >
             {item.icon}
-            <span className="font-semibold text-xl flex">{item.title}</span>
+            <span className="font-semibold text-2xl flex text-white">
+              {item.title}
+            </span>
           </Link>
         </div>
       ) : (
         <Link
           href={item.path}
-          className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-zinc-100 ${
-            item.path === pathname ? "bg-zinc-100" : ""
+          className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#525457] ${
+            item.path === pathname ? "bg-[#525457]" : ""
           }`}
         >
           {item.icon}
-          <span className="font-semibold text-xl flex">{item.title}</span>
+          <span className="font-semibold text-2xl flex text-white">
+            {item.title}
+          </span>
         </Link>
       )}
     </div>

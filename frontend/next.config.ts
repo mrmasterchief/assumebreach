@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'd1fufvy4xao6k9.cloudfront.net',
+        hostname: 'xsuit.com',
         port: '',
       },
   

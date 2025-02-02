@@ -12,7 +12,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      transitionProperty: {
+        'height': 'height',
     },
+  },
     screens: {
       xs: "375px",
       sm: "640px",

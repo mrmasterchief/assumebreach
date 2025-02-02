@@ -1,10 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
-import { option } from "framer-motion/client";
 
 export default function ProductDetails({
   params,
@@ -59,7 +58,7 @@ export default function ProductDetails({
             <div className="w-full">
               <div data-orientation="vertical">
                 <div className="border-grey-20 group border-t last:mb-0 last:border-b py-3">
-                <h3 className="px-1" onClick={toggleProductInfo}>
+                  <h3 className="px-1" onClick={toggleProductInfo}>
                     <div className="flex flex-col">
                       <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -94,58 +93,53 @@ export default function ProductDetails({
                       </div>
                     </div>
                   </h3>
-                  {isProductInfoOpen && (
-                    <div
-                      className={`inter-base-regular px-1 ease in out duration 2200`}
-                    >
-                      <div className="w-full">
-                        <div className="text-lg-regular py-8">
-                          <div className="grid grid-cols-2 gap-x-8">
-                            <div className="flex flex-col gap-y-4">
-                              <div>
-                                <span className="font-semibold">Material</span>
-                                <p>
-                                  {productDetails?.information?.type || "-"}
-                                </p>
-                              </div>
-                              <div>
-                                <span className="font-semibold">
-                                  Country of origin
-                                </span>
-                                <p>
-                                  {productDetails?.information
-                                    ?.countryOfOrigin || "-"}
-                                </p>
-                              </div>
-                              <div>
-                                <span className="font-semibold">Type</span>
-                                <p>
-                                  {productDetails?.information?.type || "-"}
-                                </p>
-                              </div>
+                  <div
+                    className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${
+                      isProductInfoOpen ? "max-h-96" : "max-h-0"
+                    }`}
+                  >
+                    <div className="w-full">
+                      <div className="text-lg-regular py-8">
+                        <div className="grid grid-cols-2 gap-x-8">
+                          <div className="flex flex-col gap-y-4">
+                            <div>
+                              <span className="font-semibold">Material</span>
+                              <p>
+                                {productDetails?.information?.material || "-"}
+                              </p>
                             </div>
-                            <div className="flex flex-col gap-y-4">
-                              <div>
-                                <span className="font-semibold">Weight</span>
-                                <p>
-                                  {productDetails?.information?.weight || "-"}
-                                </p>
-                              </div>
-                              <div>
-                                <span className="font-semibold">
-                                  Dimensions
-                                </span>
-                                <p>
-                                  {productDetails?.information?.dimensions ||
-                                    "-"}
-                                </p>
-                              </div>
+                            <div>
+                              <span className="font-semibold">
+                                Country of origin
+                              </span>
+                              <p>
+                                {productDetails?.information?.countryOfOrigin ||
+                                  "-"}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Type</span>
+                              <p>{productDetails?.information?.type || "-"}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-y-4">
+                            <div>
+                              <span className="font-semibold">Weight</span>
+                              <p>
+                                {productDetails?.information?.weight || "-"}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="font-semibold">Dimensions</span>
+                              <p>
+                                {productDetails?.information?.dimensions || "-"}
+                              </p>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 <div className="border-grey-20 group border-t last:mb-0 last:border-b py-3">
@@ -184,11 +178,47 @@ export default function ProductDetails({
                       </div>
                     </div>
                   </h3>
-                  {isShippingReturnsOpen && (
-                    <div className="px-1 animate-accordion">
-                      <p>Shipping and return policies.</p>
+                  <div
+                    className={`overflow-hidden transition-[max-height] duration-300 ease-in-out ${
+                      isShippingReturnsOpen ? "max-h-96" : "max-h-0"
+                    }`}
+                  >
+                    <div className="w-full">
+                      <div className="text-lg-regular py-8">
+                        <div className="grid grid-cols-2 gap-x-8">
+                          <div className="flex flex-col gap-y-4">
+                            <div className="flex flex-row gap-x-4">
+                              <Icon
+                                icon="bi:truck"
+                                className="text-lg-regular"
+                                width={24}
+                                height={24}
+                              />
+                              <div className="flex flex-col gap-y-2">
+                                <span className="font-semibold">Shipping</span>
+                                <p>Free shipping on orders over $50</p>
+                              </div>
+                            </div>
+                            <div>
+                            <div className="flex flex-row gap-x-4">
+                            <Icon
+                                icon="bi:arrow-return-right"
+                                className="text-lg-regular"
+                                width={24}
+                                height={24}
+                              />
+                              <div className="flex flex-col gap-y-2">
+
+                              <span className="font-semibold">Returns</span>
+                              <p>Free returns within 30 days</p>
+                            </div>
+                            </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -252,7 +282,9 @@ export default function ProductDetails({
                 </div>
               </div>
               <div className="flex flex-col text-ui-fg-base">
-                <span className="text-xl-semi">From {productDetails?.price || '$199.99'}</span>
+                <span className="text-xl-semi">
+                  From {productDetails?.price || "$199.99"}
+                </span>
               </div>
               <button className="transition-fg relative inline-flex items-center justify-center overflow-hidden rounded-md outline-none disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden after:transition-fg after:absolute after:inset-0 after:content-[''] shadow-buttons-inverted text-ui-fg-on-inverted bg-ui-button-inverted after:button-inverted-gradient hover:bg-ui-button-inverted-hover hover:after:button-inverted-hover-gradient active:bg-ui-button-inverted-pressed active:after:button-inverted-pressed-gradient focus:!shadow-buttons-inverted-focus txt-compact-lg-plus gap-x-1.5 px-3 py-1.5 w-full h-10">
                 Select variant
