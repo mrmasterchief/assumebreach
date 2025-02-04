@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { doubleCsrfProtection } from "./middleware/csrf.js";
 import errorHandling from "./middleware/errorHandler.js";
 import helmetMiddleware from "./middleware/helmet.js";
+import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 
@@ -34,6 +35,8 @@ app.use(errorHandling);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+app.use("/api/v1/products", productRoutes);
 
 app.get("/api/v1/csrf-token", (req, res) => {
   if (req.csrfToken) {

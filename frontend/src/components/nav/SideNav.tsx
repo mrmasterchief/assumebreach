@@ -47,7 +47,7 @@ const SideNav = ({
         <div className="flex flex-col space-y-6 w-full h-full align-center justify-center">
           <div className="flex flex-col space-y-2  md:px-6 ">
             {SIDENAV_ITEMS.map((item, idx) => {
-              return <MenuItem key={idx} item={item} />;
+              return <MenuItem key={idx} item={item} toggleSideNav={toggleSidenav} />;
             })}
           </div>
         </div>
@@ -58,7 +58,7 @@ const SideNav = ({
 
 export default SideNav;
 
-const MenuItem = ({ item }: { item: NavItem }) => {
+const MenuItem = ({toggleSideNav, item } : { toggleSideNav: (show: boolean) => void, item: NavItem }) => {
   const pathname = usePathname();
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {
@@ -105,6 +105,7 @@ const MenuItem = ({ item }: { item: NavItem }) => {
                   <Link
                     key={idx}
                     href={subItem.path}
+                    onClick={() => toggleSideNav(false)}
                     className={`${
                       subItem.path === pathname ? "font-bold" : ""
                     }`}

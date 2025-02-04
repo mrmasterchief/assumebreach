@@ -14,6 +14,7 @@ export default function ProductDetails({
   const [isShippingReturnsOpen, setIsShippingReturnsOpen] = useState(false);
   const [activeOptions, setActiveOptions] = useState({});
   const [productDetails, setProductDetails] = useState({
+    id: "",
     title: "",
     category: "",
     description: "",
