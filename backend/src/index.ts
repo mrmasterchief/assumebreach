@@ -6,6 +6,7 @@ import { doubleCsrfProtection } from "./middleware/csrf.js";
 import errorHandling from "./middleware/errorHandler.js";
 import helmetMiddleware from "./middleware/helmet.js";
 import productRoutes from "./routes/productRoutes.js";
+import cmsRoutes from "./routes/cmsRoutes.js";
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.listen(port, () => {
 });
 
 app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/cms", cmsRoutes);
 
 app.get("/api/v1/csrf-token", (req, res) => {
   if (req.csrfToken) {

@@ -1,10 +1,12 @@
 export interface Product {
     id: string; 
     title: string;
-    category: string;
+    categories: string[];
     description: string;
     price: number;
-    image: string;
+    discountPrice: number;
+    imagePath: string;
+    active: boolean;
     options: string[];
     information: {
       material: string;

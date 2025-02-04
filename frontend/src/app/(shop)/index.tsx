@@ -1,5 +1,5 @@
 "use client";
-import "../styles/globals.css";
+import "../../styles/globals.css";
 import Header from "@/components/nav/Header";
 import MarginWidthWrapper from "@/components/margin-width-wrapper";
 import PageWrapper from "@/components/page-wrapper";
