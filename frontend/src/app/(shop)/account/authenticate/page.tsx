@@ -48,10 +48,6 @@ export default function Authenticate() {
           };
         }
 
-        const csrf= await axiosInstance.get("/csrf-token");
-
-        if(csrf.status !== 200) return
-
         const response = await axiosInstance.post(endpoint, data);
 
         if (response.status === 200 || response.status === 201) {

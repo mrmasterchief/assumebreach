@@ -2,10 +2,11 @@ import express from "express";
 import type { Request, Response } from "express";
 import pool from "../config/db";
 import { Product } from "../models/Product";
-
+import upload from "../controllers/imageUpload";
 const router = express.Router();
 
-router.post("/product", async (req: Request, res: Response) => {
+router.post("/product", upload,
+   async (req: Request, res: Response) => {
   try {
     const {
       title,
@@ -57,6 +58,9 @@ router.post("/product", async (req: Request, res: Response) => {
         newProduct.information.dimensions,
       ]
     );
+
+   
+
     res.json(product.rows[0]);
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -139,8 +143,6 @@ router.put("/product/:id", async (req: Request, res: Response) => {
   }
 });
 
-
-
 router.delete("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -154,6 +156,27 @@ router.delete("/product/:id", async (req: Request, res: Response) => {
       res.status(500).json({ error: "An unknown error occurred" });
     }
   }
+});
+
+
+router.get("/all-users", async (_req: Request, res: Response) => {
+  try {
+    const users = await pool.query("SELECT * FROM users");
+    res.json(users.rows.map((user) => {
+      const { passwordhash, ...rest } = user;
+      return rest;
+    }));
+
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+      return;
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+      return;
+    }
+  }
+  return;
 });
 
 export default router;

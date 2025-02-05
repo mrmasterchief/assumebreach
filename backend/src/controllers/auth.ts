@@ -52,4 +52,25 @@ async function deleteUser(id: string): Promise<User | null> {
   return deletedUser.rows[0];
 }
 
-export { findUserByEmail, findUserById, createUser, updateUser, deleteUser };
+async function blacklistToken(token: string): Promise<void> {
+  try {
+      await pool.query("INSERT INTO blacklisted_tokens (token) VALUES ($1)", [token]);
+  } catch (error) {
+      console.error("Error blacklisting token:", error);
+      throw error; 
+  }
+}
+
+async function isTokenBlacklisted(token: string): Promise<boolean> {
+  try {
+      const result = await pool.query("SELECT 1 FROM blacklisted_tokens WHERE token = $1", [token]);
+      return result.rows.length > 0;
+  } catch (error) {
+      console.error("Error checking blacklist:", error);
+      throw error;
+  }
+}
+
+
+
+export { findUserByEmail, findUserById, createUser, updateUser, deleteUser, blacklistToken, isTokenBlacklisted };

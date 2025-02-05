@@ -22,12 +22,9 @@ export const authorize = (
   allowedRoles: RBAC[]
 ): ((req: Request, res: Response, next: NextFunction) => void) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.user) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
+    const user = authenticate(req, res);
 
-    const userRole = req.user.role;
+    const userRole = user?.role as RBAC;
 
     if (allowedRoles.includes(userRole)) {
       next();
@@ -60,22 +57,15 @@ export const generateTokens = (
 export const authenticate = (
   req: Request,
   res: Response,
-  next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
+  const refreshToken = req.cookies.refreshToken;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return next();
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!, (err, decoded) => {
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, (err: jwt.VerifyErrors | null, decoded: any) => {
     if (err) {
       return res.status(401).json({ message: "Invalid token" });
     }
 
-    req.user = decoded as { id: string; role: RBAC };
-    next();
+    return req.user = decoded as { id: string; role: RBAC };
   });
+  return req.user;
 };

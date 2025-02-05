@@ -1,16 +1,16 @@
-export const metadata = {
-  title: 'CMS',
-  description: 'CMS for Assume Breach',
-}
+
+
+import React from "react";
+import Layout from "./index";
+
+
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  )
+
+  return  <Layout>{children}</Layout>
+  
 }
