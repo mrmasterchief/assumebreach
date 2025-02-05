@@ -47,7 +47,7 @@ const SideNav = ({
         <div className="flex flex-col space-y-6 w-full h-full align-center justify-center">
           <div className="flex flex-col space-y-2  md:px-6 ">
             {SIDENAV_ITEMS.map((item, idx) => {
-              return <MenuItem key={idx} item={item} toggleSideNav={toggleSidenav} />;
+              return <MenuItem key={idx} item={item} toggleSideNav={toggleVisible} />;
             })}
           </div>
         </div>
@@ -124,6 +124,7 @@ const MenuItem = ({toggleSideNav, item } : { toggleSideNav: (show: boolean) => v
             className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#525457] ${
               item.path === pathname ? "bg-[#525457]" : ""
             }`}
+            onClick={() => toggleSideNav(false)}
           >
             {item.icon}
             <span className="font-semibold text-2xl flex text-white">
@@ -137,6 +138,7 @@ const MenuItem = ({toggleSideNav, item } : { toggleSideNav: (show: boolean) => v
           className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#525457] ${
             item.path === pathname ? "bg-[#525457]" : ""
           }`}
+          onClick={() => toggleSideNav(false)}
         >
           {item.icon}
           <span className="font-semibold text-2xl flex text-white">
