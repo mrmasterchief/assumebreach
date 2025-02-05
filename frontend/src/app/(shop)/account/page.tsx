@@ -1,24 +1,24 @@
-'use client';
-import React, {useEffect} from "react";
+"use client";
+import React, { useEffect } from "react";
 import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
+import { useCSRFToken } from "@/context/useCSRFToken";
+import { useRouter } from "next/navigation";
 
 export default function Account() {
-
+  const { isCsrfTokenSet } = useCSRFToken();
+  const router = useRouter();
   useEffect(() => {
-    try {
-      const response = axiosInstance.get("/api/v1/csrf-token");
+    const checkAuth = async () => {
+      if (!isCsrfTokenSet) return;
+      axiosInstance.post("/auth/refresh-token").then((response) => {
+        if (response.status !== 200) {
+          window.location.href = "/account";
+        }
+      });
+    };
+    checkAuth();
+  }, [router, isCsrfTokenSet]);
 
-    } catch (error) {
-      showMessage("Error", "Something went wrong", "error");
-    }
-  }, []);
-
-
-  return (
-    <div className="flex flex-col bg-white">
-      
-
-    </div>
-  );
+  return <div className="flex flex-col bg-white"></div>;
 }

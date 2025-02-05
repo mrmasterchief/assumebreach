@@ -2,7 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import { findUserByEmail, createUser } from "../controllers/auth";
 import { generateTokens } from "../middleware/rbac";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { UserPayload, RBAC } from "../middleware/rbac";
 import jwt from "jsonwebtoken";
 
@@ -18,7 +18,7 @@ router.post("/login", async (req: Request, res: Response) => {
       return;
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+    const passwordMatch = await bcrypt.compare(password, user.passwordhash);
     if (!passwordMatch) {
       res.status(401).json({ message: "Invalid credentials" });
       return;

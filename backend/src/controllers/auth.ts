@@ -1,7 +1,7 @@
 import { User } from "../models/User";
 import pool from "../config/db";
 import { RBAC } from "../middleware/rbac";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 async function findUserByEmail(email: string): Promise<User | null> {
   const user = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -21,25 +21,25 @@ async function createUser(
   name: string,
   role: RBAC
 ): Promise<User> {
-  const passwordHash = await bcrypt.hash(password, 10); 
+  const passwordhash = await bcrypt.hash(password, 10); 
   const newUser: User = {
     id: "",
     email,
-    passwordHash,
+    passwordhash,
     name,
     role,
   };
   const user = await pool.query(
-    "INSERT INTO users (email, passwordHash, name, role) VALUES ($1, $2, $3, $4) RETURNING *",
-    [newUser.email, newUser.passwordHash, newUser.name, newUser.role]
+    "INSERT INTO users (email, passwordhash, name, role) VALUES ($1, $2, $3, $4) RETURNING *",
+    [newUser.email, newUser.passwordhash, newUser.name, newUser.role]
   );
   return newUser;
 }
 
 async function updateUser(id: string, user: User): Promise<User | null> {
   const updatedUser = await pool.query(
-    "UPDATE users SET email = $1, passwordHash = $2, name = $3, role = $4 WHERE id = $5 RETURNING *",
-    [user.email, user.passwordHash, user.name, user.role, id]
+    "UPDATE users SET email = $1, passwordhash = $2, name = $3, role = $4 WHERE id = $5 RETURNING *",
+    [user.email, user.passwordhash, user.name, user.role, id]
   );
   return updatedUser.rows[0];
 }

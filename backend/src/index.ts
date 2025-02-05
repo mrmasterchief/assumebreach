@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { doubleCsrfProtection } from "./middleware/csrf.js";
+import { csrfProtection } from "./middleware/csrf.js";
 import errorHandling from "./middleware/errorHandler.js";
 import helmetMiddleware from "./middleware/helmet.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -26,7 +26,7 @@ app.use(
 app.use(cookieParser(COOKIE_SECRET));
 app.use(helmetMiddleware);
 app.use(express.json());
-app.use(doubleCsrfProtection);
+app.use(csrfProtection);
 
 // prefix for all routes
 
@@ -42,14 +42,8 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/auth", authenticationRoutes);
 app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
 
-app.get("/api/v1/csrf-token", (req, res) => {
-  if (req.csrfToken) {
-    res.json({ csrfToken: req.csrfToken() });
-    return;
-  } else {
-    res.status(500).json({ error: "CSRF token generation failed" });
-    return;
-  }
+app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
 });
 
 
