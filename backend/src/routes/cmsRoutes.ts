@@ -2,11 +2,10 @@ import express from "express";
 import type { Request, Response } from "express";
 import pool from "../config/db";
 import { Product } from "../models/Product";
-import crypto from "crypto";
 
 const router = express.Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/product", async (req: Request, res: Response) => {
   try {
     const {
       title,
@@ -20,7 +19,6 @@ router.post("/", async (req: Request, res: Response) => {
       information,
     } = req.body;
     const newProduct: Product = {
-      id: crypto.randomBytes(16).toString("hex"),
       title,
       categories,
       description,
@@ -42,7 +40,7 @@ router.post("/", async (req: Request, res: Response) => {
       return;
     }
     const product = await pool.query(
-      "INSERT INTO products (title, categories, description, price, discountPrice, imagePath, active, options, material, country_of_origin, type, weight, dimensions, uniqueIdentifier) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *",
+      "INSERT INTO products (title, categories, description, price, discountPrice, imagePath, active, options, material, country_of_origin, type, weight, dimensions) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *",
       [
         newProduct.title,
         newProduct.categories,
@@ -57,7 +55,6 @@ router.post("/", async (req: Request, res: Response) => {
         newProduct.information.type,
         newProduct.information.weight,
         newProduct.information.dimensions,
-        newProduct.id,
       ]
     );
     res.json(product.rows[0]);
@@ -70,20 +67,23 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/all", async (_req: Request, res: Response) => {
+router.get("/all-products", async (_req: Request, res: Response) => {
     try {
       const products = await pool.query("SELECT * FROM products");
       res.json(products.rows);
     } catch (error: unknown) {
       if (error instanceof Error) {
         res.status(500).json({ error: error.message });
+        return;
       } else {
         res.status(500).json({ error: "An unknown error occurred" });
+        return;
       }
     }
+    return;
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const {
@@ -98,7 +98,6 @@ router.put("/:id", async (req: Request, res: Response) => {
       information,
     } = req.body;
     const updatedProduct: Product = {
-      id,
       title,
       categories,
       description,
@@ -110,7 +109,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       information,
     };
     const product = await pool.query(
-      "UPDATE products SET title = $1, categories = $2, description = $3, price = $4, discountPrice = $5, imagePath = $6, active = $7, options = $8, material = $9, country_of_origin = $10, type = $11, weight = $12, dimensions = $13 WHERE uniqueIdentifier = $14 RETURNING *",
+      "UPDATE products SET title = $1, categories = $2, description = $3, price = $4, discountPrice = $5, imagePath = $6, active = $7, options = $8, material = $9, country_of_origin = $10, type = $11, weight = $12, dimensions = $13 WHERE id = $14 RETURNING *",
       [
         updatedProduct.title,
         updatedProduct.categories,
@@ -132,19 +131,22 @@ router.put("/:id", async (req: Request, res: Response) => {
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
+      return;
     } else {
       res.status(500).json({ error: "An unknown error occurred" });
+      return;
     }
   }
 });
 
 
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM products WHERE uniqueIdentifier = $1", [id]);
+    await pool.query("DELETE FROM products WHERE id = $1", [id]);
     res.json({ message: "Product deleted" });
+    return;
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });

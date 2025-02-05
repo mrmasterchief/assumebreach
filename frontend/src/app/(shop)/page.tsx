@@ -1,6 +1,6 @@
 'use client';
 import Image from "next/image";
-import React, {use, useEffect} from "react";
+import React, {useEffect} from "react";
 import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";

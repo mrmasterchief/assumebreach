@@ -62,7 +62,7 @@ router.get("/search/:query", async (req: Request, res: Response) => {
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const product = await pool.query("SELECT * FROM products WHERE uniqueIdentifier = $1", [
+    const product = await pool.query("SELECT * FROM products WHERE id = $1", [
       id,
     ]);
     res.json(product.rows[0]);

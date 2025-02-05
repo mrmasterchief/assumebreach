@@ -7,6 +7,8 @@ import errorHandling from "./middleware/errorHandler.js";
 import helmetMiddleware from "./middleware/helmet.js";
 import productRoutes from "./routes/productRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes.js";
+import authenticationRoutes from "./routes/authenticationRoutes.js";
+import { authorize, RBAC } from "./middleware/rbac.js";
 
 dotenv.config();
 
@@ -28,7 +30,6 @@ app.use(doubleCsrfProtection);
 
 // prefix for all routes
 
-
 // Error Handling Middleware
 app.use(errorHandling);
 
@@ -38,12 +39,34 @@ app.listen(port, () => {
 });
 
 app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/cms", cmsRoutes);
+app.use("/api/v1/auth", authenticationRoutes);
+app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
 
 app.get("/api/v1/csrf-token", (req, res) => {
   if (req.csrfToken) {
     res.json({ csrfToken: req.csrfToken() });
+    return;
   } else {
     res.status(500).json({ error: "CSRF token generation failed" });
+    return;
   }
+});
+
+
+// Insecure endpoint for CTF
+app.get("/api/v1/health", (_req, res) => {
+  res.json({
+    endpoints: [
+      "/api/v1/products",
+      "/api/v1/products/:page",
+      "/api/v1/products/category/:category",
+      "/api/v1/products/search/:query",
+      "/api/v1/products/:id",
+      "/api/v1/cms",
+      "/api/v1/cms/:id",
+      "/api/v1/csrf-token",
+      "CTF{3ndp0int5_4r3_c00l}",
+    ],
+    "All endpoints are healthy and up": true,
+  });
 });

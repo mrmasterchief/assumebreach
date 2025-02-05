@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 const { invalidCsrfTokenError, generateToken, doubleCsrfProtection } =
   doubleCsrf({
     getSecret: () => process.env.CSRF_SECRET || "defaultSecret",
-    cookieName: "csrfToken",
+    cookieName: "__HOST-csrfToken",
     cookieOptions: {
       signed: true,
       httpOnly: true,
