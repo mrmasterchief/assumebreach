@@ -39,9 +39,11 @@ const sidebar = {
 const Header = ({
   toggleSidenav,
   cartItems,
+  type,
 }: {
-  toggleSidenav: (show: boolean) => void;
-  cartItems: Object[];
+  toggleSidenav?: (show: boolean) => void;
+  cartItems?: Object[];
+  type?: string;
 }) => {
   const pathname = usePathname();
   const containerRef = useRef(null);
@@ -66,6 +68,7 @@ const Header = ({
       className={`sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`}
     >
       <div className={`space-between max-w-[1440px] mx-auto`}>
+        {type !== "cms" && (
         <motion.nav
           initial={false}
           animate={isOpen ? "open" : "closed"}
@@ -127,14 +130,18 @@ const Header = ({
           </motion.ul>
           <MenuToggle toggle={toggleOpen} />
         </motion.nav>
+        )}
         <div className="flex h-[80px] items-center justify-between px-4">
+        {type !== "cms" && (
+
           <button
-            onClick={() => toggleSidenav(true)}
+            onClick={() => toggleSidenav && toggleSidenav(true)}
             aria-label="Toggle Sidenav"
             className="hidden md:block"
           >
             Menu
           </button>
+        )}
 
           <Link
             href="/"
@@ -142,7 +149,7 @@ const Header = ({
           >
             <span className="text-xl flex text-[#4b5563]">ASSUME BREACH</span>
           </Link>
-
+{type !== "cms" && (
           <div
             className="flex items-center space-x-5 justify-end w-full
         "
@@ -166,10 +173,11 @@ const Header = ({
             <Cart
               showCart={showCart}
               setShowCart={setShowCart}
-              cartItems={cartItems}
+              cartItems={cartItems || []}
             />
             {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
           </div>
+)}
         </div>
       </div>
     </div>

@@ -71,3 +71,43 @@ export const FOOTER_LINKS: NavItem[] = [
     ],
   },
 ];
+
+export const CMS_SIDENAV_ITEMS = [
+  {
+    icon: <Icon icon="bx:bx-cart" width="24" height="24" color='white' />,
+    title: 'Products',
+  },
+  {
+    icon: <Icon icon="bx:bx-list-ul" width="24" height="24" color='white' />,
+    title: 'Orders',
+  },
+  {
+    icon: <Icon icon="bx:bx-user" width="24" height="24" color='white' />,
+    title: 'Customers',
+  },
+  {
+    icon: <Icon icon="bx:bx-cog" width="24" height="24" color='white' />,
+    title: 'Settings',
+  },
+];
+
+export const CATEGORIES = [
+  'Shirts',
+  'Pants',
+  'Suits',
+  'Accessories',
+  'Sale',
+  'Weekly Picks',
+  'Latest Drops',
+  'Tuxedos',
+  'Jeans',
+  'Shorts',
+  'Leggings',
+  'Formal',
+  'Casual',
+  'Women',
+  'Men',
+  'Unisex',
+  'All shirts',
+  'All suits',
+];

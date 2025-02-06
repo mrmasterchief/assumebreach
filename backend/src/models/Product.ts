@@ -6,6 +6,7 @@ export interface Product {
     discountPrice: number;
     imagePath: string;
     active: boolean;
+    quantity: number;
     options: string[];
     information: {
       material: string;

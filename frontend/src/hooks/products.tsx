@@ -1,7 +1,8 @@
+import { body } from "framer-motion/client";
 import { axiosInstance } from "./axios";
 
-export const getAllProducts = async () => {
-  const response = await axiosInstance.get("/cms/all");
+export const getAllProducts = async (page: number) => {
+  const response = await axiosInstance.get(`/cms/all-products/${page}`);
   return response.data;
 };
 
@@ -20,11 +21,14 @@ export const searchProducts = async (query: string) => {
   return response.data;
 };
 
-export const createProduct = async (product: any) => {
-  const response = await axiosInstance.post("/cms", product);
-  return response.data;
+export const createProduct = async (product: FormData) => {
+  const response = await axiosInstance.post("/cms/product", product, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response;
 };
-
 export const updateProduct = async (id: string, product: any) => {
   const response = await axiosInstance.put(`/cms/${id}`, product);
   return response.data;

@@ -7,6 +7,8 @@ import errorHandling from "./middleware/errorHandler.js";
 import helmetMiddleware from "./middleware/helmet.js";
 import productRoutes from "./routes/productRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes.js";
+import path from "path";
+import { fileURLToPath } from "url";
 import authenticationRoutes from "./routes/authenticationRoutes.js";
 import { authorize, RBAC } from "./middleware/rbac.js";
 
@@ -15,6 +17,8 @@ dotenv.config();
 const app = express();
 const port = process.env.EXPRESS_PORT || 3000;
 const COOKIE_SECRET = process.env.COOKIE_SECRET;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middleware
 app.use(
@@ -41,6 +45,8 @@ app.listen(port, () => {
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/auth", authenticationRoutes);
 app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });

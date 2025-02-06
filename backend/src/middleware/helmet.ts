@@ -16,6 +16,9 @@ const helmetMiddleware = helmet({
   referrerPolicy: {
     policy: "same-origin",
   },
+  crossOriginResourcePolicy: {
+    policy: "cross-origin",
+  },
   noSniff: true,
   xssFilter: true,
 });
