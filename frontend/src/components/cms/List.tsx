@@ -63,7 +63,7 @@ const List = ({ props }: { props: any }) => {
             imagepath: string;
           }) => (
             (
-                <div className="flex flex-row gap-4 border border-gray-300 p-4 rounded-lg my-4">
+                <div className="flex flex-row gap-4 border border-gray-300 p-4 rounded-lg my-4" key={item.id}>
               <li
                 key={item.id}
                 className="flex flex-row "
@@ -76,15 +76,12 @@ const List = ({ props }: { props: any }) => {
                   <span>{item.categories.join(", ")}</span>
                 </div>
                 <div className="flex flex-col w-[50px] h-[50px] ">
-                  <img
-                    src={`http://localhost:4000/public${item.imagepath}`}
-                    alt={item.title}
-                  />
+
                 </div>
               </li>
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center gap-4 flex-col">
                     <button
-                    className="flex items-center bg-black px-4 py-2 rounded-lg text-white"
+                    className="flex items-center bg-blue-500 px-4 py-2 rounded-lg text-white"
                     onClick={() => {
                         setFormActive(true);
                         setFormType("update");
@@ -93,7 +90,7 @@ const List = ({ props }: { props: any }) => {
                     Edit
                     </button>
                     <button
-                    className="flex items-center bg-black px-4 py-2 rounded-lg text-white"
+                    className="flex items-center bg-red-500 px-4 py-2 rounded-lg text-white"
                     onClick={() => deleteProduct(item.id)}
                     >
                     Delete

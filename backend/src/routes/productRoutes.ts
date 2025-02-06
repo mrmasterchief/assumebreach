@@ -7,7 +7,7 @@ import crypto from "crypto";
 const router = express.Router();
 
 
-router.get("/:page", async (_req: Request, res: Response) => {
+router.get("/products/:page", async (_req: Request, res: Response) => {
   try {
     const { page } = _req.params;
     const products = await pool.query(
@@ -60,8 +60,10 @@ router.get("/search/:query", async (req: Request, res: Response) => {
 });
 
 router.get("/:id", async (req: Request, res: Response) => {
+  console.log("GET /products/:id");
   try {
     const { id } = req.params;
+
     const product = await pool.query("SELECT * FROM products WHERE id = $1", [
       id,
     ]);

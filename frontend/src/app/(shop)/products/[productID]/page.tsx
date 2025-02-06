@@ -4,36 +4,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
+import { getProductDetail } from "@/hooks/products";
+import { useCSRFToken } from "@/context/useCSRFToken";
+import { useParams } from "next/navigation";
 
-export default function ProductDetails({
-  params,
-}: {
-  params: { productID: string };
-}) {
+export default function ProductDetails() {
   const [isProductInfoOpen, setIsProductInfoOpen] = useState(false);
+
   const [isShippingReturnsOpen, setIsShippingReturnsOpen] = useState(false);
+  const params = useParams();
+  const productID = Array.isArray(params?.productID)
+    ? params.productID[0]
+    : params?.productID;
   const [activeOptions, setActiveOptions] = useState({});
+  const { isCsrfTokenSet } = useCSRFToken();
   const [productDetails, setProductDetails] = useState({
     id: "",
     title: "",
-    category: "",
+    categories: [],
     description: "",
     price: "",
-    image: "",
+    imagepath: "",
     options: [],
-    information: {
-      material: "",
-      countryOfOrigin: "",
-      type: "",
-      weight: "",
-      dimensions: "",
-    },
+    material: "",
+    country_of_origin: "",
+    type: "",
+    weight: "",
+    dimensions: "",
   });
 
   const toggleProductInfo = () => setIsProductInfoOpen(!isProductInfoOpen);
 
   const toggleShippingReturns = () =>
     setIsShippingReturnsOpen(!isShippingReturnsOpen);
+
+  useEffect(() => {
+    if (!isCsrfTokenSet) return;
+    getProductDetail(productID || "").then((response) => {
+      setProductDetails(response);
+    });
+  }, [params.productID, isCsrfTokenSet]);
 
   return (
     <div className="flex flex-col xl:w-[1440px] xl:mx-auto">
@@ -44,9 +54,9 @@ export default function ProductDetails({
               <div className="flex flex-col gap-y-4 lg:max-w-[500px] mx-auto">
                 <Link
                   className="text-medium text-[#4b5563]hover:text-[#323840]"
-                  href={`/products?category=${productDetails?.category}`}
+                  href={`/products?category=${productDetails?.categories[0]}`}
                 >
-                  {productDetails?.category || "Category"}
+                  {productDetails?.categories[0] || "Category"}
                 </Link>
                 <h2 className="font-sans font-medium h2-core text-3xl leading-10 text-ui-fg-base">
                   {productDetails?.title || "Product Title"}
@@ -106,7 +116,7 @@ export default function ProductDetails({
                             <div>
                               <span className="font-semibold">Material</span>
                               <p>
-                                {productDetails?.information?.material || "-"}
+                                {productDetails?.material || "-"}
                               </p>
                             </div>
                             <div>
@@ -114,26 +124,26 @@ export default function ProductDetails({
                                 Country of origin
                               </span>
                               <p>
-                                {productDetails?.information?.countryOfOrigin ||
+                                {productDetails?.country_of_origin ||
                                   "-"}
                               </p>
                             </div>
                             <div>
                               <span className="font-semibold">Type</span>
-                              <p>{productDetails?.information?.type || "-"}</p>
+                              <p>{productDetails?.type || "-"}</p>
                             </div>
                           </div>
                           <div className="flex flex-col gap-y-4">
                             <div>
                               <span className="font-semibold">Weight</span>
                               <p>
-                                {productDetails?.information?.weight || "-"}
+                                {productDetails?.weight || "-"}
                               </p>
                             </div>
                             <div>
                               <span className="font-semibold">Dimensions</span>
                               <p>
-                                {productDetails?.information?.dimensions || "-"}
+                                {productDetails?.dimensions || "-"}
                               </p>
                             </div>
                           </div>
@@ -201,19 +211,18 @@ export default function ProductDetails({
                               </div>
                             </div>
                             <div>
-                            <div className="flex flex-row gap-x-4">
-                            <Icon
-                                icon="bi:arrow-return-right"
-                                className="text-lg-regular"
-                                width={24}
-                                height={24}
-                              />
-                              <div className="flex flex-col gap-y-2">
-
-                              <span className="font-semibold">Returns</span>
-                              <p>Free returns within 30 days</p>
-                            </div>
-                            </div>
+                              <div className="flex flex-row gap-x-4">
+                                <Icon
+                                  icon="bi:arrow-return-right"
+                                  className="text-lg-regular"
+                                  width={24}
+                                  height={24}
+                                />
+                                <div className="flex flex-col gap-y-2">
+                                  <span className="font-semibold">Returns</span>
+                                  <p>Free returns within 30 days</p>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -234,7 +243,7 @@ export default function ProductDetails({
                     2xl:w-[660px] 2xl:max-h-[800px] align-center justify-center flex shadow-md border border-gray-200"
                   >
                     <Image
-                      src={productDetails?.image || "/blender.webp"}
+                      src={`http://localhost:4000/public/${productDetails?.imagepath}` || "/blender.webp"}
                       alt="Product image 1"
                       width={1000}
                       height={1000}
@@ -252,41 +261,29 @@ export default function ProductDetails({
             <div className="flex flex-col gap-y-2">
               <div>
                 <div className="flex flex-col gap-y-4">
-                  <div>
-                    <div className="flex flex-col gap-y-3">
-                      <span className="text-sm">Select Color</span>
-                      <div className="flex flex-wrap justify-between gap-2">
-                        <button className="border-ui-border-base bg-ui-bg-subtle border text-lg-regular h-10 rounded-rounded p-2 flex-1 hover:shadow-elevation-card-rest transition-shadow ease-in-out duration-150">
-                          Black
-                        </button>
-                        <button className="border-ui-border-base bg-ui-bg-subtle border text-lg-regular h-10 rounded-rounded p-2 flex-1 hover:shadow-elevation-card-rest transition-shadow ease-in-out duration-150">
-                          Silver
-                        </button>
-                      </div>
-                    </div>
-                  </div>
 
                   <div>
                     <div className="flex flex-col gap-y-3">
-                      <span className="text-sm">Select Noise Cancelling</span>
-                      <div className="flex flex-wrap justify-between gap-2">
-                        <button className="border-ui-border-base bg-ui-bg-subtle border text-lg-regular h-10 rounded-rounded p-2 flex-1 hover:shadow-elevation-card-rest transition-shadow ease-in-out duration-150">
-                          ANC
-                        </button>
-                        <button className="border-ui-border-base bg-ui-bg-subtle border text-lg-regular h-10 rounded-rounded p-2 flex-1 hover:shadow-elevation-card-rest transition-shadow ease-in-out duration-150">
-                          None
-                        </button>
-                      </div>
+                      {productDetails?.options?.map((option : any) => (
+                        <div key={option.id}>
+                          <span className="text-sm">{option.title}</span>
+                          <div className="flex flex-wrap justify-between gap-2">
+                            {option.values.map((value:any) => (
+                              <button
+                                key={value.id}
+                                className="border-ui-border-base bg-ui-bg-subtle border text-lg-regular h-10 rounded-rounded p-2 flex-1 hover:shadow-elevation-card-rest transition-shadow ease-in-out duration-150"
+                              >
+                                {value.title}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <div className="h-px w-full border-b border-gray-200 mt-1"></div>
                 </div>
               </div>
-              <div className="flex flex-col text-ui-fg-base">
-                <span className="text-xl-semi">
-                  From {productDetails?.price || "$199.99"}
-                </span>
-              </div>
+              
               <button className="transition-fg relative inline-flex items-center justify-center overflow-hidden rounded-md outline-none disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden after:transition-fg after:absolute after:inset-0 after:content-[''] shadow-buttons-inverted text-ui-fg-on-inverted bg-ui-button-inverted after:button-inverted-gradient hover:bg-ui-button-inverted-hover hover:after:button-inverted-hover-gradient active:bg-ui-button-inverted-pressed active:after:button-inverted-pressed-gradient focus:!shadow-buttons-inverted-focus txt-compact-lg-plus gap-x-1.5 px-3 py-1.5 w-full h-10">
                 Select variant
               </button>

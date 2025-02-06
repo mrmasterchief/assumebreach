@@ -35,6 +35,6 @@ export const updateProduct = async (id: string, product: any) => {
 };
 
 export const deleteProduct = async (id: string) => {
-  const response = await axiosInstance.delete(`/cms/${id}`);
+  const response = await axiosInstance.delete(`/cms/product/${id}`);
   return response.data;
 };

@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         hostname: 'xsuit.com',
         port: '',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '4000', 
+      },
   
     ],
   },
