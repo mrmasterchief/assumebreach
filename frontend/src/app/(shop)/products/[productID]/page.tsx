@@ -24,6 +24,7 @@ export default function ProductDetails() {
     categories: [],
     description: "",
     price: "",
+    discountprice: "",
     imagepath: "",
     options: [],
     material: "",
@@ -259,12 +260,24 @@ export default function ProductDetails() {
 
           <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[300px] w-full py-8 gap-y-12">
             <div className="flex flex-col gap-y-2">
-              <div>
-                <div className="flex flex-col gap-y-4">
 
-                  <div>
-                    <div className="flex flex-col gap-y-3">
-                      {productDetails?.options?.map((option : any) => (
+                     <div className="flex flex-row gap-x-2">
+                      <h1 className={`font-sans font-medium h1-core text-4xl leading-10`}> 
+                        From 
+                      </h1>
+                      <div className="flex flex-col gap-y-2">
+                      <h1 className={`font-sans font-medium h1-core text-4xl leading-10 ${productDetails.discountprice ? 'line-through' : ''}`}> 
+                        ${productDetails.price}
+                      </h1>
+                      {productDetails.discountprice && (
+                        <h1 className={`font-sans font-medium h1-core text-4xl leading-10 text-[#094EBE]`}> 
+                          ${productDetails.discountprice}
+                        </h1>
+                      )}
+                      </div>
+                      
+
+                      {/* {productDetails?.options?.map((option : any) => (
                         <div key={option.id}>
                           <span className="text-sm">{option.title}</span>
                           <div className="flex flex-wrap justify-between gap-2">
@@ -278,15 +291,18 @@ export default function ProductDetails() {
                             ))}
                           </div>
                         </div>
-                      ))}
+                      ))} */}
                     </div>
-                  </div>
-                </div>
-              </div>
+
               
-              <button className="transition-fg relative inline-flex items-center justify-center overflow-hidden rounded-md outline-none disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden after:transition-fg after:absolute after:inset-0 after:content-[''] shadow-buttons-inverted text-ui-fg-on-inverted bg-ui-button-inverted after:button-inverted-gradient hover:bg-ui-button-inverted-hover hover:after:button-inverted-hover-gradient active:bg-ui-button-inverted-pressed active:after:button-inverted-pressed-gradient focus:!shadow-buttons-inverted-focus txt-compact-lg-plus gap-x-1.5 px-3 py-1.5 w-full h-10">
-                Select variant
-              </button>
+              <div className="flex flex-col gap-y-4">
+                <button
+                  type="button"
+                  className="flex items-center bg-black px-4 py-2 rounded-lg text-white align-center justify-center"
+                >
+                  Add to Cart
+                </button>
+              </div>
               <div className="lg:hidden inset-x-0 bottom-0 fixed pointer-events-none"></div>
             </div>
           </div>
@@ -298,7 +314,7 @@ export default function ProductDetails() {
           You might also want to check out these products.
         </p>
       </div>
-      <ShowCaseContainer type="related" />
+      {/* <ShowCaseContainer type="related" /> */}
     </div>
   );
 }

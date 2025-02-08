@@ -11,6 +11,9 @@ importers:
       '@iconify/react':
         specifier: ^5.2.0
         version: 5.2.0(react@19.0.0)
+      '@next/env':
+        specifier: ^15.1.6
+        version: 15.1.6
       axios:
         specifier: ^1.7.9
         version: 1.7.9

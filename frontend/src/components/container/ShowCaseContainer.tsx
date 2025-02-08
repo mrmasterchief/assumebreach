@@ -9,10 +9,12 @@ const ShowCaseContainer = ({
   headerTitle,
   destination,
   type,
+  data
 }: {
   headerTitle?: string;
   destination?: string;
   type: "related" | "discover";
+  data: any[];
 }) => {
   return (
     <div className="flex flex-col w-full bg-white p-4">
@@ -31,77 +33,39 @@ const ShowCaseContainer = ({
       <div className="flex flex-row flex-wrap gap-4">
         {destination !== "/products?category=sale" ? (
           <>
-            <ProductCard
-              cardType={type}
-              cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-              }}
-            />
-            <ProductCard
-              cardType={type}
-              cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-              }}
-            />
-            <ProductCard
-              cardType={type}
-              cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-              }}
-            />
+            {data.map((item, idx) => (
+              <ProductCard
+                key={idx}
+                cardType={type}
+                cardInfo={{
+                  title: item.title,
+                  price: item.price,
+                  imagepath: item.imagepath,
+                  productID: item.id,
+                  discountprice: item.discountprice,
+                }}
+              />
+            ))}
           </>
-        ) : (
+          //
+         
+        )
+         : (
           <>
+          {data.map((item, idx) => (
             <ProductCard
+              key={idx}
               cardType={type}
               cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-                discountPrice: "79.99",
+                title: item.title,
+                price: item.price,
+                imagepath: item.imagepath,
+                productID: item.productID,
+                discountprice: item.discountprice,
               }}
             />
-            <ProductCard
-              cardType={type}
-              cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-                discountPrice: "79.99",
-              }}
-            />
-            <ProductCard
-              cardType={type}
-              cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-                discountPrice: "79.99",
-              }}
-            />
-            <ProductCard
-              cardType={type}
-              cardInfo={{
-                title: "Product Title",
-                price: "99.99",
-                image: "https://via.placeholder.com/150",
-                productID: "1",
-                discountPrice: "79.99",
-              }}
-            />
-          </>
+          ))}
+        </>
         )}
       </div>
     </div>

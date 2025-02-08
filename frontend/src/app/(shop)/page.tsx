@@ -1,12 +1,29 @@
 'use client';
 import Image from "next/image";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
+import { getProductsByCategory } from "@/hooks/products";
 
 export default function Home() {
+  const [weeklyPicks, setWeeklyPicks] = useState<any[]>([]);
+  const [latestDrops, setLatestDrops] = useState<any[]>([]);
+  const [sale, setSale] = useState<any[]>([]);
 
+  useEffect(() => {
+    getProductsByCategory("Weekly Picks").then((response) => {
+      setWeeklyPicks(response);
+    });
+    getProductsByCategory("Latest Drops").then((response) => {
+      setLatestDrops(response);
+    });
+    getProductsByCategory("Sale").then((response) => {
+      setSale(response);
+    });
+
+    
+  }, []);
 
   return (
     <div className="flex flex-col bg-white">
@@ -27,9 +44,9 @@ export default function Home() {
       </div>
       <div className="flex align-center justify-center w-full max-w-[1440px] mx-auto">
       <div className="px-4 bg-white flex flex-col gap-20 border-t border-gray-200 py-8 w-full ">
-      <ShowCaseContainer headerTitle="Latest Drops" destination="/products?category=drops" type="discover" />
-      <ShowCaseContainer headerTitle="Weekly Picks" destination="/products?category=picks" type="discover" />
-      <ShowCaseContainer headerTitle="Sale" destination="/products?category=sale" type="discover" />
+      <ShowCaseContainer headerTitle="Latest Drops" destination="/products?category=drops" type="discover" data={latestDrops} />
+      <ShowCaseContainer headerTitle="Weekly Picks" destination="/products?category=picks" type="discover" data={weeklyPicks}/>
+      <ShowCaseContainer headerTitle="Sale" destination="/products?category=sale" type="discover" data={sale} /> 
       </div>
       </div>
 

@@ -14,11 +14,17 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'http',
-        hostname: 'localhost',
+        hostname: '192.168.68.113',
         port: '4000', 
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '4000',
+      }
   
     ],
+    
   },
   webpack5: true,
   productionBrowserSourceMaps: true,

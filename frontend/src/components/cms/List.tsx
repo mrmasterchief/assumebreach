@@ -91,7 +91,8 @@ const List = ({ props }: { props: any }) => {
                     </button>
                     <button
                     className="flex items-center bg-red-500 px-4 py-2 rounded-lg text-white"
-                    onClick={() => deleteProduct(item.id)}
+                    onClick={() => deleteProduct(item.id).then(() => getAllProducts(props.listPage))
+                    }
                     >
                     Delete
                     </button>

@@ -1,12 +1,32 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
+import { getProductsByCategory } from "@/hooks/products";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
+  const style = searchParams.get("style");
+  const [productData, setProductData] = useState<any[]>([]);
+  const CATEGORIES: { [key: string]: string } = {
+    "Weekly Picks": "picks",
+    "Latest Drops": "drops",
+    "Sale": "sale",
+    "Suits": "suits",
+    "All Shirts": "shirts",
+  };
+
+  useEffect(() => {
+    getProductsByCategory(Object.keys(CATEGORIES).find((key) => CATEGORIES[key] === category) || 
+    (category ? category.charAt(0).toUpperCase() + category.slice(1) : "")).then((response) => {
+      setProductData(response);
+    });
+  }, [category]);
+
+
+
 
   return (
     <div className="flex flex-col bg-white">
@@ -24,10 +44,11 @@ export default function ProductsPage() {
             </div>
             <div className="flex flex-col w-full">
             <h1 className="text-4xl font-bold">
-              {String(category).charAt(0).toUpperCase() +
-                String(category).slice(1)}
+              {Object.keys(CATEGORIES).find((key) => CATEGORIES[key] === category)}
             </h1>
-            <ShowCaseContainer type="related" />
+            <ShowCaseContainer type="related" data={
+              productData
+            } />
             </div>
           </div>
         </div>

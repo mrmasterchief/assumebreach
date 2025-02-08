@@ -12,9 +12,9 @@ const ProductCard = ({
   cardInfo: {
     title: string;
     price: string;
-    image: string;
+    imagepath: string;
     productID: string;
-    discountPrice?: string;
+    discountprice?: string;
   };
   cardType: "search" | "discover" | "related";
   setShowSearchBar?: (show: boolean) => void;
@@ -53,7 +53,7 @@ const ProductCard = ({
         cardType === "discover" ? "aspect-[11/14]" : "aspect-[4/7]"
       }`}>
         <Image
-          src="/blender.webp"
+          src={`http://localhost:4000/public/${cardInfo.imagepath}`}
           layout="fill"
           objectFit="cover"
           alt={cardInfo.title}
@@ -66,12 +66,12 @@ const ProductCard = ({
             {cardInfo.title}
           </p>
           <div className="flex flex-col sm:flex-row sm:gap-2">
-          <p className={`font-normal font-sans txt-medium ${cardInfo.discountPrice ? 'line-through text-[#4b5563]' : 'text-[#4b5563]'}`}>
+          <p className={`font-normal font-sans txt-medium ${cardInfo.discountprice ? 'line-through text-[#4b5563]' : 'text-[#4b5563]'}`}>
             ${cardInfo.price}
           </p>
-          {cardInfo.discountPrice && (
+          {cardInfo.discountprice && (
             <p className="font-normal font-sans txt-medium text-[#094EBE]">
-              ${cardInfo.discountPrice}
+              ${cardInfo.discountprice}
             </p>
           )}
           </div>
