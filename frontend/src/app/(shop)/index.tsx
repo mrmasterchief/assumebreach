@@ -7,12 +7,12 @@ import SideNav from "@/components/nav/SideNav";
 import Footer from "@/components/footer/Footer";
 import { ToastContainer } from "react-toastify";
 import { SidenavProvider } from "@/context/SideNavContext";
+import { CartProvider } from "@/context/CartContext";
 import { CSRFProvider } from "@/context/useCSRFToken";
 import React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidenavOpen, setIsSidenavOpen] = React.useState(false);
-  const [cartItems, setCartItems] = React.useState([]);
   const toggleSidenav = () => {
     setIsSidenavOpen(!isSidenavOpen);
   };
@@ -20,6 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidenavProvider>
       <CSRFProvider>
+        <CartProvider>
         <html lang="en">
           <body className={`bg-white`}>
             <div className="flex ">
@@ -28,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   {isSidenavOpen ? (
                     <SideNav toggleSidenav={toggleSidenav} />
                   ) : null}
-                  <Header toggleSidenav={toggleSidenav} cartItems={cartItems} />
+                  <Header toggleSidenav={toggleSidenav}  />
                   <PageWrapper>
                     <ToastContainer aria-label={"alert"} />
                     {children}
@@ -39,6 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </body>
         </html>
+        </CartProvider>
       </CSRFProvider>
     </SidenavProvider>
   );

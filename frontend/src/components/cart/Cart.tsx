@@ -1,26 +1,19 @@
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
+import { getCart } from "@/hooks/cart";
 
 const Cart = ({
-  showCart,
-  setShowCart,
+  toggleCart,
+  isCartOpen,
   cartItems,
 }: {
-  showCart: boolean;
-  setShowCart: (value: boolean) => void;
-  cartItems: Object[];
+  toggleCart: () => void;
+  isCartOpen: boolean;
+  cartItems: { product: { imagepath: string; title: string; price: number }; quantity: number }[];
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (showCart) {
-      setIsVisible(true);
-    } else {
-      const timer = setTimeout(() => setIsVisible(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [showCart]);
 
   useEffect(() => {
     const handleMouseLeave = (event: MouseEvent) => {
@@ -28,7 +21,7 @@ const Cart = ({
         cartRef.current &&
         !cartRef.current.contains(event.relatedTarget as Node)
       ) {
-        setShowCart(false);
+        toggleCart();
       }
     };
 
@@ -42,14 +35,19 @@ const Cart = ({
         cartElement.removeEventListener("mouseleave", handleMouseLeave);
       }
     };
-  }, [setShowCart]);
+  }, [toggleCart]);
+
+  useEffect(() => {
+      setIsVisible(true);
+    
+  }, []);
 
   return (
     <>
       <div
         ref={cartRef}
         className={`absolute w-[400px] bg-white top-[80px] right-15 z-50 rounded-b-lg border transition-all duration-300 ${
-          showCart ? "opacity-100 max-h-[500px]" : "opacity-0 max-h-0"
+          isCartOpen ? "opacity-100 max-h-[500px]" : "opacity-0 max-h-0"
         } ${isVisible ? "block" : "hidden"}`}
       >
         <div className="p-4 flex items-center justify-center">
@@ -66,20 +64,20 @@ const Cart = ({
                   <div className="flex flex-row items-center gap-4">
                     <div className="flex relative w-16 h-16">
                       <img
-                        src="/blender.webp"
+                        src={`http://localhost:4000/public/${item.product.imagepath}`}
                         alt="product"
                         className="object-cover object-center w-full h-full"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-base font-semibold">Product Name</p>
+                      <p className="text-base font-semibold">{item.product.title}</p>
                       <p className="text-base font-normal text-gray-400">
-                        $100
+                        {item.product.price}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-col items-center justify-center">
-                    <span className="text-base font-semibold">1</span>
+                    <span className="text-base font-semibold">{item.quantity}</span>
                   </div>
                 </div>
               );

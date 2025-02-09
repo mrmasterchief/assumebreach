@@ -1,7 +1,6 @@
 "use client";
 
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -11,6 +10,9 @@ import { Icon } from "@iconify/react";
 import { motion, useCycle } from "framer-motion";
 import SearchBar from "../search/searchbar";
 import Cart from "../cart/Cart";
+import { getCart } from "@/hooks/cart";
+import { useCart } from "@/context/CartContext";
+import { get } from "http";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -38,11 +40,9 @@ const sidebar = {
 
 const Header = ({
   toggleSidenav,
-  cartItems,
   type,
 }: {
   toggleSidenav?: (show: boolean) => void;
-  cartItems?: Object[];
   type?: string;
 }) => {
   const pathname = usePathname();
@@ -50,7 +50,9 @@ const Header = ({
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
   const [showSearchBar, setShowSearchBar] = useState(false);
-  const [showCart, setShowCart] = useState(false);
+  const { isCartOpen, toggleCart } = useCart();
+  const [cartItems, setCartItems] = useState([]);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
   useEffect(() => {
     if (showSearchBar || isOpen) {
@@ -63,85 +65,105 @@ const Header = ({
     };
   }, [showSearchBar]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      getCart().then((data) => {
+        setCartItemsCount(data.length);
+        setCartItems(data.slice(0, 3));
+      });
+    }, 200);
+  }, [isCartOpen, toggleCart]);
+
+  useEffect(() => {
+    getCart().then((data) => {
+      setCartItemsCount(data.length);
+      setCartItems(data.slice(0, 3));
+    });
+  }, []);
+
   return (
     <div
       className={`sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`}
     >
       <div className={`space-between max-w-[1440px] mx-auto`}>
         {type !== "cms" && (
-        <motion.nav
-          initial={false}
-          animate={isOpen ? "open" : "closed"}
-          custom={height}
-          className={`fixed inset-0 z-50 w-full md:hidden ${
-            isOpen ? "" : "pointer-events-none"
-          }`}
-          ref={containerRef}
-        >
-          <motion.div
-            className="absolute inset-0 right-0 w-full bg-white"
-            variants={sidebar}
-          />
-          <motion.ul
-            variants={variants}
-            className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
+          <motion.nav
+            initial={false}
+            animate={isOpen ? "open" : "closed"}
+            custom={height}
+            className={`fixed inset-0 z-50 w-full md:hidden ${
+              isOpen ? "" : "pointer-events-none"
+            }`}
+            ref={containerRef}
           >
-            {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
-            <MenuItem>
-              <Link
-                onClick={() => {
-                  setShowSearchBar(!showSearchBar);
-                  toggleOpen();
-                }}
-                href="#"
-                className="flex w-full text-2xl items-center space-x-2 mb-4"
-              >
-                <Icon icon="bx:bx-search" width="24" height="24" />
-                Search
-              </Link>
-            </MenuItem>
-            {SIDENAV_ITEMS.map((item, idx) => {
-              const isLastItem = idx === SIDENAV_ITEMS.length - 1;
+            <motion.div
+              className="absolute inset-0 right-0 w-full bg-white"
+              variants={sidebar}
+            />
+            <motion.ul
+              variants={variants}
+              className="absolute grid w-full gap-3 px-10 py-16 max-h-screen overflow-y-auto"
+            >
+              {showSearchBar && (
+                <SearchBar setShowSearchBar={setShowSearchBar} />
+              )}
+              <MenuItem>
+                <Link
+                  onClick={() => {
+                    setShowSearchBar(!showSearchBar);
+                    toggleOpen();
+                  }}
+                  href="#"
+                  className="flex w-full text-2xl items-center space-x-2 mb-4"
+                >
+                  <Icon icon="bx:bx-search" width="24" height="24" />
+                  Search
+                </Link>
+              </MenuItem>
+              {SIDENAV_ITEMS.map((item, idx) => {
+                const isLastItem = idx === SIDENAV_ITEMS.length - 1;
 
-              return (
-                <div key={idx}>
-                  {item.submenu ? (
-                    <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
-                  ) : (
-                    <MenuItem>
-                      <Link
-                        href={item.path}
-                        onClick={() => toggleOpen()}
-                        className={`flex w-full text-2xl ${
-                          item.path === pathname ? "font-bold" : ""
-                        }`}
-                      >
-                        {item.title}
-                      </Link>
-                    </MenuItem>
-                  )}
+                return (
+                  <div key={idx}>
+                    {item.submenu ? (
+                      <MenuItemWithSubMenu
+                        item={item}
+                        toggleOpen={toggleOpen}
+                      />
+                    ) : (
+                      <MenuItem>
+                        <Link
+                          href={item.path}
+                          onClick={() => toggleOpen()}
+                          className={`flex w-full text-2xl ${
+                            item.path === pathname ? "font-bold" : ""
+                          }`}
+                        >
+                          {item.title}
+                        </Link>
+                      </MenuItem>
+                    )}
 
-                  {!isLastItem && (
-                    <MenuItem className="my-3 h-px w-full bg-gray-300" />
-                  )}
-                </div>
-              );
-            })}
-          </motion.ul>
-          <MenuToggle toggle={toggleOpen} />
-        </motion.nav>
+                    {!isLastItem && (
+                      <MenuItem className="my-3 h-px w-full bg-gray-300" />
+                    )}
+                  </div>
+                );
+              })}
+            </motion.ul>
+            <MenuToggle toggle={toggleOpen} />
+          </motion.nav>
         )}
         <div className="flex h-[80px] items-center justify-between px-4">
-        {type !== "cms" && (
-
-          <button
-            onClick={() => toggleSidenav && toggleSidenav(true)}
-            aria-label="Toggle Sidenav"
-            className="hidden md:block"
-          >
-            Menu
-          </button>
-        )}
+          {type !== "cms" && (
+            <button
+              onClick={() => toggleSidenav && toggleSidenav(true)}
+              aria-label="Toggle Sidenav"
+              className="hidden md:block"
+            >
+              Menu
+            </button>
+          )}
 
           <Link
             href="/"
@@ -149,35 +171,39 @@ const Header = ({
           >
             <span className="text-xl flex text-[#4b5563]">ASSUME BREACH</span>
           </Link>
-{type !== "cms" && (
-          <div
-            className="flex items-center space-x-5 justify-end w-full
+          {type !== "cms" && (
+            <div
+              className="flex items-center space-x-5 justify-end w-full
         "
-          >
-            <button
-              onClick={() => setShowSearchBar(!showSearchBar)}
-              aria-label="search"
-              className="hidden md:block"
             >
-              Search
-            </button>
-            <Link
-              aria-label="cart"
-              onMouseOver={() => {
-                setShowCart(true);
-              }}
-              href={"/cart"}
-            >
-              Cart ({cartItems?.length || 0})
-            </Link>
-            <Cart
-              showCart={showCart}
-              setShowCart={setShowCart}
-              cartItems={cartItems || []}
-            />
-            {showSearchBar && <SearchBar setShowSearchBar={setShowSearchBar} />}
-          </div>
-)}
+              <button
+                onClick={() => setShowSearchBar(!showSearchBar)}
+                aria-label="search"
+                className="hidden md:block"
+              >
+                Search
+              </button>
+              <Link
+                aria-label="cart"
+                onMouseOver={() => {
+                  toggleCart();
+                }}
+                href={"/cart"}
+              >
+                Cart ({cartItemsCount || 0})
+              </Link>
+              {isCartOpen && (
+                <Cart
+                  isCartOpen={isCartOpen}
+                  toggleCart={toggleCart}
+                  cartItems={cartItems}
+                />
+              )}
+              {showSearchBar && (
+                <SearchBar setShowSearchBar={setShowSearchBar} />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

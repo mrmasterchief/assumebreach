@@ -7,6 +7,8 @@ import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 import { getProductDetail, getProductsByCategory } from "@/hooks/products";
 import { useCSRFToken } from "@/context/useCSRFToken";
 import { useParams } from "next/navigation";
+import { addToCart } from "@/hooks/cart";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductDetails() {
   const [isProductInfoOpen, setIsProductInfoOpen] = useState(false);
@@ -18,6 +20,7 @@ export default function ProductDetails() {
     : params?.productID;
   const [activeOptions, setActiveOptions] = useState({});
   const { isCsrfTokenSet } = useCSRFToken();
+  const {isCartOpen, toggleCart} = useCart();
   const [productDetails, setProductDetails] = useState({
     id: "",
     title: "",
@@ -309,6 +312,10 @@ export default function ProductDetails() {
                 <button
                   type="button"
                   className="flex items-center bg-black px-4 py-2 rounded-lg text-white align-center justify-center"
+                  onClick={() => {
+                    addToCart(productDetails);
+                    toggleCart();
+                  }}
                 >
                   Add to Cart
                 </button>
