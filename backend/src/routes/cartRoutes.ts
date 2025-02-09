@@ -121,4 +121,50 @@ router.post("/add", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/remove", async (req: Request, res: Response) => {
+  let { product } = req.body;
+  if(!product) res.status(400).json({ message: "Product is required" });
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const productID = product.id;
+  if (!productID) {
+    res.status(400).json({ message: "Product ID is required" });
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET!
+    ) as { id: string; role: string };
+    const userId = decoded.id;
+
+    const cartResult = await pool.query(
+      `SELECT id FROM carts WHERE user_id = $1`,
+      [userId]
+    );
+
+    if (cartResult.rows.length === 0) {
+      res.status(400).json({ message: "Cart is empty" });
+      return;
+    }
+
+    const cartID = cartResult.rows[0].id;
+
+    await pool.query(
+      `DELETE FROM cart_items WHERE cart_id = $1 AND product_id = $2`,
+      [cartID, productID]
+    );
+
+    res.json({ message: "Removed from cart" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 export default router;

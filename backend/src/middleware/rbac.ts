@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, {JwtPayload} from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export enum RBAC {
   ADMIN = "admin",
@@ -48,24 +48,25 @@ export const generateTokens = (
   });
 
   const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET!, {
-    expiresIn: "7d",
+    expiresIn: payload.role === RBAC.USER ? "7d" : "1h",
   });
 
   return { accessToken, refreshToken };
 };
 
-export const authenticate = (
-  req: Request,
-  res: Response,
-) => {
+export const authenticate = (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
 
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, (err: jwt.VerifyErrors | null, decoded: any) => {
-    if (err) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET!,
+    (err: jwt.VerifyErrors | null, decoded: any) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
 
-    return req.user = decoded as { id: string; role: RBAC };
-  });
+      return (req.user = decoded as { id: string; role: RBAC });
+    }
+  );
   return req.user;
 };

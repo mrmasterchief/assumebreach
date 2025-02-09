@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
-import { getCart } from "@/hooks/cart";
+import { removeFromCart } from "@/hooks/cart";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const Cart = ({
   toggleCart,
@@ -9,7 +10,7 @@ const Cart = ({
 }: {
   toggleCart: () => void;
   isCartOpen: boolean;
-  cartItems: { product: { imagepath: string; title: string; price: number }; quantity: number }[];
+  cartItems: { product: { id:string; imagepath: string; title: string; price: number }; quantity: number }[];
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,8 @@ const Cart = ({
           {cartItems && cartItems?.length > 0 ? (
             cartItems.map((item, idx) => {
               return (
-                <div
+                <Link
+                  href={`/products/${item.product.id}`}
                   key={idx}
                   className="flex flex-row items-center justify-between w-[90%] p-4 border-b border-gray-200"
                 >
@@ -79,7 +81,17 @@ const Cart = ({
                   <div className="flex flex-col items-center justify-center">
                     <span className="text-base font-semibold">{item.quantity}</span>
                   </div>
-                </div>
+                  <button
+                    className="text-red-500"
+                    onClick={() => {
+                      removeFromCart(item.product);
+                      window.location.reload();
+
+                    }}
+                  >
+                    <Icon icon="bi:trash" className="w-6 h-6" color="black" />
+                  </button>
+                </Link>
               );
             })
           ) : (

@@ -9,7 +9,7 @@ export const getCart = async () => {
   }
 };
 
-export const addToCart = async (product: any, quantity?: number) => {
+export const addToCart = async (product: {}, quantity?: number) => {
   try {
     const response = await axiosInstance.post("/cart/add", {
         product: product,
@@ -23,7 +23,9 @@ export const addToCart = async (product: any, quantity?: number) => {
 
 export const removeFromCart = async (product: {}) => {
   try {
-    const response = await axiosInstance.post("/cart/remove", product);
+    const response = await axiosInstance.post("/cart/remove", {
+      product: product
+    });
     return response.data;
   } catch (error) {
     console.error("Error removing from cart:", error);
