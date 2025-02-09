@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
-import { getProductDetail } from "@/hooks/products";
+import { getProductDetail, getProductsByCategory } from "@/hooks/products";
 import { useCSRFToken } from "@/context/useCSRFToken";
 import { useParams } from "next/navigation";
 
 export default function ProductDetails() {
   const [isProductInfoOpen, setIsProductInfoOpen] = useState(false);
-
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [isShippingReturnsOpen, setIsShippingReturnsOpen] = useState(false);
   const params = useParams();
   const productID = Array.isArray(params?.productID)
@@ -36,15 +36,25 @@ export default function ProductDetails() {
 
   const toggleProductInfo = () => setIsProductInfoOpen(!isProductInfoOpen);
 
-  const toggleShippingReturns = () =>
-    setIsShippingReturnsOpen(!isShippingReturnsOpen);
+  const toggleShippingReturns = () => setIsShippingReturnsOpen(!isShippingReturnsOpen);
 
   useEffect(() => {
     if (!isCsrfTokenSet) return;
     getProductDetail(productID || "").then((response) => {
       setProductDetails(response);
     });
+
   }, [params.productID, isCsrfTokenSet]);
+
+  useEffect(() => {
+    if (!isCsrfTokenSet || productDetails.title === "") return;
+    getProductsByCategory(productDetails?.categories[0] || "").then((response) => {
+      const filteredResponse = response.filter(
+        (product: { id: string }) => product.id !== productDetails.id
+      );
+      setRecommendedProducts(filteredResponse.slice(0, 3));
+    });
+  }, [productDetails, isCsrfTokenSet]);
 
   return (
     <div className="flex flex-col xl:w-[1440px] xl:mx-auto">
@@ -314,7 +324,7 @@ export default function ProductDetails() {
           You might also want to check out these products.
         </p>
       </div>
-      {/* <ShowCaseContainer type="related" /> */}
+      <ShowCaseContainer type="related" data={recommendedProducts} />
     </div>
   );
 }

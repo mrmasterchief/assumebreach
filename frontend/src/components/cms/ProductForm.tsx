@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Multiselect from "multiselect-react-dropdown";
 import { CATEGORIES } from "@/constants";
@@ -43,7 +43,7 @@ const ProductForm = ({
     },
     options: [],
   };
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const selectOptions = CATEGORIES.map((category) => {
     return { name: category, id: category };
@@ -66,7 +66,10 @@ const ProductForm = ({
     if (values.file) {
       formData.append("file", values.file);
     }
-    formData.append("categories", JSON.stringify(values.categories.map((category) => category.name)));
+    formData.append(
+      "categories",
+      JSON.stringify(values.categories.map((category) => category.name))
+    );
     formData.append("options", JSON.stringify(values.options));
     formData.append("information", JSON.stringify(values.information));
 
@@ -80,13 +83,10 @@ const ProductForm = ({
       const data = response.data;
       console.log("Product created:", data);
       toggleForm();
-
     } catch (error) {
       console.error("Error submitting product:", error);
     }
   };
-
-
 
   useEffect(() => {
     setIsVisible(true);
@@ -252,15 +252,15 @@ const ProductForm = ({
                       />
                     </div>
                     <div className="flex flex-col">
-                        <label htmlFor="options">Options</label>
-                        <Field
-                            id="options"
-                            name="options"
-                            type="text"
-                            className="border p-2 rounded"
-                            placeholder="Format: Color:Red,Blue;Size:Small,Large" 
-                        />
-                      </div>
+                      <label htmlFor="options">Options</label>
+                      <Field
+                        id="options"
+                        name="options"
+                        type="text"
+                        className="border p-2 rounded"
+                        placeholder="Format: Color:Red,Blue;Size:Small,Large"
+                      />
+                    </div>
                     <button
                       type="submit"
                       className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -269,7 +269,6 @@ const ProductForm = ({
                     </button>
                   </div>
                 </div>
-
               </Form>
             )}
           </Formik>

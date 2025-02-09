@@ -11,10 +11,10 @@ export default function CMSHomePage() {
   const { isCsrfTokenSet } = useCSRFToken();
   const { activePage, toggleActivePage } = useCMS();
   const [listPage, setListPage] = useState(1);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({ products: [], totalProducts: 0 });
   const [search, setSearch] = useState("");
-  const maxPerPage = 10;
-  const pages = Math.ceil(data.length / maxPerPage);
+  const maxPerPage = 5;
+  const pages = Math.ceil(data.totalProducts / maxPerPage);
 
   const router = useRouter();
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function CMSHomePage() {
         setData(response);
       });
     }
-  }, [activePage]);
+  }, [activePage, listPage]);
 
   return (
     <div className="flex flex-col bg-white">
@@ -46,7 +46,7 @@ export default function CMSHomePage() {
             <List
               props={{
                 type: activePage,
-                data: data,
+                data: data.products,
                 listPage: listPage,
                 setListPage: setListPage,
                 pages: pages,

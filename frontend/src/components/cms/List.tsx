@@ -66,7 +66,7 @@ const List = ({ props }: { props: any }) => {
                 <div className="flex flex-row gap-4 border border-gray-300 p-4 rounded-lg my-4" key={item.id}>
               <li
                 key={item.id}
-                className="flex flex-row "
+                className="flex flex-row space-between gap-4 w-full"
               >
                 <div className="flex flex-col">
                   <span>{item.id}</span>

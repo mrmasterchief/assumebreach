@@ -19,6 +19,11 @@ export default function ProductsPage() {
   };
 
   useEffect(() => {
+    if(!category) {
+      getProductsByCategory("Suits").then((response) => {
+        setProductData(response);
+      });
+    }
     getProductsByCategory(Object.keys(CATEGORIES).find((key) => CATEGORIES[key] === category) || 
     (category ? category.charAt(0).toUpperCase() + category.slice(1) : "")).then((response) => {
       setProductData(response);

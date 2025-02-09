@@ -79,14 +79,16 @@ router.post("/product", uploadFileMiddleware, async (req: Request, res: Response
 
 router.get("/all-products/:page", async (_req: Request, res: Response) => {
   const { page } = _req.params;
-  const limit = 10;
+  const limit = 5;
   const offset = (parseInt(page) - 1) * limit;
   try {
     const products = await pool.query(
       "SELECT * FROM products ORDER BY id DESC LIMIT $1 OFFSET $2",
       [limit, offset]
     );
-    res.json(products.rows);
+    // get the total number of products
+    const totalProducts = await pool.query("SELECT COUNT(*) FROM products");
+    res.json({ products: products.rows, totalProducts: totalProducts.rows[0].count });
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });

@@ -1,4 +1,3 @@
-import { body } from "framer-motion/client";
 import { axiosInstance } from "./axios";
 
 export const getAllProducts = async (page: number) => {

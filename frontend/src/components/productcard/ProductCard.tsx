@@ -31,7 +31,7 @@ const ProductCard = ({
        relative overflow-hidden bg-[#f9fafb] border border-gray-200 rounded-large group h-12 w-12 sm:h-full sm:w-full aspect-[1/1] shadow-md"
       >
         <Image
-          src="/blender.webp"
+          src={`http://localhost:4000/public/${cardInfo.imagepath}`}
           layout="fill"
           objectFit="cover"
           alt={cardInfo.title}
@@ -63,7 +63,10 @@ const ProductCard = ({
       <div className="flex flex-row justify-between group">
         <div className="flex flex-row justify-between w-full gap-4">
           <p className="font-normal font-sans txt-medium text-[#4b5563]">
-            {cardInfo.title}
+            {/* if screen is small truncate to 10 characters */}
+            {cardInfo.title.length > 12 && screen.width < 640
+              ? `${cardInfo.title.substring(0, 10)}...`
+              : cardInfo.title}
           </p>
           <div className="flex flex-col sm:flex-row sm:gap-2">
           <p className={`font-normal font-sans txt-medium ${cardInfo.discountprice ? 'line-through text-[#4b5563]' : 'text-[#4b5563]'}`}>

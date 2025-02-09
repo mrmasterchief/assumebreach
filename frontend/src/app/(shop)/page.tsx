@@ -13,13 +13,13 @@ export default function Home() {
 
   useEffect(() => {
     getProductsByCategory("Weekly Picks").then((response) => {
-      setWeeklyPicks(response);
+      setWeeklyPicks(response.slice(0, 3));
     });
     getProductsByCategory("Latest Drops").then((response) => {
-      setLatestDrops(response);
+      setLatestDrops(response.slice(0, 3));
     });
     getProductsByCategory("Sale").then((response) => {
-      setSale(response);
+      setSale(response.slice(0, 3));
     });
 
     

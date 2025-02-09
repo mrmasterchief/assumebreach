@@ -2,12 +2,27 @@ import express from "express";
 import type { Request, Response } from "express";
 import pool from "../config/db";
 import { Product } from "../models/Product";
-import crypto from "crypto";
 
 const router = express.Router();
 
+router.get("/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
 
-router.get("/products/:page", async (_req: Request, res: Response) => {
+    const product = await pool.query("SELECT * FROM products WHERE id = $1", [
+      id,
+    ]);
+    res.json(product.rows[0]);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
+});
+
+router.get("/page/:page", async (_req: Request, res: Response) => {
   try {
     const { page } = _req.params;
     const products = await pool.query(
@@ -45,6 +60,7 @@ router.get("/category/:category", async (req: Request, res: Response) => {
 router.get("/search/:query", async (req: Request, res: Response) => {
   try {
     const { query } = req.params;
+    console.log(query);
     const products = await pool.query(
       "SELECT * FROM products WHERE description ILIKE $1",
       [`%${query}%`]
@@ -59,23 +75,6 @@ router.get("/search/:query", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/:id", async (req: Request, res: Response) => {
-  console.log("GET /products/:id");
-  try {
-    const { id } = req.params;
-
-    const product = await pool.query("SELECT * FROM products WHERE id = $1", [
-      id,
-    ]);
-    res.json(product.rows[0]);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
-  }
-});
 
 
 export default router;

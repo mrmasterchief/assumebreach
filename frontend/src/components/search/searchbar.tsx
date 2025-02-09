@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import ProductCard from "../productcard/ProductCard";
+import { getProductsByCategory } from "@/hooks/products";
+import { searchProducts } from "@/hooks/products";
 
 const SearchBar = ({
   setShowSearchBar,
@@ -8,12 +10,28 @@ const SearchBar = ({
   setShowSearchBar: (show: boolean) => void;
 }) => {
   const [search, setSearch] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  interface Product {
+    title: string;
+    price: string;
+    imagepath: string;
+    id: string;
+  }
+  
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [visible, setVisible] = useState(false);
   const searchBarRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+
+    // if user hasnt typed anything for over 2 seconds and search is not empty
+    if (e.target.value.length > 0) {
+      setTimeout(() => {
+        searchProducts(search).then((response) => {
+          setSearchResults(response.slice(0, 6));
+        });
+      }, 2000);
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -47,6 +65,13 @@ const SearchBar = ({
       document.body.style.overflow = "auto";
     }
   }, [visible])
+
+
+  useEffect(() => {
+    getProductsByCategory("Latest Drops").then((response) => {
+      setSearchResults(response);
+    });
+  }, []);
 
 
   return (
@@ -88,16 +113,24 @@ const SearchBar = ({
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
-          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
-          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar} />
-          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
-          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
-          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
-          <ProductCard cardType="search" cardInfo={{ title: "test", price: "test", image: "test", productID: "1" }} setShowSearchBar={setShowSearchBar}/>
+            {searchResults.map((item, idx) => (
+              <ProductCard
+                key={idx}
+                cardType="search"
+                cardInfo={{
+                  title: item.title,
+                  price: item.price,
+                  imagepath: item.imagepath,
+                  productID: item.id,
+                }}
+                setShowSearchBar={setShowSearchBar}
+              />
+            ))}
+          </div>
+
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
