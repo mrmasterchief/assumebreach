@@ -8,6 +8,7 @@ import helmetMiddleware from "./middleware/helmet.js";
 import productRoutes from "./routes/productRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import authenticationRoutes from "./routes/authenticationRoutes.js";
@@ -47,6 +48,7 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/auth", authenticationRoutes);
 app.use("/api/v1/cart", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]), cartRoutes);
 app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
+app.use("/api/v1/user", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]), userRoutes);
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 

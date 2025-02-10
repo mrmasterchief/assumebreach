@@ -5,6 +5,8 @@ import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import { addToCart, getCart, removeFromCart } from "@/hooks/cart";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCSRFToken } from "@/context/useCSRFToken";
 
 export default function Cart() {
   interface CartItem {
@@ -18,18 +20,36 @@ export default function Cart() {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
+  const router = useRouter();
+  const { isCsrfTokenSet } = useCSRFToken();
 
   useEffect(() => {
-    getCart().then((data) => {
-      setCartItems(data);
-      // Calculate total
-      let total = 0;
-      data.forEach((item: CartItem) => {
-        total += item.product.price * item.quantity;
+    if (!isCsrfTokenSet) return;
+    const checkAuth = async () => {
+      axiosInstance
+        .post("/auth/refresh-token")
+        .then((response) => {
+          if (response.status !== 200) {
+            window.location.href = "/account/authenticate";
+          }
+        })
+        .catch((error) => {
+          window.location.href = "/account/authenticate";
+        });
+    };
+    const fetchCart = async () => {
+      getCart().then((data) => {
+        setCartItems(data);
+        let total = 0;
+        data.forEach((item: CartItem) => {
+          total += item.product.price * item.quantity;
+        });
+        setTotal(total);
       });
-      setTotal(total);
-    });
-  }, []);
+    };
+    checkAuth();
+    fetchCart();
+  }, [isCsrfTokenSet]);
 
   return (
     <div className="flex flex-col xl:w-[1440px] xl:mx-auto">
@@ -93,7 +113,7 @@ export default function Cart() {
             <div className="flex flex-col justify-center pb-4 w-full items-start md:w-1/3">
               <h1 className="text-3xl font-semibold p-4">Summary</h1>
               <div className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-4">
-                <h1 className="text-lg text-blue-500 px-4">
+                <h1 className="text-lg text-blue-500 px-4 cursor-pointer">
                   Add a giftcard or discount code
                 </h1>
               </div>

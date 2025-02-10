@@ -12,7 +12,9 @@ import SearchBar from "../search/searchbar";
 import Cart from "../cart/Cart";
 import { getCart } from "@/hooks/cart";
 import { useCart } from "@/context/CartContext";
-import { get } from "http";
+import { axiosInstance } from "@/hooks/axios";
+import { useCSRFToken } from "@/context/useCSRFToken";
+import { useRouter } from "next/navigation";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -53,6 +55,9 @@ const Header = ({
   const { isCartOpen, toggleCart } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
+  const { isCsrfTokenSet } = useCSRFToken();
 
   useEffect(() => {
     if (showSearchBar || isOpen) {
@@ -66,8 +71,10 @@ const Header = ({
   }, [showSearchBar]);
 
   useEffect(() => {
+    if (!authenticated) return;
     setTimeout(() => {
       getCart().then((data) => {
+        if (!data) return;
         setCartItemsCount(data.length);
         setCartItems(data.slice(0, 3));
       });
@@ -75,11 +82,31 @@ const Header = ({
   }, [isCartOpen, toggleCart]);
 
   useEffect(() => {
-    getCart().then((data) => {
-      setCartItemsCount(data.length);
-      setCartItems(data.slice(0, 3));
-    });
-  }, []);
+    if (!isCsrfTokenSet) return;
+    const checkAuth = async () => {
+      axiosInstance
+        .post("/auth/refresh-token")
+        .then((response) => {
+          if (response.status !== 200) {
+            setAuthenticated(false);
+            return;
+          }
+          setAuthenticated(true);
+        })
+        .catch((error) => {
+          setAuthenticated(false);
+        });
+    };
+    const fetchCart = async () => {
+      if (!authenticated) return;
+      getCart().then((data) => {
+        setCartItemsCount(data.length);
+        setCartItems(data.slice(0, 3));
+      });
+    };
+    checkAuth();
+    fetchCart();
+  }, [isCsrfTokenSet]);
 
   return (
     <div
@@ -172,10 +199,7 @@ const Header = ({
             <span className="text-xl flex text-[#4b5563]">ASSUME BREACH</span>
           </Link>
           {type !== "cms" && (
-            <div
-              className="flex items-center space-x-5 justify-end w-full
-        "
-            >
+            <div className="flex items-center space-x-5 justify-end w-full">
               <button
                 onClick={() => setShowSearchBar(!showSearchBar)}
                 aria-label="search"
