@@ -157,7 +157,7 @@ router.put("/product/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/product/:id", async (req: Request, res: Response) => {
+router.delete("/product/:id", uploadFileMiddleware, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM products WHERE id = $1", [id]);

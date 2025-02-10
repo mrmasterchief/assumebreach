@@ -31,7 +31,7 @@ export default function Account() {
   }, [router, isCsrfTokenSet]);
 
   return (
-    <div className="flex flex-col bg-white">
+    <>
       <div className="flex w-[60%] md:w-[60%] mx-auto flex-col justify-center py-8 gap-4">
         <h1 className="text-2xl mt-4 font-semibold">Got questions?</h1>
         <div className="flex flex-row gap-2">
@@ -48,6 +48,6 @@ export default function Account() {
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
 }

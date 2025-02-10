@@ -32,9 +32,18 @@ const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFil
 const upload = multer({ storage, fileFilter }).single("file");
 
 export const uploadFileMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  if (req.method === "DELETE") {
+    const filePath = path.join(__dirname, `../public${req.body.imagePath}`);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    res.status(200).json({ message: "File deleted" });
+    return;
+  }
   upload(req, res, (err: any) => {
     if (err) {
-      return res.status(400).json({ error: err.message || "File upload error" });
+      res.status(400).json({ error: err.message || "File upload error" });
+      return;
     }
     next();
   });

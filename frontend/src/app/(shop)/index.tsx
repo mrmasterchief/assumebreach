@@ -1,7 +1,6 @@
 "use client";
 import "../../styles/globals.css";
 import Header from "@/components/nav/Header";
-import MarginWidthWrapper from "@/components/margin-width-wrapper";
 import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/SideNav";
 import Footer from "@/components/footer/Footer";
@@ -22,10 +21,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <CSRFProvider>
         <CartProvider>
         <html lang="en">
-          <body className={`bg-white`}>
+          <body>
             <div className="flex ">
               <main className="flex-1">
-                <MarginWidthWrapper>
                   {isSidenavOpen ? (
                     <SideNav toggleSidenav={toggleSidenav} />
                   ) : null}
@@ -35,7 +33,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     {children}
                   </PageWrapper>
                   <Footer />
-                </MarginWidthWrapper>
               </main>
             </div>
           </body>

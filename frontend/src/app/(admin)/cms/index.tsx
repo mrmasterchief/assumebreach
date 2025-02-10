@@ -1,6 +1,5 @@
 "use client";
 import "../../../styles/globals.css";
-import MarginWidthWrapper from "@/components/margin-width-wrapper";
 import PageWrapper from "@/components/page-wrapper";
 import { ToastContainer } from "react-toastify";
 import { CSRFProvider } from "@/context/useCSRFToken";
@@ -15,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <CSRFProvider>
         <CMSProvider>
         <html lang="en">
-          <body className={`bg-white`}>
+          <body>
             <div className="flex">
             <SideBar/>
 

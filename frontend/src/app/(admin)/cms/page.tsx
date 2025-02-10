@@ -38,26 +38,22 @@ export default function CMSHomePage() {
   }, [activePage, listPage]);
 
   return (
-    <div className="flex flex-col bg-white">
+    <>
       <div className="flex w-full max-w-[1440px] mx-auto flex-col">
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-semibold">{activePage}</h1>
-          <div className="flex justify-center">
-            <List
-              props={{
-                type: activePage,
-                data: data.products,
-                listPage: listPage,
-                setListPage: setListPage,
-                pages: pages,
-                maxPerPage: maxPerPage,
-                setSearch: setSearch,
-                search: search,
-              }}
-            />
-          </div>
-        </div>
+        <h1 className="text-3xl font-semibold">{activePage}</h1>
+        <List
+          props={{
+            type: activePage,
+            data: data.products,
+            listPage: listPage,
+            setListPage: setListPage,
+            pages: pages,
+            maxPerPage: maxPerPage,
+            setSearch: setSearch,
+            search: search,
+          }}
+        />
       </div>
-    </div>
+    </>
   );
 }

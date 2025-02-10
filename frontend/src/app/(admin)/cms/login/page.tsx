@@ -61,7 +61,7 @@ export default function Authenticate() {
   };
 
   return (
-    <div className="flex flex-col bg-white">
+    <div className="flex flex-col">
       <div className="flex w-full max-w-[1440px] mx-auto flex-col">
         <div className="flex align-center w-[80%] md:w-[60%] mx-auto flex-col justify-center max-h-[80vh] md:max-h-[70vh] py-8 gap-4 border-b border-gray-200 mt-10">
           <h1 className="font-bold text-black text-xl text-center">
