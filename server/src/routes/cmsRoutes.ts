@@ -1,10 +1,17 @@
 import express from "express";
 import type { Request, Response } from "express";
 import pool from "../config/db";
-import { Product } from "../models/Product";
+import jwt from "jsonwebtoken";
 import { uploadFileMiddleware } from "../controllers/imageUpload";
+
+
 const router = express.Router();
 
+
+
+/**
+ * Creates a new product.
+ */
 router.post("/product", uploadFileMiddleware, async (req: Request, res: Response) => {
   try {
     const {
@@ -19,13 +26,17 @@ router.post("/product", uploadFileMiddleware, async (req: Request, res: Response
       information,
     } = req.body;
 
-    const imagePath = `/products/${req?.file?.originalname}`;
-    
-    const parsedCategories = typeof categories === "string" ? JSON.parse(categories) : categories;
+    if (!req.file) {
+      res.status(400).json({ error: "No file uploaded" });
+      return;
+    }
 
+    const imagePath = `/products/${req.file.originalname}`;
+
+    const parsedCategories = typeof categories === "string" ? JSON.parse(categories) : categories;
     const numericPrice = parseFloat(price);
     const numericDiscountPrice = discountPrice === "" ? null : parseFloat(discountPrice);
-    
+
     const newProduct = {
       title,
       categories: parsedCategories,
@@ -38,11 +49,6 @@ router.post("/product", uploadFileMiddleware, async (req: Request, res: Response
       quantity: quantity ?? 0,
       information: typeof information === "string" ? JSON.parse(information) : information,
     };
-
-    if (!req.file) {
-      res.status(400).json({ error: "No file uploaded" });
-      return;
-    }
 
     const product = await pool.query(
       `INSERT INTO products 
@@ -68,36 +74,45 @@ router.post("/product", uploadFileMiddleware, async (req: Request, res: Response
     );
 
     res.json(product.rows[0]);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+    return;
+
+  } catch (error: any) {
+    console.error("Error creating product:", error);
+    res.status(500).json({ error: error.message });
+    return;
   }
 });
 
-router.get("/all-products/:page", async (_req: Request, res: Response) => {
-  const { page } = _req.params;
+/**
+ * Retrieves all products with pagination.
+ */
+router.get("/all-products/:page", async (req: Request, res: Response) => {
+  const { page } = req.params;
   const limit = 5;
   const offset = (parseInt(page) - 1) * limit;
+
   try {
     const products = await pool.query(
       "SELECT * FROM products ORDER BY id DESC LIMIT $1 OFFSET $2",
       [limit, offset]
     );
-    // get the total number of products
-    const totalProducts = await pool.query("SELECT COUNT(*) FROM products");
-    res.json({ products: products.rows, totalProducts: totalProducts.rows[0].count });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+
+    const totalProductsResult = await pool.query("SELECT COUNT(*) FROM products");
+    const totalProducts = parseInt(totalProductsResult.rows[0].count, 10);
+
+    res.json({ products: products.rows, totalProducts });
+    return;
+
+  } catch (error: any) {
+    console.error("Error getting products:", error);
+    res.status(500).json({ error: error.message });
+    return;
   }
 });
 
+/**
+ * Updates a product by ID.
+ */
 router.put("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -113,7 +128,8 @@ router.put("/product/:id", async (req: Request, res: Response) => {
       quantity,
       information,
     } = req.body;
-    const updatedProduct: Product = {
+
+    const updatedProduct = {
       title,
       categories,
       description,
@@ -125,6 +141,7 @@ router.put("/product/:id", async (req: Request, res: Response) => {
       quantity: quantity ?? 0,
       information,
     };
+
     const product = await pool.query(
       "UPDATE products SET title = $1, categories = $2, description = $3, price = $4, discountPrice = $5, imagePath = $6, active = $7, options = $8, material = $9, country_of_origin = $10, type = $11, weight = $12, dimensions = $13, quantity = $14 WHERE id = $15 RETURNING *",
       [
@@ -145,52 +162,52 @@ router.put("/product/:id", async (req: Request, res: Response) => {
         id,
       ]
     );
+
     res.json(product.rows[0]);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-      return;
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-      return;
-    }
+    return;
+
+  } catch (error: any) {
+    console.error("Error updating product:", error);
+    res.status(500).json({ error: error.message });
+    return;
   }
 });
 
-router.delete("/product/:id", uploadFileMiddleware, async (req: Request, res: Response) => {
+/**
+ * Deletes a product by ID.
+ */
+router.delete("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM products WHERE id = $1", [id]);
     res.json({ message: "Product deleted" });
     return;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+
+  } catch (error: any) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ error: error.message });
+    return;
   }
 });
 
+/**
+ * Retrieves all users (excluding password hash).
+ */
 router.get("/all-users", async (_req: Request, res: Response) => {
   try {
     const users = await pool.query("SELECT * FROM users");
-    res.json(
-      users.rows.map((user) => {
-        const { passwordhash, ...rest } = user;
-        return rest;
-      })
-    );
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-      return;
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-      return;
-    }
+    const usersWithoutPasswords = users.rows.map((user) => {
+      const { passwordhash, ...rest } = user;
+      return rest;
+    });
+    res.json(usersWithoutPasswords);
+    return;
+
+  } catch (error: any) {
+    console.error("Error getting users:", error);
+    res.status(500).json({ error: error.message });
+    return;
   }
-  return;
 });
 
 export default router;

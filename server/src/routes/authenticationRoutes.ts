@@ -1,14 +1,22 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { findUserByEmail, createUser, isTokenBlacklisted, blacklistToken } from "../controllers/auth";
-import { generateTokens } from "../middleware/rbac";
 import bcrypt from "bcryptjs";
-import { UserPayload, RBAC } from "../middleware/rbac";
 import jwt from "jsonwebtoken";
+import {
+  findUserByEmail,
+  createUser,
+  isTokenBlacklisted,
+  blacklistToken,
+} from "../controllers/auth";
+import { generateTokens } from "../middleware/rbac";
+import { UserPayload, RBAC } from "../middleware/rbac";
 import createAdminAccount from "../data/adminAccount";
+import setAuthCookies from "../helpers/setAuthCookies";
+
 const router = express.Router();
 
 createAdminAccount();
+
 
 router.post("/login", async (req: Request, res: Response) => {
   const { email, password, cms } = req.body;
@@ -17,7 +25,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const user = await findUserByEmail(email);
     if (!user) {
       res.status(401).json({ message: "Invalid credentials" });
-      return;
+      return; // Correct: res.status then return
     }
 
     const passwordMatch = await bcrypt.compare(password, user.passwordhash);
@@ -37,14 +45,7 @@ router.post("/login", async (req: Request, res: Response) => {
     };
     const { accessToken, refreshToken } = generateTokens(payload);
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-    });
+    setAuthCookies(res, accessToken, refreshToken);
 
     res.json({ message: "Login successful" });
     return;
@@ -59,8 +60,8 @@ router.post("/register", async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
 
   try {
-    const user = await findUserByEmail(email);
-    if (user) {
+    const existingUser = await findUserByEmail(email);
+    if (existingUser) {
       res.status(400).json({ message: "User already exists" });
       return;
     }
@@ -72,14 +73,7 @@ router.post("/register", async (req: Request, res: Response) => {
     };
     const { accessToken, refreshToken } = generateTokens(payload);
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-    });
+    setAuthCookies(res, accessToken, refreshToken);
 
     res.json({ message: "Registration successful" });
     return;
@@ -101,7 +95,7 @@ router.post("/refresh-token", (req: Request, res: Response) => {
   jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET!,
-    (err: jwt.VerifyErrors | null, decoded: any) => {
+    async (err: jwt.VerifyErrors | null, decoded: any) => {
       if (err) {
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");
@@ -109,14 +103,13 @@ router.post("/refresh-token", (req: Request, res: Response) => {
         return;
       }
 
-      isTokenBlacklisted(refreshToken).then((blacklisted) => {
-        if (blacklisted) {
-          res.clearCookie("accessToken");
-          res.clearCookie("refreshToken");
-          res.status(401).json({ message: "Invalid token" });
-          return;
-        }
-      });
+      const blacklisted = await isTokenBlacklisted(refreshToken);
+      if (blacklisted) {
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+        res.status(401).json({ message: "Invalid token" });
+        return;
+      }
 
       const payload: UserPayload = {
         id: decoded!.id,
@@ -125,25 +118,15 @@ router.post("/refresh-token", (req: Request, res: Response) => {
       const { accessToken, refreshToken: newRefreshToken } =
         generateTokens(payload);
 
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 15 * 60 * 1000,
-      });
-      res.cookie("refreshToken", newRefreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      setAuthCookies(res, accessToken, newRefreshToken);
 
       res.json({ role: payload.role });
+      return;
     }
   );
 });
 
-router.post("/logout", (req: Request, res: Response) => {
+router.post("/logout", async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
@@ -151,11 +134,17 @@ router.post("/logout", (req: Request, res: Response) => {
     return;
   }
 
-  blacklistToken(refreshToken).then(() => {
+  try {
+    await blacklistToken(refreshToken);
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     res.json({ message: "Logout successful" });
-  });
+    return;
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({ message: "Something went wrong during logout" });
+    return;
+  }
 });
 
 export default router;
