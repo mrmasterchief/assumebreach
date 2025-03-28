@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import pool from "../config/db";
-import getUserIdFromToken from "../helpers/getUserIdFromToken";
+import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 
 interface CartProduct {
   product_id: string;

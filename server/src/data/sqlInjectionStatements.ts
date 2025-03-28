@@ -1,0 +1,43 @@
+export const sqlInjectionStatements = {
+    "allowedSQLInjectionStatements": [
+        "SELECT",
+        "OR",
+        "AND",
+        "UNION",
+        "WHERE",
+        "FROM",
+        "JOIN",
+        "LIKE",
+        "ORDER BY",
+        "GROUP BY",
+        "HAVING",
+        "LIMIT",
+        "OFFSET"
+    ],
+    "disallowedSQLInjectionStatements" : [
+        "DELETE",
+        "DROP",
+        "UPDATE",
+        "INSERT",
+        "CREATE",
+        "ALTER",
+        "TRUNCATE",
+        "RENAME",
+        "REPLACE",
+        "SET",
+        "SHOW",
+        "DESCRIBE",
+        "EXPLAIN",
+        "LOCK",
+        "UNLOCK",
+        "GRANT",
+        "REVOKE",
+        "FLUSH",
+        "KILL",
+        "HANDLER",
+        "CALL",
+        "LOAD",
+        "ROLLBACK",
+        "SAVEPOINT"
+    ]
+}

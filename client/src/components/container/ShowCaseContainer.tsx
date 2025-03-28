@@ -31,6 +31,7 @@ const ShowCaseContainer = ({
         ) : null}
       </div>
       <div className="flex flex-row flex-wrap gap-4">
+
         {destination !== "/products?category=sale" ? (
           <>
             {data.map((item, idx) => (
@@ -60,7 +61,7 @@ const ShowCaseContainer = ({
                 title: item.title,
                 price: item.price,
                 imagepath: item.imagepath,
-                productID: item.productID,
+                productID: item.id,
                 discountprice: item.discountprice,
               }}
             />

@@ -1,7 +1,7 @@
 import { User } from "../models/User";
 import pool from "../config/db";
 import { RBAC } from "../middleware/rbac";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 async function findUserByEmail(email: string): Promise<User | null> {
   const user = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -27,19 +27,27 @@ async function createUser(
   email: string,
   password: string,
   name: string,
-  role: RBAC
+  role: RBAC,
+  secureMethod: boolean = true
 ): Promise<User> {
-  const passwordhash = await bcrypt.hash(password, 10);
+  
+  const createdAt = new Date();
+  const passwordhash = secureMethod ? 
+  crypto.createHash("sha256").update(password + createdAt + process.env.PEPPER).digest("hex") : 
+  crypto.createHash("md5").update(password).digest("hex");
+
+
   const newUser: User = {
     id: "",
     email,
     passwordhash,
     name,
     role,
+    created_at: createdAt,
   };
   const user = await pool.query(
-    "INSERT INTO users (email, passwordhash, name, role) VALUES ($1, $2, $3, $4) RETURNING *",
-    [newUser.email, newUser.passwordhash, newUser.name, newUser.role]
+    "INSERT INTO users (email, password_hash, name, role, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    [newUser.email, newUser.passwordhash, newUser.name, newUser.role, newUser.created_at]
   );
   return newUser;
 }

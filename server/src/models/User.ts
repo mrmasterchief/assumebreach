@@ -4,4 +4,5 @@ export interface User {
   passwordhash: string;
   name: string;
   role: string;
+  created_at: Date;
 }

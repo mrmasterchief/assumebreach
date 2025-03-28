@@ -15,11 +15,12 @@ import cmsRoutes from "./routes/cmsRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authenticationRoutes from "./routes/authenticationRoutes.js";
+import { flags } from "./data/flags.js";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.EXPRESS_PORT || 3000;
+const port = process.env.EXPRESS_PORT || 4000;
 const COOKIE_SECRET = process.env.COOKIE_SECRET;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -70,7 +71,7 @@ app.get("/api/v1/health", (_req, res) => {
       "/api/v1/cms",
       "/api/v1/cms/:id",
       "/api/v1/csrf-token",
-      "CTF{3ndp0int5_4r3_c00l}", // Example CTF flag
+      flags.find((flag) => flag.secureCodeID === 1)?.flag,
     ],
     "All endpoints are healthy and up": true,
   });

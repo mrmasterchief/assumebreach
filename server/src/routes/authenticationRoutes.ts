@@ -1,6 +1,5 @@
 import express from "express";
 import type { Request, Response } from "express";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {
   findUserByEmail,
@@ -10,33 +9,90 @@ import {
 } from "../controllers/auth";
 import { generateTokens } from "../middleware/rbac";
 import { UserPayload, RBAC } from "../middleware/rbac";
-import createAdminAccount from "../data/adminAccount";
+import { createAdminAccount, createDummyAcccount } from "../data/dummyAccounts";
 import setAuthCookies from "../helpers/setAuthCookies";
+import crypto from "crypto";
+import { simulateSQLInjection } from "../controllers/vulnerabilityFilter";
+import { sqlInjectionStatements } from "../data/sqlInjectionStatements";
+import { errors } from "../data/errors";
+import { flags } from "../data/flags";
 
 const router = express.Router();
 
 createAdminAccount();
-
+createDummyAcccount();
 
 router.post("/login", async (req: Request, res: Response) => {
   const { email, password, cms } = req.body;
 
   try {
-    const user = await findUserByEmail(email);
-    if (!user) {
-      res.status(401).json({ message: "Invalid credentials" });
-      return; // Correct: res.status then return
-    }
+    let user: any;
+    let flag: string | undefined = undefined;
+    console.log(password)
 
-    const passwordMatch = await bcrypt.compare(password, user.passwordhash);
-    if (!passwordMatch) {
-      res.status(401).json({ message: "Invalid credentials" });
+    const isDisallowedSQL =
+    sqlInjectionStatements.disallowedSQLInjectionStatements.some(
+      (keyword) => email.toUpperCase().includes(keyword) || password.toUpperCase().includes(keyword)
+    );
+
+    if (isDisallowedSQL) {
+      res.status(401).json({ message: errors[403.2] });
       return;
     }
 
-    if (cms && user.role !== RBAC.ADMIN) {
-      res.status(403).json({ message: "Forbidden" });
-      return;
+    const isAllowedSQL =
+    sqlInjectionStatements.allowedSQLInjectionStatements.some(
+      (keyword) => email.toUpperCase().includes(keyword) || password.toUpperCase().includes(keyword)
+    );
+
+    if (isAllowedSQL) {
+      if (email.includes("FROM") || password.includes("FROM"))
+        if (email.includes("FROM users") || password.includes("FROM users")) {
+          user = await simulateSQLInjection(email, password);
+          flag = flags.find((flag) => flag.secureCodeID === 4)?.flag;
+        } else {
+          res.status(403).json({ message: errors[403.2] });
+        }
+      else {
+        user = await simulateSQLInjection(email, password);
+        flag = flags.find((flag) => flag.secureCodeID === 4)?.flag;
+      }
+
+      if (user.length > 1) {
+        // simulating a SQL injection attack by returning multiple users
+        res.status(200).json({
+          error: user,
+          flag: flag
+        });
+        return;
+      }
+
+      if (user.length === 0) {
+        res.status(401).json({ message: [errors[401.1]] });
+        return;
+      }
+    } else {
+       user = await findUserByEmail(email);
+
+      if (!user) {
+        res.status(401).json({ message: [errors[401.1]] });
+        return;
+      }
+
+      const hashedPassword = crypto
+        .createHash("sha256")
+        .update(password + user.created_at + process.env.PEPPER)
+        .digest("hex");
+
+      if (hashedPassword !== user.password_hash) {
+        res.status(401).json({ message: [errors[401.1]] });
+        return;
+      }
+
+      if (cms && user.role !== RBAC.ADMIN) {
+        res.status(403).json({ message: "Forbidden" });
+        return;
+      }
     }
 
     const payload: UserPayload = {
@@ -47,12 +103,9 @@ router.post("/login", async (req: Request, res: Response) => {
 
     setAuthCookies(res, accessToken, refreshToken);
 
-    res.json({ message: "Login successful" });
-    return;
+    res.json({ message: "Login successful", flag: flag });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Something went wrong" });
-    return;
+    res.status(500).json({ message: [errors[500]] });
   }
 });
 
