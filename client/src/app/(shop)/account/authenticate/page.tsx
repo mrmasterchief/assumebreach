@@ -55,6 +55,10 @@ export default function Authenticate() {
         formikHelpers.resetForm();
         formikHelpers.setSubmitting(false);
         if (formType === "login") {
+          if(response.data.flag) {
+            showMessage("You have found a flag", response.data.flag, "success");
+            return
+          }
           window.location.href = "/account";
         }
       } else {

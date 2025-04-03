@@ -13,9 +13,10 @@ import { authorize, RBAC } from "./middleware/rbac.js";
 import productRoutes from "./routes/productRoutes.js";
 import cmsRoutes from "./routes/cmsRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
 import authenticationRoutes from "./routes/authenticationRoutes.js";
 import { flags } from "./data/flags.js";
+import { createAdminAccount, createDummyAcccount } from "./data/dummyAccounts.js";
+
 
 dotenv.config();
 
@@ -46,11 +47,7 @@ app.use(
   cartRoutes
 );
 app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
-app.use(
-  "/api/v1/user",
-  authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]),
-  userRoutes
-);
+
 // Serve static files from the 'public' directory
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -59,7 +56,7 @@ app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
 
-// Health check endpoint (potentially insecure for CTF purposes)
+// Health check endpoint (insecure for CTF purposes)
 app.get("/api/v1/health", (_req, res) => {
   res.json({
     endpoints: [
@@ -84,3 +81,6 @@ app.use(errorHandling);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+createAdminAccount();
+createDummyAcccount();

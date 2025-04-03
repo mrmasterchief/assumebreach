@@ -70,6 +70,16 @@ export const FOOTER_LINKS: NavItem[] = [
       { title: 'Press', path: '/about-us/press' },
     ],
   },
+  {
+    title: 'CTF',
+    path: '/ctf',
+    submenu: true,
+    subMenuItems: [
+      { title: 'Scoreboard', path: '/ctf/scoreboard' },
+      { title: 'Rules', path: '/ctf/rules' },
+      { title: 'Info', path: '/ctf/info' },
+    ],
+  }
 ];
 
 export const CMS_SIDENAV_ITEMS = [

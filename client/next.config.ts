@@ -29,7 +29,6 @@ const nextConfig: NextConfig = {
     ],
     
   },
-  webpack5: true,
   productionBrowserSourceMaps: true,
   poweredByHeader: false,
 };

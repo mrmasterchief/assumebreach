@@ -2,16 +2,12 @@ import express from "express";
 import type { Request, Response } from "express";
 import pool from "../config/db";
 import jwt from "jsonwebtoken";
-import { uploadFileMiddleware } from "../controllers/imageUpload";
+import { uploadFileMiddleware } from "../controllers/imageUploadController";
 
 
 const router = express.Router();
 
 
-
-/**
- * Creates a new product.
- */
 router.post("/product", uploadFileMiddleware, async (req: Request, res: Response) => {
   try {
     const {
@@ -83,9 +79,7 @@ router.post("/product", uploadFileMiddleware, async (req: Request, res: Response
   }
 });
 
-/**
- * Retrieves all products with pagination.
- */
+
 router.get("/all-products/:page", async (req: Request, res: Response) => {
   const { page } = req.params;
   const limit = 5;
@@ -110,9 +104,7 @@ router.get("/all-products/:page", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * Updates a product by ID.
- */
+
 router.put("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -173,9 +165,7 @@ router.put("/product/:id", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * Deletes a product by ID.
- */
+
 router.delete("/product/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -190,9 +180,7 @@ router.delete("/product/:id", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * Retrieves all users (excluding password hash).
- */
+
 router.get("/all-users", async (_req: Request, res: Response) => {
   try {
     const users = await pool.query("SELECT * FROM users");

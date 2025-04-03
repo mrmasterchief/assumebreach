@@ -32,7 +32,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <ToastContainer aria-label={"alert"} />
                     {children}
                   </PageWrapper>
+                  <div className="flex flex-col justify-center items-center w-full max-w-[1440px] mx-auto">
                   <Footer />
+                  </div>
               </main>
             </div>
           </body>

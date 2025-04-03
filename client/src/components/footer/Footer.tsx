@@ -1,7 +1,7 @@
 'use client';
 
 
-import { FOOTER_LINKS } from '@/Constants';
+import { FOOTER_LINKS } from '@/constants';
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -12,9 +12,9 @@ const Footer = () => {
   const pathname = usePathname();
 
   return (
-    <footer className="bg-white py-8 md:py-12 border-t border-gray-200">
+    <footer className="bg-white py-8 md:py-12 border-t border-gray-200 w-full">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col justify-center md:flex-row md:justify-between items-start md:items-center gap-8 ">
           {FOOTER_LINKS.map((item, idx) => (
             <div key={idx} className="md:text-left">
               <h4 className="font-semibold text-lg mb-4">{item.title}</h4>

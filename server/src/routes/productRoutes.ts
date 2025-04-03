@@ -1,80 +1,58 @@
 import express from "express";
 import type { Request, Response } from "express";
-import pool from "../config/db";
-import { Product } from "../models/Product";
+import { errors } from "../data/errors";
+import {
+  fetchProductById,
+  fetchProductsByPage,
+  fetchProductsByCategory,
+  searchProducts,
+} from "../controllers/productController";
 
 const router = express.Router();
 
-router.get("/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+router.get(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
 
-    const product = await pool.query("SELECT * FROM products WHERE id = $1", [
-      id,
-    ]);
-    res.json(product.rows[0]);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
+      const productDetails = await fetchProductById(id);
+
+      res.status(200).json(productDetails);
+    } catch (error) {
+      res.status(500).json({ error: errors[500] });
     }
   }
-});
+);
 
-router.get("/page/:page", async (_req: Request, res: Response) => {
+router.get("/page/:page", async (req: Request, res: Response) => {
   try {
-    const { page } = _req.params;
-    const products = await pool.query(
-      "SELECT * FROM products ORDER BY id OFFSET $1 LIMIT 12",
-      [page]
-    );
-    res.json(products.rows);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+    const { page } = req.params;
+    const products = await fetchProductsByPage(parseInt(page, 10));
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: errors[500] });
   }
 });
-
 
 router.get("/category/:category", async (req: Request, res: Response) => {
   try {
     const { category } = req.params;
-    const products = await pool.query(
-      "SELECT * FROM products WHERE $1 = ANY(categories)",
-      [category]
-    );
-    res.json(products.rows);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+    const products = await fetchProductsByCategory(category);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: errors[500] });
   }
 });
 
 router.get("/search/:query", async (req: Request, res: Response) => {
   try {
     const { query } = req.params;
-    console.log(query);
-    const products = await pool.query(
-      "SELECT * FROM products WHERE description ILIKE $1",
-      [`%${query}%`]
-    );
-    res.json(products.rows);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+    const products = await searchProducts(query);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ error: errors[500] });
   }
 });
-
-
 
 export default router;

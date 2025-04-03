@@ -1,5 +1,5 @@
-import { findUserByEmail } from "../controllers/auth";
-import { createUser } from "../controllers/auth";
+import { findUserByEmail } from "../controllers/userController";
+import { createUser } from "../controllers/userController";
 import { RBAC } from "../middleware/rbac";
 
 export  async function createAdminAccount() {
@@ -14,7 +14,7 @@ export  async function createAdminAccount() {
     if(existingUser) return;
 
     if (!existingUser) {
-        createUser(email, password, 'admin', RBAC.ADMIN);
+        createUser(email, password, true, RBAC.ADMIN);
     }
 }
 
@@ -39,7 +39,7 @@ export async function createDummyAcccount() {
         const existingUser = await findUserByEmail(email);
 
         if(!existingUser) {
-            createUser(email, password, 'user' + i, RBAC.USER, false);
+            createUser(email, password, false, RBAC.USER);
         }
 
     }

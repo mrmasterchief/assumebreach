@@ -15,9 +15,9 @@ export default function Account() {
     const checkAuth = async () => {
       if (!isCsrfTokenSet) return;
       axiosInstance.post("/auth/refresh-token").then((response) => {
-        if (response.status !== 200) {
-          window.location.href = "/account/authenticate";
-        }
+      })
+      .catch((error) => {
+        window.location.href = "/account/authenticate";
       });
     };
 

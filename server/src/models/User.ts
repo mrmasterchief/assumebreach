@@ -1,8 +1,7 @@
 export interface User {
   id: string;
+  unsafe_id: string;
   email: string;
-  passwordhash: string;
-  name: string;
-  role: string;
+  password_hash: string;
   created_at: Date;
 }
