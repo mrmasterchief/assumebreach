@@ -81,7 +81,6 @@ const ProductForm = ({
       }
 
       const data = response.data;
-      console.log("Product created:", data);
       toggleForm();
     } catch (error) {
       console.error("Error submitting product:", error);

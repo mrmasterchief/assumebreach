@@ -79,7 +79,7 @@ const Header = ({
         setCartItems(data.slice(0, 3));
       });
     }, 200);
-  }, [isCartOpen, toggleCart]);
+  }, [isCartOpen, toggleCart, authenticated]);
 
   useEffect(() => {
     if (!isCsrfTokenSet) return;

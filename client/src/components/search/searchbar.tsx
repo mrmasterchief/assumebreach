@@ -16,15 +16,15 @@ const SearchBar = ({
     imagepath: string;
     id: string;
   }
-  
+
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [visible, setVisible] = useState(false);
   const searchBarRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
 
-    // if user hasnt typed anything for over 2 seconds and search is not empty
     if (e.target.value.length > 0) {
       setTimeout(() => {
         searchProducts(search).then((response) => {
@@ -34,38 +34,17 @@ const SearchBar = ({
     }
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      searchBarRef.current &&
-      !searchBarRef.current.contains(event.target as Node) &&
-      event.target &&
-      !(event.target as HTMLElement).closest(".SearchCard")
-    ) {
-      setVisible(false);
-      setTimeout(() => {
-        setShowSearchBar(false);
-      }, 100);
-    }
-
-    
-    
-  };
   useEffect(() => {
     setVisible(true);
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   useEffect(() => {
-    if(visible) {
+    if (visible) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [visible])
-
+  }, [visible]);
 
   useEffect(() => {
     getProductsByCategory("Latest Drops").then((response) => {
@@ -73,13 +52,12 @@ const SearchBar = ({
     });
   }, []);
 
-
   return (
     <div
       className={`fixed inset-0 bg-[rgba(255,255,255,0.9)] transition-opacity duration-500 !ml-0 ease-in-out backdrop-filter backdrop-blur-lg  ${
         visible ? "opacity-100" : "opacity-0"
       }`}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => e.preventDefault()}
     >
       <div className="w-full h-full flex top-[100px] justify-center absolute">
         <div
@@ -108,29 +86,39 @@ const SearchBar = ({
               value={search}
               style={{ color: "#f4f5f5" }}
               onChange={handleChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={(e) => {
+                if (e.relatedTarget?.classList.contains("product-card")) return;
+                setTimeout(() => setShowSearchBar(false), 100);
+              }}
               autoFocus
             />
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
             {searchResults.map((item, idx) => (
-              <ProductCard
+              <div
+                onClick={(e) => e.preventDefault()}
                 key={idx}
-                cardType="search"
-                cardInfo={{
-                  title: item.title,
-                  price: item.price,
-                  imagepath: item.imagepath,
-                  productID: item.id,
-                }}
-                setShowSearchBar={setShowSearchBar}
-              />
+                className="w-full"
+              >
+                <ProductCard
+                  key={idx}
+                  cardType="search"
+                  cardInfo={{
+                    title: item.title,
+                    price: item.price,
+                    imagepath: item.imagepath,
+                    productID: item.id,
+                  }}
+                  setShowSearchBar={setShowSearchBar}
+                />
+              </div>
             ))}
-          </div>
-
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

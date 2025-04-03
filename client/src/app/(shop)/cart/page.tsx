@@ -109,14 +109,16 @@ export default function Cart() {
 
       try {
         const data = await getCart();
-        setCartItems(data.products || []);
-        setTotal(
-          data.products?.reduce(
-            (sum: number, item: CartItem) =>
-              sum + item.product.price * item.quantity,
-            0
-          ) || 0
-        );
+        // data is an array of objects 
+        if (data.length > 0) {
+          setCartItems(data);
+        } else if (data.length === 0) {
+          setCartItems([]);
+          setTotal(0);
+        } else {
+          setCartItems([]);
+          setTotal(0);
+        }
       } catch (error) {
         console.error("Error fetching cart:", error);
         setError("Failed to load cart. Please try again later.");

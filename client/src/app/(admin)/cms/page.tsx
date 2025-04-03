@@ -20,11 +20,16 @@ export default function CMSHomePage() {
   useEffect(() => {
     const checkAuth = async () => {
       if (!isCsrfTokenSet) return;
-      axiosInstance.post("/auth/refresh-token").then((response) => {
-        if (response.status === 200 && response.data.role !== "admin") {
+      axiosInstance
+        .post("/auth/refresh-token")
+        .then((response) => {
+          if (response.status === 200 && response.data.role !== "admin") {
+            window.location.href = "/cms/login";
+          }
+        })
+        .catch((error) => {
           window.location.href = "/cms/login";
-        }
-      });
+        });
     };
     checkAuth();
   }, [router, isCsrfTokenSet]);

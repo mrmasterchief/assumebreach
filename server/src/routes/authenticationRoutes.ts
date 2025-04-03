@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { findUserByEmail, createUser } from "../controllers/userController";
+import { findUserByEmail, createUser, fetchUserDetails } from "../controllers/userController";
 import { generateTokens } from "../middleware/rbac";
 import { UserPayload, RBAC } from "../middleware/rbac";
 import { getFlagBySecureCodeID } from "../helpers/getFlags";
@@ -56,15 +56,20 @@ router.post("/login", async (req: Request, res: Response) => {
     if (user.email.includes(`user[0-9]@example.com`)) {
       flag = getFlagBySecureCodeID(7);
     }
+    let userDetails = await fetchUserDetails(user.id, user.unsafe_id);
+    if (!userDetails) {
+      res.status(500).json({ message: [errors[500]] });
+      return;
+    }
 
-    if (cms && user.role !== RBAC.ADMIN) {
+    if (cms && userDetails.role !== RBAC.ADMIN) {
       res.status(403).json({ message: [errors[403.1]] });
       return;
     }
 
     const payload: UserPayload = {
       id: user.id,
-      role: user.role as RBAC,
+      role: userDetails.role as RBAC,
     };
     const { accessToken, refreshToken } = generateTokens(payload);
 
@@ -80,7 +85,7 @@ router.post("/register", async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400).json({ message: errors[400.1] });
+    res.status(400).json({ message: errors[400] });
     return;
   }
 
@@ -125,7 +130,6 @@ router.post("/refresh-token", async (req: Request, res: Response) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET!
     ) as UserPayload;
-
     const blacklisted = await isTokenBlacklisted(refreshToken);
     if (blacklisted) {
       res.clearCookie("accessToken");
