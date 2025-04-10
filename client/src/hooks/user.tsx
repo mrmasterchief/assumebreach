@@ -21,4 +21,3 @@ export const useRefreshToken = async () => {
 
   return { refreshToken };
 }
-
