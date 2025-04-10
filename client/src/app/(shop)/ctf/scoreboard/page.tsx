@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { showMessage } from "@/components/messages/Message";
 import LinearProgress from "@mui/material/LinearProgress";
 import { getFlagsList } from "@/hooks/ctf";
-import { useCSRFToken } from "@/context/useCSRFToken";
 import Link from "next/link";
 import NestedList from "@/components/list/NestedList";
 import InputLabel from "@mui/material/InputLabel";
@@ -15,7 +14,6 @@ import SendIcon from '@mui/icons-material/Send';
 export default function ScoreBoard() {
   const [unsafeID, setUnsafeID] = useState<string>("");
   const [score, setScore] = useState<number>(0);
-  const { isCsrfTokenSet } = useCSRFToken();
   const [flagInput, setFlagInput] = useState<string>("");
   
   
@@ -39,7 +37,7 @@ export default function ScoreBoard() {
       setUnsafeID(storedUnsafeID);
     }
     const fetchFlags = async () => {
-      if (!storedUnsafeID || !isCsrfTokenSet) return;
+      if (!storedUnsafeID) return;
       try {
         const response = await getFlagsList({ unsafeID: storedUnsafeID });
         if(sortBy === "difficulty"){
@@ -55,7 +53,7 @@ export default function ScoreBoard() {
       }
     };
     fetchFlags();
-  }, [unsafeID, isCsrfTokenSet]);
+  }, [unsafeID]);
 
   const handleFlagSubmit = async () => {
     if (!flagInput) return;

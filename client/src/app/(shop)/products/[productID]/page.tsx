@@ -4,12 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 import { getProductDetail, getProductsByCategory } from "@/hooks/products";
-import { useCSRFToken } from "@/context/useCSRFToken";
 import { useParams } from "next/navigation";
 import { addToCart } from "@/hooks/cart";
 import { Product } from "@/ProductTypes";
 import { useCart } from "@/context/CartContext";
 import ContentContainer from "@/components/content-container";
+import { indexFunction } from "@/hooks";
 import {
   ProductSection,
   ProductInfoContent,
@@ -24,7 +24,6 @@ export default function ProductDetails() {
   const productID = Array.isArray(params?.productID)
     ? params.productID[0]
     : params?.productID;
-  const { isCsrfTokenSet } = useCSRFToken();
   const { toggleCart } = useCart();
   const [productDetails, setProductDetails] = useState<Product>({
     id: "",
@@ -47,19 +46,19 @@ export default function ProductDetails() {
     setIsShippingReturnsOpen(!isShippingReturnsOpen);
 
   useEffect(() => {
-    if (!isCsrfTokenSet || !productID) return;
+    if (!productID) return;
     getProductDetail(productID).then(setProductDetails);
-  }, [productID, isCsrfTokenSet]);
+  }, [productID]);
 
   useEffect(() => {
-    if (!isCsrfTokenSet || !productDetails.categories.length) return;
+    if (!productDetails.categories.length) return;
     getProductsByCategory(productDetails.categories[0]).then((response) => {
       const filteredResponse = response.filter(
         (product: Product) => product.id !== productDetails.id
       );
       setRecommendedProducts(filteredResponse.slice(0, 3));
     });
-  }, [productDetails, isCsrfTokenSet]);
+  }, [productDetails]);
 
   return (
     <ContentContainer>

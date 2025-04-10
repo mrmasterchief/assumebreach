@@ -7,7 +7,7 @@ import Footer from "@/components/footer/Footer";
 import { ToastContainer } from "react-toastify";
 import { SidenavProvider } from "@/context/SideNavContext";
 import { CartProvider } from "@/context/CartContext";
-import { CSRFProvider } from "@/context/useCSRFToken";
+import { AuthProvider } from "@/context/AuthContext";
 import React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidenavProvider>
-      <CSRFProvider>
+        <AuthProvider>
         <CartProvider>
         <html lang="en">
           <body>
@@ -40,7 +40,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </body>
         </html>
         </CartProvider>
-      </CSRFProvider>
+        </AuthProvider>
     </SidenavProvider>
   );
 }

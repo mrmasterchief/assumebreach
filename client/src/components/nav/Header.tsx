@@ -13,8 +13,9 @@ import Cart from "../cart/Cart";
 import { getCart } from "@/hooks/cart";
 import { useCart } from "@/context/CartContext";
 import { axiosInstance } from "@/hooks/axios";
-import { useCSRFToken } from "@/context/useCSRFToken";
 import { useRouter } from "next/navigation";
+import { useRefreshToken } from "@/hooks/user";
+import { indexFunction } from "@/hooks";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -55,9 +56,6 @@ const Header = ({
   const { isCartOpen, toggleCart } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [cartItemsCount, setCartItemsCount] = useState(0);
-  const [authenticated, setAuthenticated] = useState(false);
-  const router = useRouter();
-  const { isCsrfTokenSet } = useCSRFToken();
 
   useEffect(() => {
     if (showSearchBar || isOpen) {
@@ -70,43 +68,20 @@ const Header = ({
     };
   }, [showSearchBar]);
 
-  useEffect(() => {
-    if (!authenticated) return;
-    setTimeout(() => {
-      getCart().then((data) => {
-        if (!data) return;
-        setCartItemsCount(data.length);
-        setCartItems(data.slice(0, 3));
-      });
-    }, 200);
-  }, [isCartOpen, toggleCart, authenticated]);
+
 
   useEffect(() => {
-    if (!isCsrfTokenSet) return;
-    const checkAuth = async () => {
-      axiosInstance
-        .post("/auth/refresh-token")
-        .then((response) => {
-          if (response.status !== 200) {
-            setAuthenticated(false);
-            return;
-          }
-          setAuthenticated(true);
-        })
-        .catch((error) => {
-          setAuthenticated(false);
-        });
-    };
-    const fetchCart = async () => {
-      if (!authenticated) return;
-      getCart().then((data) => {
-        setCartItemsCount(data.length);
-        setCartItems(data.slice(0, 3));
-      });
-    };
-    checkAuth();
-    fetchCart();
-  }, [isCsrfTokenSet]);
+    indexFunction(
+      [
+        () => getCart(),
+      ]
+      , (response: any) => {
+        if (response.length <= 1) return;
+        setCartItemsCount(response.length);
+        setCartItems(response.slice(0, 3));
+      }, true
+    );
+  }, []);
 
   return (
     <div
@@ -118,9 +93,8 @@ const Header = ({
             initial={false}
             animate={isOpen ? "open" : "closed"}
             custom={height}
-            className={`fixed inset-0 z-50 w-full md:hidden ${
-              isOpen ? "" : "pointer-events-none"
-            }`}
+            className={`fixed inset-0 z-50 w-full md:hidden ${isOpen ? "" : "pointer-events-none"
+              }`}
             ref={containerRef}
           >
             <motion.div
@@ -162,9 +136,8 @@ const Header = ({
                         <Link
                           href={item.path}
                           onClick={() => toggleOpen()}
-                          className={`flex w-full text-2xl ${
-                            item.path === pathname ? "font-bold" : ""
-                          }`}
+                          className={`flex w-full text-2xl ${item.path === pathname ? "font-bold" : ""
+                            }`}
                         >
                           {item.title}
                         </Link>
@@ -327,9 +300,8 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({
                   <Link
                     href={subItem.path}
                     onClick={() => toggleOpen()}
-                    className={` ${
-                      subItem.path === pathname ? "font-bold" : ""
-                    }`}
+                    className={` ${subItem.path === pathname ? "font-bold" : ""
+                      }`}
                   >
                     {subItem.title}
                   </Link>

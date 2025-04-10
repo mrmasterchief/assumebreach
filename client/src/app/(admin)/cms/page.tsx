@@ -1,14 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "@/hooks/axios";
-import { useCSRFToken } from "@/context/useCSRFToken";
 import { useRouter } from "next/navigation";
 import { useCMS } from "@/context/CMSContext";
 import List from "@/components/cms/List";
 import { getAllProducts, searchProducts } from "@/hooks/products";
-
+import { indexFunction } from "@/hooks";
 export default function CMSHomePage() {
-  const { isCsrfTokenSet } = useCSRFToken();
   const { activePage, toggleActivePage } = useCMS();
   const [listPage, setListPage] = useState(1);
   const [data, setData] = useState({ products: [], totalProducts: 0 });
@@ -19,28 +17,28 @@ export default function CMSHomePage() {
   const router = useRouter();
   useEffect(() => {
     const checkAuth = async () => {
-      if (!isCsrfTokenSet) return;
-      axiosInstance
-        .post("/auth/refresh-token")
-        .then((response) => {
-          if (response.status === 200 && response.data.role !== "admin") {
-            window.location.href = "/cms/login";
-          }
-        })
-        .catch((error) => {
-          window.location.href = "/cms/login";
-        });
+      try {
+        indexFunction(
+          [
+            () => getAllProducts(listPage)
+          ],
+          (results: any[]) => {
+            const response = results[0] || { products: [], totalProducts: 0 };
+            setData({
+              products: response.products || [],
+              totalProducts: response.totalProducts || 0,
+            });
+          },
+          true
+        );
+      }
+      catch (error) {
+        console.error(error);
+        window.location.href = "/cms/authenticate";
+      }
     };
     checkAuth();
-  }, [router, isCsrfTokenSet]);
-
-  useEffect(() => {
-    if (activePage === "Products") {
-      getAllProducts(listPage).then((response) => {
-        setData(response);
-      });
-    }
-  }, [activePage, listPage]);
+  }, [router, activePage, listPage]);
 
   return (
     <>

@@ -1,29 +1,37 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
-import { useCSRFToken } from "@/context/useCSRFToken";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { getUserInfo } from "@/hooks/user";
+import { getUserInfo} from "@/hooks/user";
+import { indexFunction } from "@/hooks";
 
 export default function Account() {
-  const { isCsrfTokenSet } = useCSRFToken();
-  const router = useRouter();
+
   useEffect(() => {
-    const checkAuth = async () => {
-      if (!isCsrfTokenSet) return;
-      axiosInstance.post("/auth/refresh-token").then((response) => {
-      })
-      .catch((error) => {
-        window.location.href = "/account/authenticate";
-      });
-    };
+    try {
+      indexFunction(
+        [
+          () => getUserInfo(),
+        ]
+        ,
+        (results) => {
+          console.log("User info:", results);
+        },
+        true
+      );
+    } catch (error) {
+      console.error(error);
+      window.location.href = "/account/authenticate";
+    }
+  }, []);
 
 
-    checkAuth();
-  }, [router, isCsrfTokenSet]);
+
+  const router = useRouter();
+
+
 
   return (
     <>

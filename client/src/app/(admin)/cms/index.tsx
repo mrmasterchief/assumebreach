@@ -2,7 +2,6 @@
 import "../../../styles/globals.css";
 import PageWrapper from "@/components/page-wrapper";
 import { ToastContainer } from "react-toastify";
-import { CSRFProvider } from "@/context/useCSRFToken";
 import { CMSProvider } from "@/context/CMSContext";
 import { useCMS } from "@/context/CMSContext";
 import React from "react";
@@ -11,7 +10,6 @@ import Header from "@/components/nav/Header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-      <CSRFProvider>
         <CMSProvider>
         <html lang="en">
           <body>
@@ -29,6 +27,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </body>
         </html>
         </CMSProvider>
-      </CSRFProvider>
   );
 }

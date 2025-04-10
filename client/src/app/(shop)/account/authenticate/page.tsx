@@ -6,29 +6,27 @@ import FormTemplate from "@/components/form/Form";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
-import { useCSRFToken } from "@/context/useCSRFToken";
 import ContentContainer from "@/components/content-container";
+import { useRefreshToken } from "@/hooks/user";
 
 export default function Authenticate() {
   const [formType, setFormType] = useState<
     "login" | "register" | "forgotPassword"
   >("login");
   const router = useRouter();
-  const { csrfToken, isCsrfTokenSet } = useCSRFToken();
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!isCsrfTokenSet) return;
-      axiosInstance.post("/auth/refresh-token").then((response) => {
-        console.log(`kaas${response}`)
-
-        if (response.status === 200) {
-          window.location.href = "/account";
-        }
-      });
+      try {
+        useRefreshToken();
+      }
+      catch (error) {
+        console.error(error);
+        window.location.href = "/account/authenticate";
+      }
     };
     checkAuth();
-  }, [router, isCsrfTokenSet]);
+  }, [router]);
 
   const handleFormSubmit = async (values: any, formikHelpers: any) => {
     try {

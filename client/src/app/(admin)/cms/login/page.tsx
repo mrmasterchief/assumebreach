@@ -4,27 +4,26 @@ import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import FormTemplate from "@/components/form/Form";
 import { useRouter } from "next/navigation";
-import { useCSRFToken } from "@/context/useCSRFToken";
+import { useRefreshToken } from "@/hooks/user";
 
 export default function Authenticate() {
   const [formType, setFormType] = useState<
     "login" | "register" | "forgotPassword"
   >("login");
   const router = useRouter();
-  const { csrfToken, isCsrfTokenSet } = useCSRFToken();
 
 
   useEffect(() => {
     const checkAuth = async () => {
-      if(!isCsrfTokenSet) return
-      axiosInstance.post("/auth/refresh-token").then((response) => {
-        if (response.status === 200 && response.data.role === "admin") {
-          window.location.href = "/cms";
-        }
-      });
+      try {
+        useRefreshToken();
+      }catch (error){
+        console.error(error);
+        window.location.href = "/cms/authenticate";
+      }
     };
     checkAuth();
-  }, [router, isCsrfTokenSet]);
+  }, [router]);
 
   const handleFormSubmit = async (values: any, formikHelpers: any) => {
       try {

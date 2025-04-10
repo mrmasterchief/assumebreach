@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 import { getProductsByCategory } from "@/hooks/products";
 import ContentContainer from "@/components/content-container";
+import { indexFunction } from "@/hooks";
 
 export default function Home() {
   const [weeklyPicks, setWeeklyPicks] = useState<any[]>([]);
@@ -13,15 +13,20 @@ export default function Home() {
   const [sale, setSale] = useState<any[]>([]);
 
   useEffect(() => {
-    getProductsByCategory("Weekly Picks").then((response) => {
-      setWeeklyPicks(response.slice(0, 3));
-    });
-    getProductsByCategory("Latest Drops").then((response) => {
-      setLatestDrops(response.slice(0, 3));
-    });
-    getProductsByCategory("Sale").then((response) => {
-      setSale(response.slice(0, 3));
-    });
+    indexFunction(
+      [
+        () => getProductsByCategory("Weekly Picks"),
+        () => getProductsByCategory("Latest Drops"),
+        () => getProductsByCategory("Sale"),
+      ],
+      (results) => {
+        setWeeklyPicks(results[0].slice(0, 3));
+        setLatestDrops(results[1].slice(0, 3));
+        setSale(results[2].slice(0, 3));
+      },
+      false
+    );
+
   }, []);
 
   return (

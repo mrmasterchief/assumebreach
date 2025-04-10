@@ -5,6 +5,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 import { getProductsByCategory } from "@/hooks/products";
 import ContentContainer from "@/components/content-container";
+import { indexFunction } from "@/hooks";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -21,16 +22,28 @@ function ProductsContent() {
 
   useEffect(() => {
     if (!category) {
-      getProductsByCategory("Suits").then((response) => {
-        setProductData(response);
-      });
+      indexFunction(
+        [
+          () => getProductsByCategory("Suits"),
+        ],
+        (response) => {
+          setProductData(response);
+        },
+        false
+      );
+      return;
     }
-    getProductsByCategory(
-      Object.keys(CATEGORIES).find((key) => CATEGORIES[key] === category) ||
-        (category ? category.charAt(0).toUpperCase() + category.slice(1) : "")
-    ).then((response) => {
-      setProductData(response);
-    });
+    indexFunction(
+      [
+        () => getProductsByCategory(Object.keys(CATEGORIES).find((key) => CATEGORIES[key] === category) ||
+          (category ? category.charAt(0).toUpperCase() + category.slice(1) : "")),
+      ],
+      (response) => {
+        setProductData(response);
+      },
+      false
+    );
+
   }, [category]);
 
   return (
