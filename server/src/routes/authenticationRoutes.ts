@@ -13,6 +13,7 @@ import {
   blacklistToken,
 } from "../functions/blacklistToken";
 import { sqlInjectionFilter } from "../helpers/sqlInjectionFilter";
+import { User } from "../models/User";
 
 const router = express.Router();
 
@@ -75,7 +76,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
     setAuthCookies(res, accessToken, refreshToken);
 
-    res.json({ message: errors[200], flag: flag });
+    res.json({ message: errors[200], flag: flag, unsafeID: user.unsafe_id });
   } catch (error) {
     res.status(500).json({ message: [errors[500]] });
   }

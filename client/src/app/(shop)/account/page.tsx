@@ -21,13 +21,8 @@ export default function Account() {
       });
     };
 
-    const fetchUserInfo = async () => {
-      getUserInfo().then((data) => {
-        console.log(data);
-      });
-    };
+
     checkAuth();
-    fetchUserInfo();
   }, [router, isCsrfTokenSet]);
 
   return (

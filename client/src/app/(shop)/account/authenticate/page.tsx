@@ -20,6 +20,8 @@ export default function Authenticate() {
     const checkAuth = async () => {
       if (!isCsrfTokenSet) return;
       axiosInstance.post("/auth/refresh-token").then((response) => {
+        console.log(`kaas${response}`)
+
         if (response.status === 200) {
           window.location.href = "/account";
         }
@@ -59,6 +61,7 @@ export default function Authenticate() {
             showMessage("You have found a flag", response.data.flag, "success");
             return
           }
+          localStorage.setItem("unsafeID", response.data.unsafeID);
           window.location.href = "/account";
         }
       } else {
