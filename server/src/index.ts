@@ -56,6 +56,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 // CSRF token endpoint
 app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
+  return;
 });
 
 // Health check endpoint (insecure for CTF purposes)
@@ -74,6 +75,7 @@ app.get("/api/v1/health", (_req, res) => {
     ],
     "All endpoints are healthy and up": true,
   });
+  return;
 });
 
 // Error Handling Middleware - Placed after all other routes

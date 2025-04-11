@@ -87,7 +87,7 @@ const Header = ({
     <div
       className={`sticky inset-x-0 top-0 z-30 w-full transition-all border-b border-gray-200 bg-white`}
     >
-      <div className={`space-between max-w-[1440px] mx-auto`}>
+      <div className={`space-between max-w-[1080px] mx-auto`}>
         {type !== "cms" && (
           <motion.nav
             initial={false}

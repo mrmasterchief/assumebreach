@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
 
 export enum RBAC {
   ADMIN = "admin",
@@ -20,17 +20,20 @@ declare global {
 
 export const authorize = (
   allowedRoles: RBAC[]
-): ((req: Request, res: Response, next: NextFunction) => void) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const user = authenticate(req, res);
+): ((req: Request, res: Response, next: NextFunction) => Promise<void>) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const user = await authenticate(req, res);
 
-    const userRole = user?.role as RBAC;
+    if (!user) {
+      return;
+    }
+
+    const userRole = user.role;
 
     if (allowedRoles.includes(userRole)) {
       next();
     } else {
       res.status(403).json({ message: "Forbidden" });
-      return;
     }
   };
 };
@@ -54,19 +57,26 @@ export const generateTokens = (
   return { accessToken, refreshToken };
 };
 
-export const authenticate = (req: Request, res: Response) => {
+export const authenticate = async (req: Request, res: Response): Promise<{ id: string; role: RBAC } | null> => {
   const refreshToken = req.cookies.refreshToken;
 
-  jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET!,
-    (err: jwt.VerifyErrors | null, decoded: any) => {
-      if (err) {
-        return res.status(401).json({ message: "Invalid token" });
-      }
+  if (!refreshToken) {
+    res.status(401).json({ message: "No token provided" });
+    return null;
+  }
 
-      return (req.user = decoded as { id: string; role: RBAC });
-    }
-  );
-  return req.user;
+  try {
+    const decoded = await new Promise<{ id: string; role: RBAC }>((resolve, reject) => {
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, (err: jwt.VerifyErrors | null, decoded: any) => {
+        if (err || !decoded) return reject(err);
+        resolve(decoded as { id: string; role: RBAC });
+      });
+    });
+
+    req.user = decoded;
+    return decoded;
+  } catch (err) {
+    res.status(401).json({ message: "Invalid token" });
+    return null;
+  }
 };

@@ -149,10 +149,12 @@ router.post("/refresh-token", async (req: Request, res: Response) => {
     setAuthCookies(res, accessToken, newRefreshToken);
 
     res.json({ role: payload.role });
+    return;
   } catch (err) {
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     res.status(401).json({ message: errors[401.2] });
+    return;
   }
 });
 

@@ -12,12 +12,15 @@ const setCsrfToken = (token:string) => {
   }
 };
 
-const fetchCsrfToken = async () => {
+const fetchCsrfToken = async (): Promise<string | null> => {
   try {
     const response = await axiosInstance.get("/csrf-token");
-    setCsrfToken(response.data.csrfToken);
+    const token = response.data.csrfToken;
+    setCsrfToken(token);
+    return token;
   } catch (error) {
     console.error("Error fetching CSRF token:", error);
+    return null;
   }
 };
 
