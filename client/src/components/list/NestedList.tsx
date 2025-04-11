@@ -12,6 +12,9 @@ import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import BlockTwoToneIcon from '@mui/icons-material/BlockTwoTone';
 import CheckTwoToneIcon from '@mui/icons-material/CheckTwoTone';
 import CodeIcon from '@mui/icons-material/Code';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import ModalVideo from 'react-modal-video';
+
 const NestedList = ({
   title,
   collected,
@@ -32,10 +35,15 @@ const NestedList = ({
   secureCodeID: number;
 }) => {
   const [open, setOpen] = useState(false);
+  const [youtubeOpen, setYoutubeOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const handleYoutubeClick = () => {  
+    setYoutubeOpen(!youtubeOpen);
+  }
 
   return (
     <List
@@ -80,9 +88,21 @@ const NestedList = ({
             </Tooltip>
           </div>
           <div className='flex flex-row gap-2 h-10 items-center justify-between pl-5 mt-7 mb-7 md:mt-0 md:mb-0'>
-          <ListItemText secondary={`YouTube Explainer: ${youtubeExplainer}`} className='pl-5' />
+            <Tooltip title="View Explainer" arrow placement="top" className='cursor-pointer'>
+              <ListItemIcon className='px-5' onClick={() => handleYoutubeClick()}>
+                {youtubeOpen ? <ModalVideo
+                  channel='youtube'
+                  isOpen={youtubeOpen}
+                  videoId={youtubeExplainer}
+                  onClose={() => handleYoutubeClick()}
+                  
+                /> : null}
+                <YouTubeIcon />
+              </ListItemIcon>
+            </Tooltip>
           <Tooltip title="View improved safe code" arrow placement="top" className='cursor-pointer'>
-              <ListItemIcon className='px-5' onClick={() => window.open(`http://localhost:3000/ctf/scoreboard/code/${secureCodeID}`, '_blank')}>
+              <ListItemIcon className='px-5 gap-2' onClick={() => window.open(`http://localhost:3000/ctf/scoreboard/code/${secureCodeID}`, '_blank')}>
+                <p>View Code</p>
                 <CodeIcon />
               </ListItemIcon>
             </Tooltip>

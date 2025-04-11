@@ -6,6 +6,7 @@ import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 import { flags } from "../data/flags";
 import { Flag } from "../models/Flag";
 import { addFlagAndScoreToUser } from "../controllers/ctfController";
+import { secureCode } from "../data/secureCode";
 
 const router = express.Router();
 
@@ -83,6 +84,28 @@ router.post("/flag", async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ error: errors[500] });
+  }
+});
+
+router.post("/securecode", async (req: Request, res: Response) => {
+  const secureCodeID = req.body.secureCodeID;
+  if (!secureCodeID) {
+    res.status(400).json({ error: errors[400] });
+    return;
+  }
+  try {
+    secureCode.find((code) => {
+      if (code.id === secureCodeID) {
+        res.status(200).json({
+          secureCode: code,
+        });
+        return;
+      }
+    });
+   return;
+  } catch (error) {
+    res.status(500).json({ error: errors[500] });
+    return;
   }
 });
 

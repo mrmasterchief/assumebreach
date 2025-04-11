@@ -1,5 +1,6 @@
 "use client";
 import "../../styles/globals.css";
+import "../../styles/modal.scss";
 import Header from "@/components/nav/Header";
 import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/SideNav";

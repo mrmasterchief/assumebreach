@@ -31,3 +31,15 @@ export const submitFlag = async ({
   }
 }
 
+export const getSecureCode = async ({secureCodeID}: {secureCodeID: number}) => {
+  try {
+    const response = await axiosInstance.post("/ctf/secureCode", {
+      secureCodeID: secureCodeID,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching secure code:", error);
+  }
+}
+
+

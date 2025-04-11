@@ -8,7 +8,7 @@ export const flags = [
         "securityCategory": "Insecure API",
         "difficulty": "Easy",
         "flag": "CTF{3ndp0int5_4r3_c00l}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "tGv7CUutzqU"
         },
         {
         "id": 2,
