@@ -6,7 +6,8 @@ import { showMessage } from "@/components/messages/Message";
 import { getCart, removeFromCart } from "@/hooks/cart";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCSRFToken } from "@/context/useCSRFToken";
+import { indexFunction } from "@/hooks";
+import { getUserInfo } from "@/hooks/user";
 
 interface CartItem {
   product: {
@@ -85,22 +86,29 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
   const router = useRouter();
-  const { isCsrfTokenSet } = useCSRFToken();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isCsrfTokenSet) return;
 
     const checkAuth = async () => {
-      try {
-        const response = await axiosInstance.post("/auth/refresh-token");
-        if (response.status !== 200) {
-          window.location.href = "/account/authenticate";
-        }
-      } catch (error) {
-        window.location.href = "/account/authenticate";
-      }
+     try {
+           indexFunction(
+             [
+               () => getUserInfo(),
+             ]
+             ,
+             (results) => {
+               if(!results[0]) {
+                 window.location.href = "/account/authenticate";
+               }
+             },
+             true
+           );
+         } catch (error) {
+     
+           window.location.href = "/account/authenticate";
+         }
     };
 
     const fetchCart = async () => {
@@ -109,7 +117,6 @@ export default function Cart() {
 
       try {
         const data = await getCart();
-        // data is an array of objects 
         if (data.length > 0) {
           setCartItems(data);
         } else if (data.length === 0) {
@@ -129,7 +136,7 @@ export default function Cart() {
 
     checkAuth();
     fetchCart();
-  }, [isCsrfTokenSet]);
+  }, []);
 
   const handleRemoveFromCart = async (product: any) => {
     try {

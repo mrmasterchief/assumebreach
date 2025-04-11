@@ -17,12 +17,14 @@ export default function Account() {
         ]
         ,
         (results) => {
-          console.log("User info:", results);
+          if(!results[0]) {
+            window.location.href = "/account/authenticate";
+          }
         },
         true
       );
     } catch (error) {
-      console.error(error);
+
       window.location.href = "/account/authenticate";
     }
   }, []);

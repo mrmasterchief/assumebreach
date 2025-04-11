@@ -71,6 +71,7 @@ const Header = ({
 
 
   useEffect(() => {
+    if (pathname === "/account/authenticate") return;
     indexFunction(
       [
         () => getCart(),

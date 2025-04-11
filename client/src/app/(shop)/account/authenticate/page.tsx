@@ -8,6 +8,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import ContentContainer from "@/components/content-container";
 import { useRefreshToken } from "@/hooks/user";
+import { indexFunction } from "@/hooks";
+import { authenticate } from "@/hooks/user";
 
 export default function Authenticate() {
   const [formType, setFormType] = useState<
@@ -48,25 +50,33 @@ export default function Authenticate() {
         };
       }
 
-      const response = await axiosInstance.post(endpoint, data);
-
-      if (response.status === 200 || response.status === 201) {
-        showMessage("Success", response.data.message, "success");
-        formikHelpers.resetForm();
-        formikHelpers.setSubmitting(false);
-        if (formType === "login") {
-          if(response.data.flag) {
-            showMessage("You have found a flag", response.data.flag, "success");
-            return
+      await indexFunction(
+        [
+          () => authenticate(endpoint, data),
+        ],
+        (results: any) => {
+          if(results[0].status === 200 || results[0].status === 201) {
+            showMessage("Success", results[0].data.message, "success");
+            formikHelpers.resetForm();
+            formikHelpers.setSubmitting(false);
+            if (formType === "login") {
+              if(results[0].data.flag) {
+                showMessage("You have found a flag", results[0].data.flag, "success");
+                return
+              }
+              localStorage.setItem("unsafeID", results[0].data.unsafeID);
+              window.location.href = "/account";
+            }  else {
+              showMessage("Error", results[0].data.message, "error");
+              formikHelpers.setSubmitting(false);
+            }
           }
-          localStorage.setItem("unsafeID", response.data.unsafeID);
-          window.location.href = "/account";
-        }
-      } else {
-        showMessage("Error", response.data.message, "error");
-        formikHelpers.setSubmitting(false);
-      }
-    } catch (error) {
+        },
+        false
+      );
+      
+    }
+    catch (error) {
       showMessage("Error", "Something went wrong", "error");
       formikHelpers.setSubmitting(false);
     }

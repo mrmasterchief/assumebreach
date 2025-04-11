@@ -7,6 +7,7 @@ export const getUserInfo = async () => {
   // } catch (error) {
   //   console.error("Error fetching user info:", error);
   // }
+  return 'kaas';
 };
 
 export const useRefreshToken = async () => {
@@ -20,4 +21,15 @@ export const useRefreshToken = async () => {
   };
 
   return { refreshToken };
+}
+
+export const authenticate = async (endpoint: string, data: any) => {
+  return axiosInstance.post(endpoint, data)
+    .then((response) => {
+        return response
+    })
+    .catch((error) => {
+      console.error("Error during authentication:", error);
+      throw error;
+    });
 }
