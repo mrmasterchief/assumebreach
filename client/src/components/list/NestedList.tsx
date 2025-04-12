@@ -81,15 +81,18 @@ const NestedList = ({
         <List component="div" disablePadding>
           <div className='flex flex-row gap-2 h-10 items-center justify-between pl-5 mt-7 mb-7 md:mt-0 md:mb-0'>
             <ListItemText secondary={`${description}`} />
-            <Tooltip title={hint} arrow placement="top" className='cursor-pointer' >
-              <ListItemIcon className='px-5'>
+
+          </div>
+          <div className='flex flex-row gap-2 h-10 items-center justify-between pl-5 mt-7 mb-7 md:mt-0 md:mb-0 mr-5'>
+          <Tooltip title={hint} arrow placement="top" className='cursor-pointer' >
+              <ListItemIcon className='gap-2'>
+                <p>View Hint</p>
                 <TipsAndUpdatesIcon />
               </ListItemIcon>
             </Tooltip>
-          </div>
-          <div className='flex flex-row gap-2 h-10 items-center justify-between pl-5 mt-7 mb-7 md:mt-0 md:mb-0'>
+            <div>
             <Tooltip title="View Explainer" arrow placement="top" className='cursor-pointer'>
-              <ListItemIcon className='px-5' onClick={() => handleYoutubeClick()}>
+              <ListItemIcon className='px-5 gap-2' onClick={() => handleYoutubeClick()}>
                 {youtubeOpen ? <ModalVideo
                   channel='youtube'
                   isOpen={youtubeOpen}
@@ -97,15 +100,17 @@ const NestedList = ({
                   onClose={() => handleYoutubeClick()}
                   
                 /> : null}
+                <p>View Explainer</p>
                 <YouTubeIcon />
               </ListItemIcon>
             </Tooltip>
           <Tooltip title="View improved safe code" arrow placement="top" className='cursor-pointer'>
-              <ListItemIcon className='px-5 gap-2' onClick={() => window.open(`http://localhost:3000/ctf/scoreboard/code/${secureCodeID}`, '_blank')}>
+              <ListItemIcon className='gap-2' onClick={() => window.open(`http://localhost:3000/ctf/scoreboard/code/${secureCodeID}`, '_blank')}>
                 <p>View Code</p>
                 <CodeIcon />
               </ListItemIcon>
             </Tooltip>
+            </div>
           </div>
         </List>
       </Collapse>

@@ -17,6 +17,7 @@ export default function Account() {
         ]
         ,
         (results) => {
+          console.log(results);
           if(!results[0]) {
             window.location.href = "/account/authenticate";
           }

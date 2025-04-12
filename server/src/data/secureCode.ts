@@ -2,6 +2,11 @@ export const secureCode = [
     {
         id: 1,
         title: 'Insecure API',
+        risks: [
+            'Sensitive data exposure',
+            'Unauthorized access',
+            'Data manipulation',
+        ],
         explanation: 'To prevent users from accessing API endpoints that are not intended for them, you can implement several security measures. The most common method is CORS (Cross-Origin Resource Sharing), which restricts which domains can access your API. RBAC (Role-Based Access Control) is also an option that will be described on a different page.',
         js: `
         import express from 'express';

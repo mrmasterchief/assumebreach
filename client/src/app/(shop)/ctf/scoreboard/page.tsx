@@ -207,6 +207,15 @@ export default function ScoreBoard() {
         {unsafeID && flagList.length > 0 ? (
           <div className="flex flex-col items-center justify-center w-[95%] md:w-[80%] h-full p-4 mx-auto gap-2">
             <h1 className="text-2xl font-semibold">CTF Scoreboard</h1>
+            <h2 className="text-lg font-semibold">Your Score: {score}</h2>
+            <LinearProgress
+                variant="determinate"
+                value={
+                  (flagList.filter((flag) => flag.collected).length * 100) /
+                  flagList.length
+                }
+                className="w-full rounded-lg"
+              />
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2 mb-5">
               <FlagsByCategory category="Easy" />
               <FlagsByCategory category="Medium" />
