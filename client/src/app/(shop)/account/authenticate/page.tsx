@@ -88,13 +88,13 @@ export default function Authenticate() {
         <h1 className="font-bold text-black text-xl text-center">
           {formType === "login" ? "WELCOME BACK" : "BECOME A MEMBER"}
         </h1>
-        <p className="text-center text-gray-500">
+        <p className="text-center text-gray-500 mb-4">
           {formType === "login"
             ? "Sign in to your account to access your orders."
             : "Sign up to access exclusive deals and offers."}
         </p>
         <FormTemplate formType={formType} onSubmit={handleFormSubmit} />
-        <div className="flex justify-center flex-col gap-2">
+        <div className="flex justify-center flex-col gap-2 mt-4">
           <button
             className="text-gray-500 hover:text-black"
             onClick={() =>

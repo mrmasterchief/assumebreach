@@ -12,7 +12,7 @@ const Footer = () => {
   const pathname = usePathname();
 
   return (
-    <footer className="bg-white py-8 md:py-12 border-t border-gray-200 w-full">
+    <footer className="bg-white py-8 md:py-12 border-t border-gray-200 w-full max-w-[1080px]">
       <div className="container mx-auto px-4">
         <div className="flex flex-col justify-center md:flex-row md:justify-between items-start md:items-center gap-8 ">
           {FOOTER_LINKS.map((item, idx) => (

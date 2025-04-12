@@ -9,15 +9,16 @@ import Select, { SelectChangeEvent } from "@mui/material/Select"; import { usePa
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { InputLabel } from "@mui/material";
+import Link from "next/link";
 
 export default function CodeDetails() {
   const params = useParams();
   const secureCodeID = params?.id;
   const [secureCode, setSecureCode] = useState<any>('');
   const [explanation, setExplanation] = useState<any>('');
-  const [risks , setRisks] = useState<any>('');
+  const [risks , setRisks] = useState<any>([]);
+  const [resources, setResources] = useState<any>([]);
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!secureCodeID) return;
@@ -35,6 +36,7 @@ export default function CodeDetails() {
           setSecureCode(results[0].secureCode);
           setExplanation(results[0].secureCode.explanation);
           setRisks(results[0].secureCode.risks);
+          setResources(results[0].secureCode.resourceLinks);
         },
         false
       );
@@ -83,6 +85,17 @@ export default function CodeDetails() {
             <SyntaxHighlighter language={selectedLanguage} style={docco} className="mt-4">
               {selectedLanguage === "javascript" ? secureCode?.js : secureCode?.php}
             </SyntaxHighlighter>
+            <h2 className="text-xl font-semibold mt-4">Helpful Resources</h2>
+            <div className="flex flex-col gap-2">
+            {resources?.map((resource: any, index: number) => (
+              <Link key={index} href={resource.url} target="_blank" className="text-blue-500 hover:underline">
+                - {resource.title}
+              </Link>
+            ))}
+            </div>
+              
+              
+
           </div>
         </div>
       </div>
