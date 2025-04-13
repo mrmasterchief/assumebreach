@@ -81,6 +81,54 @@ app.get("/api/v1/health", (_req, res) => {
   return;
 });
 
+app.post("/api/v1/open-ai", (req, res) => {
+  const apiKey = req.headers["x-api-key"];
+  const prompt = req.body.prompt;
+  if (apiKey !== process.env.API_KEY) {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+  if (!prompt) {
+    res.status(400).json({ error: "Bad Request" });
+    return;
+  }
+  if (prompt === "Stay alive ping") {
+    res.status(200).json({
+      id: "cmpl-1234567890",
+      object: "text_completion",
+      created: Date.now(),
+      model: "gpt-4.0-turbo",
+      choices: [
+        {
+          text: "API is alive and responding",
+          index: 0,
+          logprobs: null,
+          finish_reason: "stop",
+        },
+      ],
+    });
+    return;
+  }
+  if (prompt.includes("flag")) {
+    res.status(200).json({
+      id: "cmpl-1234567890",
+      object: "text_completion",
+      created: Date.now(),
+      model: "gpt-4.0-turbo",
+      choices: [
+        {
+          text: flags.find((flag) => flag.secureCodeID === 4),
+          index: 0,
+          logprobs: null,
+          finish_reason: "stop",
+        },
+      ],
+    });
+    return;
+  }
+}
+);
+
 // Error Handling Middleware - Placed after all other routes
 app.use(errorHandling);
 

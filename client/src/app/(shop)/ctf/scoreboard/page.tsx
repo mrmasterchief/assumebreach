@@ -55,6 +55,10 @@ export default function ScoreBoard() {
         await indexFunction(
           [() => getFlagsList({ unsafeID: unsafeID })],
           (results) => {
+            if (!results[0]) {
+              showMessage("Error", "No flags found", "error");
+              return;
+            }
             setFlagList(results[0].flags);
             setScore(results[0].score);
           },

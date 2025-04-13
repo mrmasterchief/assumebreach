@@ -35,6 +35,9 @@ export async function sqlInjectionFilter(email: string, password: string) {
 
         return null;
     } catch (error) {
-        throw new Error(error.message || "An unexpected error occurred");
+        if (error instanceof Error) {
+            throw new Error(error.message || "An unexpected error occurred");
+        }
+        throw new Error("An unexpected error occurred");
     }
 }
