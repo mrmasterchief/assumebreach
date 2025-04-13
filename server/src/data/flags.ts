@@ -19,7 +19,7 @@ export const flags = [
         "securityCategory": "Insecure API",
         "difficulty": "Easy",
         "flag": "CTF{3nv_v4r14bl3s_4r3_1mp0rt4nt}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "WoTaqZW13bY"
         },
         {
         "id": 3,
@@ -30,7 +30,7 @@ export const flags = [
         "securityCategory": "IDOR",
         "difficulty": "Medium",
         "flag": "CTF{1d0r_15_4_b4d_pr4ct1c3}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "tGv7CUutzqU"
         },
         {
         "id": 4,
