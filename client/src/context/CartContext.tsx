@@ -8,7 +8,7 @@ const CartContext = createContext({
 
 export const CartProvider = ({ children }  : { children: React.ReactNode }
 ) => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(true);
 
     const toggleCart = () => {
         setIsCartOpen(!isCartOpen);

@@ -154,7 +154,7 @@ const Header = ({
             <MenuToggle toggle={toggleOpen} />
           </motion.nav>
         )}
-        <div className="flex h-[80px] items-center justify-between px-4">
+        <div className="flex h-[70px] items-center justify-between px-4">
           {type !== "cms" && (
             <button
               onClick={() => toggleSidenav && toggleSidenav(true)}

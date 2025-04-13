@@ -2,7 +2,8 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { removeFromCart } from "@/hooks/cart";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+
 const Cart = ({
   toggleCart,
   isCartOpen,
@@ -10,7 +11,7 @@ const Cart = ({
 }: {
   toggleCart: () => void;
   isCartOpen: boolean;
-  cartItems: { product: { id:string; imagepath: string; title: string; price: number }; quantity: number }[];
+  cartItems: { product: { id:string; imagepath: string; title: string; price: number, discountPrice:number }; quantity: number }[];
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
@@ -47,54 +48,87 @@ const Cart = ({
     <>
       <div
         ref={cartRef}
-        className={`absolute w-[400px] bg-white top-[80px] right-15 z-50 rounded-b-lg border transition-all duration-300 ${
-          isVisible ? "opacity-100 max-h-[500px] h-[300px]" : "opacity-0 max-h-0"
+        className={`absolute w-[420px] bg-white top-[70px] z-50 rounded-b-lg border transition-all duration-300 ${
+          isVisible ? "opacity-100 max-h-[500px] h-[400px]" : "opacity-0 max-h-0"
         } ${isVisible ? "block" : "hidden"}`}
       >
-        <div className="p-4 flex items-center justify-center">
+        <div className="pb-0 pt-4 flex items-start justify-center">
           <h3 className="text-large title-font font-semibold">Cart</h3>
         </div>
         {cartItems && cartItems?.length > 0 ? (
 
-        <div className="flex flex-col items-center justify-between my-4">
+        <div className="flex flex-col items-center w-full">
             {cartItems.map((item, idx) => {
               return (
                 <Link
                   href={`/products/${item.product.id}`}
                   key={idx}
-                  className="flex flex-row items-center justify-between w-[90%] p-4 border-b border-gray-200"
+                  className="flex flex-row items-center justify-between w-[95%] py-4"
                 >
-                  <div className="flex flex-row items-center gap-4">
-                    <div className="flex relative w-16 h-16">
+                  <div className="flex flex-row gap-4">
+                  <div
+                    className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex"
+      >
                       <img
                         src={`http://localhost:4000/public/${item.product.imagepath}`}
                         alt="product"
-                        className="object-cover object-center w-full h-full"
+                        className="object-center w-full object-cover"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-base font-semibold">{item.product.title}</p>
-                      <p className="text-base font-normal text-gray-400">
-                        {item.product.price}
+                      {/* truncate ttitle to 10 */}
+                      <p className="text-md">{item.product.title.length > 10 ? item.product.title.slice(0, 10) + "..." : item.product.title}</p>
+
+                      <p className="text-gray-700 text-md"> 
+                        Variant: test
                       </p>
+                      <p className="text-sm">
+Quantity: {item.quantity}
+                      </p>
+                      <div className="flex flex-row items-center mt-2 gap-1">
+                    <RemoveCircleOutlineIcon className="text-gray-600" fontSize="small" onClick={() => removeFromCart(item.product.id)} />
+                      <p className="text-sm text-gray-600 cursor-pointer" onClick={() => removeFromCart(item.product.id)}>
+                        Remove
+                      </p>
+                      </div>
+    
                     </div>
                   </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <span className="text-base font-semibold">{item.quantity}</span>
-                  </div>
-                  <button
-                    className="text-red-500"
-                    onClick={() => {
-                      removeFromCart(item.product);
-                      window.location.reload();
-
-                    }}
-                  >
-                    <DeleteOutlineIcon style={{color:'black'}} />
-                  </button>
+                  <p className="text-md font-semibold text-gray-800 self-start">
+                   {item.product.discountPrice ? (
+                    <span>
+                      ${(item.product.discountPrice * item.quantity).toFixed(2)}
+                    </span> 
+                    ) : (
+                      <span>
+                        ${(item.product.price * item.quantity).toFixed(2)}
+                      </span>
+                    )}
+                  </p>
                 </Link>
               );
             })}
+            <div className="flex flex-row items-center justify-between w-[95%]">
+              <p className="text-sm"><strong>Subtotal</strong> (excl. taxes):</p>
+              <p className="text-sm font-semibold">$
+                {cartItems.reduce((acc, item) => {
+                  const price = item.product.discountPrice
+                    ? item.product.discountPrice
+                    : item.product.price;
+                  return acc + price * item.quantity;
+                }
+                , 0).toFixed(2)}
+              </p>
+              </div>
+              <div className="flex flex-row items-center justify-between w-[95%] mt-4">
+              <Link
+                href="/checkout"
+                className="flex items-center justify-center bg-black text-white p-2 rounded-lg w-[100%] hover:bg-gray-800 transition duration-300"
+              > 
+                <span className="text-white text-center">Go to Cart
+                </span>
+              </Link>
+              </div>
                   </div>
 
           ) : (
