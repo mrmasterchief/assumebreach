@@ -11,6 +11,7 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import React from "react";
 
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidenavOpen, setIsSidenavOpen] = React.useState(false);
   const toggleSidenav = () => {

@@ -17,8 +17,9 @@ router.post("/flags", async (req: Request, res: Response) => {
     res.status(401).json({ error: errors[401] });
     return;
   }
+
   try {
-    const userDetails = await fetchUserDetails(userId, unsafeId);
+    const userDetails = await fetchUserDetails(userId, unsafeId, true);
 
     if (!userDetails) {
       res.status(401).json({ error: errors[401] });
@@ -52,7 +53,7 @@ router.post("/flag", async (req: Request, res: Response) => {
     return;
   }
   try {
-    const userDetails = await fetchUserDetails(userId, unsafeId);
+    const userDetails = await fetchUserDetails(userId, unsafeId, true);
     if (!userDetails) {
       res.status(401).json({ error: errors[401] });
       return;

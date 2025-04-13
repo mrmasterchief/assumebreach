@@ -3,7 +3,6 @@ import { axiosInstance } from "./axios";
 export const getCart = async () => {
   try {
     const response = await axiosInstance.get("/cart");
-    console.log("Cart response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching cart:", error);

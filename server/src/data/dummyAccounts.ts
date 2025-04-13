@@ -14,7 +14,7 @@ export  async function createAdminAccount() {
     if(existingUser) return;
 
     if (!existingUser) {
-        createUser(email, password, true, RBAC.ADMIN);
+        createUser(email, password, 'Admin', true, RBAC.ADMIN);
     }
 }
 
@@ -39,9 +39,8 @@ export async function createDummyAcccount() {
         const existingUser = await findUserByEmail(email);
 
         if(!existingUser) {
-            createUser(email, password, false, RBAC.USER);
+            createUser(email, password, 'Default User', false, RBAC.USER);
         }
-
     }
 }
 

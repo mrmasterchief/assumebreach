@@ -148,9 +148,17 @@ export default function ProductDetails() {
               <button
                 type="button"
                 className="flex items-center bg-black px-4 py-2 rounded-lg text-white align-center justify-center"
-                onClick={() => {
-                  addToCart(productDetails);
-                  toggleCart();
+                onClick={async () => {
+                  await indexFunction(
+                    [
+                  () => addToCart(productDetails),
+                  async () => toggleCart()
+                    ],
+                    () => {
+                      console.log("Product added to cart");
+                    },
+                    true
+                  );
                 }}
               >
                 Add to Cart

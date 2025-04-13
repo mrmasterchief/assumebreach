@@ -13,7 +13,7 @@ const List = ({ props }: { props: any }) => {
   const [formType, setFormType] = useState("create");
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full max-w-[1440px] mx-auto">
       {formActive && <ProductForm setFormActive={setFormActive} />}
       <div className="flex justify-center gap-4 flex-row">
         <input
@@ -51,7 +51,7 @@ const List = ({ props }: { props: any }) => {
           Next
         </button>
       </div>
-      <ul className="list-none">
+      <ul className="list-none w-[80%] mx-auto">
         {props.data.map(
           (item: {
             id: any;

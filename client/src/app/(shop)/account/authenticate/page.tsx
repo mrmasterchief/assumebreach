@@ -66,10 +66,14 @@ export default function Authenticate() {
               }
               localStorage.setItem("unsafeID", results[0].data.unsafeID);
               window.location.href = "/account";
-            }  else {
-              showMessage("Error", results[0].data.message, "error");
-              formikHelpers.setSubmitting(false);
+            }  
+            if(formType === "register") {
+              window.location.href = "/account";
             }
+          } 
+          else {
+            showMessage("Error", results[0].data.message, "error");
+            formikHelpers.setSubmitting(false);
           }
         },
         false
@@ -85,7 +89,8 @@ export default function Authenticate() {
   return (
     <>
       <ContentContainer>
-        <h1 className="font-bold text-black text-xl text-center">
+        <div className="w-[90%] md:w-[50%] mx-auto flex flex-col justify-center py-8 gap-4">
+        <h1 className="font-bold text-black text-xl text-center animate-pulse duration-1000 ease-in-out"> 
           {formType === "login" ? "WELCOME BACK" : "BECOME A MEMBER"}
         </h1>
         <p className="text-center text-gray-500 mb-4">
@@ -112,9 +117,10 @@ export default function Authenticate() {
             </p>
           )}
         </div>
+        </div>
       </ContentContainer>
 
-      <div className="flex w-[60%] md:w-[60%] mx-auto flex-col justify-center py-8 gap-4">
+      <div className="flex w-[60%] md:w-[70%] mx-auto flex-col justify-center py-8 gap-4 border-t border-gray-200">
         <h1 className="text-2xl mt-4 font-semibold">Got questions?</h1>
         <div className="flex flex-row gap-2">
           <p className="text-gray-500">

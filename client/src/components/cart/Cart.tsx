@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { removeFromCart } from "@/hooks/cart";
 import { Icon } from "@iconify/react/dist/iconify.js";
-
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 const Cart = ({
   toggleCart,
   isCartOpen,
@@ -48,15 +48,16 @@ const Cart = ({
       <div
         ref={cartRef}
         className={`absolute w-[400px] bg-white top-[80px] right-15 z-50 rounded-b-lg border transition-all duration-300 ${
-          isCartOpen ? "opacity-100 max-h-[500px]" : "opacity-0 max-h-0"
+          isVisible ? "opacity-100 max-h-[500px] h-[300px]" : "opacity-0 max-h-0"
         } ${isVisible ? "block" : "hidden"}`}
       >
         <div className="p-4 flex items-center justify-center">
           <h3 className="text-large title-font font-semibold">Cart</h3>
         </div>
+        {cartItems && cartItems?.length > 0 ? (
+
         <div className="flex flex-col items-center justify-between my-4">
-          {cartItems && cartItems?.length > 0 ? (
-            cartItems.map((item, idx) => {
+            {cartItems.map((item, idx) => {
               return (
                 <Link
                   href={`/products/${item.product.id}`}
@@ -89,33 +90,27 @@ const Cart = ({
 
                     }}
                   >
-                    <Icon icon="bi:trash" className="w-6 h-6" color="black" />
+                    <DeleteOutlineIcon style={{color:'black'}} />
                   </button>
                 </Link>
               );
-            })
-          ) : (
-            <div className="flex flex-col items-center justify-center">
+            })}
+                  </div>
 
-              <p className="text-base font-normal">No items in cart</p>
+          ) : (
+            <div className="flex flex-col items-center justify-center w-full h-full p-4 pb-[80px]">
+
+              <p className="text-base font-small">Your shopping bag is empty.</p>
               <Link
                 href="/products"
-                className="flex items-center justify-center bg-black text-white p-3 rounded-lg"
+                className="flex items-center justify-center bg-black text-white p-2 rounded-lg w-[50%] mt-4"
               >
                 <span className="text-white text-center">Explore Products</span>
               </Link>
             </div>
           )}
         </div>
-        <div className="flex flex-col items-center justify-center pb-4">
-          <Link
-            href="/cart"
-            className="flex items-center justify-center bg-black text-white p-3 rounded-lg w-[90%]"
-          >
-            <span className="text-white">View Cart</span>
-          </Link>
-        </div>
-      </div>
+ 
     </>
   );
 };

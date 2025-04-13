@@ -111,7 +111,7 @@ const FormTemplate = ({ formType, onSubmit }: Props) => {
           )}
           <button
             type="submit"
-            className="bg-black text-white p-2 rounded-md"
+            className="bg-black text-white p-2 rounded-md hover:bg-gray-900"
             aria-label="Submit form"
           >
             {formType === "login"

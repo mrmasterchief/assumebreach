@@ -57,7 +57,7 @@ router.post("/login", async (req: Request, res: Response) => {
     if (user.email.includes(`user[0-9]@example.com`)) {
       flag = getFlagBySecureCodeID(7);
     }
-    let userDetails = await fetchUserDetails(user.id, user.unsafe_id);
+    let userDetails = await fetchUserDetails(user.id, user.unsafe_id, true);
     if (!userDetails) {
       res.status(500).json({ message: [errors[500]] });
       return;
@@ -83,9 +83,9 @@ router.post("/login", async (req: Request, res: Response) => {
 });
 
 router.post("/register", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password || !name) {
     res.status(400).json({ message: errors[400] });
     return;
   }
@@ -97,7 +97,7 @@ router.post("/register", async (req: Request, res: Response) => {
       return;
     }
 
-    const newUser = await createUser(email, password, true, RBAC.USER);
+    const newUser = await createUser(email, password, name, true, RBAC.USER);
 
     if (!newUser) {
       res.status(500).json({ message: errors[500] });

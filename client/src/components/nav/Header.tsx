@@ -77,12 +77,11 @@ const Header = ({
         () => getCart(),
       ]
       , (response: any) => {
-        if (response.length <= 1) return;
-        setCartItemsCount(response.length);
-        setCartItems(response.slice(0, 3));
+        setCartItemsCount(response[0].length);
+        setCartItems(response[0]);
       }, true
     );
-  }, []);
+  }, [isCartOpen]);
 
   return (
     <div

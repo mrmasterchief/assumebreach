@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { indexFunction } from "@/hooks";
 import { getUserInfo } from "@/hooks/user";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 interface CartItem {
   product: {
@@ -15,6 +16,8 @@ interface CartItem {
     imagepath: string;
     title: string;
     price: number;
+    calculatedPrice: number;
+    discountprice: number;
   };
   quantity: number;
 }
@@ -71,11 +74,11 @@ const CartSummary = ({ total }: { total: number }) => (
     <div className="flex flex-row items-center justify-between w-full border-b border-gray-200 p-4">
       <h3 className="text-lg">Total</h3>
       <h3 className="text-lg font-semibold">
-        ${(total + 10 + total * 0.1).toFixed(2)}
+        ${(total + total * 0.1).toFixed(2)}
       </h3>
     </div>
-    <Link href="/checkout" className="w-full">
-      <button className="bg-black text-white p-4 rounded-lg mt-4 w-full">
+    <Link href="/cart/checkout" className="w-full">
+      <button className="bg-black text-white p-3 rounded-lg mt-4 w-full hover:bg-gray-800 transition duration-200">
         Checkout
       </button>
     </Link>
@@ -90,52 +93,39 @@ export default function Cart() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    try {
+      indexFunction(
+        [
+          () => getCart(),
+        ]
+        ,
+        (results) => {
+          if (!results[0]) {
+            setIsLoading(false);
+            return;
+          }
+          setCartItems(results[0] || []);
+          for(let i = 0; i < results[0].length; i++) {
+            if (results[0][i].product.discountprice) {
+              results[0][i].product.calculatedPrice = results[0][i].product.discountprice;
+            }
+            else {
+              results[0][i].product.calculatedPrice = results[0][i].product.price;
+            }
+          }
+          let totalPrice = results[0].reduce((sum: number, item: CartItem) => {
+            return sum + Number(item.product.calculatedPrice) * item.quantity;
+          }, 0);
+          setTotal(totalPrice);
+          setIsLoading(false);
+        },
+        true
+      );
+    }
+    catch (error) {
+      console.error(error)
 
-    const checkAuth = async () => {
-     try {
-           indexFunction(
-             [
-               () => getUserInfo(),
-             ]
-             ,
-             (results) => {
-               if(!results[0]) {
-                 window.location.href = "/account/authenticate";
-               }
-             },
-             true
-           );
-         } catch (error) {
-     
-           window.location.href = "/account/authenticate";
-         }
-    };
-
-    const fetchCart = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const data = await getCart();
-        if (data.length > 0) {
-          setCartItems(data);
-        } else if (data.length === 0) {
-          setCartItems([]);
-          setTotal(0);
-        } else {
-          setCartItems([]);
-          setTotal(0);
-        }
-      } catch (error) {
-        console.error("Error fetching cart:", error);
-        setError("Failed to load cart. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-    fetchCart();
+    }
   }, []);
 
   const handleRemoveFromCart = async (product: any) => {
@@ -146,7 +136,7 @@ export default function Cart() {
       setTotal(
         data.products?.reduce(
           (sum: number, item: CartItem) =>
-            sum + item.product.price * item.quantity,
+            sum + item.product.calculatedPrice * item.quantity,
           0
         ) || 0
       );
@@ -161,15 +151,12 @@ export default function Cart() {
     return <div>Loading cart...</div>;
   }
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
 
   return (
-    <div className="flex flex-col xl:w-[1440px] xl:mx-auto">
+    <div className="flex flex-col xl:w-[1080px] xl:mx-auto">
       <div className="relative w-full align-center justify-center">
-        <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative xs:max-w-[90%] sm:max-w-[95%] mx-auto lg:space-between">
-          <div className="flex flex-col items-center justify-between p-4 border-b border-gray-200 w-full md:flex-row">
+        <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative xs:max-w-[95%] sm:max-w-[100%] mx-auto lg:space-between">
+          <div className="flex flex-col items-center justify-between p-4 w-full md:flex-row">
             {cartItems.length > 0 ? (
               <div className="flex flex-col items-center justify-between my-4 w-full md:w-1/2">
                 <div className="flex flex-col items-start justify-between w-full">
@@ -184,8 +171,18 @@ export default function Cart() {
                 ))}
               </div>
             ) : (
-              <div className="flex items-center justify-center h-96">
-                <h3 className="text-lg font-semibold">Cart is empty</h3>
+              <div className="flex justify-center min-h-[50vh] flex-col gap-4">
+                <h1 className="font-semibold text-4xl">Cart</h1>
+                <p className="text-base font-small text-gray-500 max-w-[50%]">
+                  Your shopping bag is empty. Start exploring our products by clicking the button below. You need to be logged in to add products to your cart.
+                </p>
+                <Link href="/account/help" passHref className="flex flex-row gap-2">
+                  <p className="text-blue-700 hover:underline">Explore Products</p>
+                  <Icon
+                    icon="material-symbols:arrow-outward-rounded"
+                    className="text-blue-700 transition-all transform hover:rotate-45"
+                  />
+                </Link>
               </div>
             )}
             {cartItems.length > 0 && <CartSummary total={total} />}{" "}

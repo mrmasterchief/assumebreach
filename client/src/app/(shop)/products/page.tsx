@@ -27,7 +27,7 @@ function ProductsContent() {
           () => getProductsByCategory("Suits"),
         ],
         (response) => {
-          setProductData(response);
+          setProductData(response[0]);
         },
         false
       );
@@ -39,7 +39,7 @@ function ProductsContent() {
           (category ? category.charAt(0).toUpperCase() + category.slice(1) : "")),
       ],
       (response) => {
-        setProductData(response);
+        setProductData(response[0]);
       },
       false
     );

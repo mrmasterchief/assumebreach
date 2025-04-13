@@ -102,7 +102,7 @@ function jwt_verify($token, $secret) {
             'API key exposure',
             'Configuration exposure',
         ],
-        explanation: 'To prevent users from accessing environment variables that are not intended for them, you can implement several security measures. The most common method is to use a .env file to store your environment variables and restrict access to it. You can also use a package like dotenv to load your environment variables from the .env file.',
+        explanation: 'To prevent users from accessing environment variables that are not intended for them, you can implement several security measures. The most common method is to use a .env file to store your environment variables and restrict access to it. You can also use a package like dotenv to load your environment variables from the .env file. \n In the example of this vulnerability. I used an API key in my frontend code to access the API. This is a security risk because anyone can see the API key in the frontend code and use it to access the API. To prevent this, you should never put your API key in your frontend code. Instead, you should use a package like dotenv to load your environment variables from the .env file and use them in your backend code.',
         js: `
 import express from 'express';
 import dotenv from 'dotenv';

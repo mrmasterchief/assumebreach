@@ -15,6 +15,7 @@ import cmsRoutes from "./routes/cmsRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import authenticationRoutes from "./routes/authenticationRoutes.js";
 import ctfRoutes from "./routes/ctfRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import { flags } from "./data/flags.js";
 import { createAdminAccount, createDummyAcccount } from "./data/dummyAccounts.js";
 
@@ -49,6 +50,7 @@ app.use(
 );
 app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
 app.use("/api/v1/ctf", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]), ctfRoutes);
+app.use("/api/v1/user", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]), userRoutes);
 
 // Serve static files from the 'public' directory
 app.use("/public", express.static(path.join(__dirname, "public")));

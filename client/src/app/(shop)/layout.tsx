@@ -1,7 +1,6 @@
 
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { Viewport } from "next";
 import React from "react";
 import Layout from "./index";
@@ -17,6 +16,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   width: "device-width",
 };
+
 
 export default function RootLayout({
   children,

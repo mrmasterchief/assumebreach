@@ -1,13 +1,17 @@
 import { axiosInstance } from "./axios";
 
-export const getUserInfo = async () => {
-  // try {
-  //   const response = await axiosInstance.get("/user");
-  //   return response.data;
-  // } catch (error) {
-  //   console.error("Error fetching user info:", error);
-  // }
-  return 'kaas';
+export const getUserInfo = async ({ unsafeID }: { unsafeID: string }) => {
+  try {
+    const response = await axiosInstance.get("/user/details", {
+      params: {
+        unsafeID: unsafeID,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+  }
+  return null;
 };
 
 export const useRefreshToken = async () => {

@@ -18,6 +18,7 @@ function hashPassword(password: string, createdAt: Date, secureMethod: boolean):
 async function createUser(
   email: string,
   password_hash: string,
+  name: string,
   secureMethod: boolean = true,
   role: string
 ): Promise<[Models["User"], Models["UserDetails"]] | null> {
@@ -26,7 +27,7 @@ async function createUser(
 
   return withTransaction(async (client) => {
     const newUser = await createUserInDB(client, email, passwordhash, createdAt);
-    const newUserDetails = await createUserDetailsInDB(client, newUser.id, newUser.unsafe_id, role);
+    const newUserDetails = await createUserDetailsInDB(client, newUser.id, newUser.unsafe_id, role, name);
     return [newUser, newUserDetails];
   });
 }
@@ -38,12 +39,12 @@ async function findUserByEmail(email: string): Promise<Models["User"] | null> {
   });
 }
 
-async function fetchUserDetails(userId: string | null, unsafeId: string | null): Promise<Models["UserDetails"] | null> {
-  if (!userId && !unsafeId) {
-    throw new Error("Either userId or unsafeId must be provided.");
-  }
-  const column = userId ? "user_id" : "unsafe_id";
-  const value = userId || unsafeId;
+async function fetchUserDetails(userId: string | null, unsafeId: string | null, safeMethod: boolean | true): Promise<Models["UserDetails"] | null> {
+  if(safeMethod && !userId) return null;
+  if(!safeMethod && !unsafeId) return null;
+
+  const column = safeMethod ? "user_id" : "unsafe_id";
+  const value = safeMethod ? userId : unsafeId;
 
   return withTransaction(async (client) => {
     const result = await client.query(`SELECT * FROM user_details WHERE ${column} = $1`, [value]);

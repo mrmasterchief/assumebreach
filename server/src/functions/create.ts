@@ -18,11 +18,12 @@ export async function createUserDetailsInDB(
     client: any,
     user_id: string,
     unsafe_id: string,
-    role: string
+    role: string,
+    name: string
   ): Promise<Models["UserDetails"]> {
     const result = await client.query(
-      "INSERT INTO user_details (user_id, unsafe_id, role) VALUES ($1, $2, $3) RETURNING *",
-      [user_id, unsafe_id, role || RBAC.USER]
+      "INSERT INTO user_details (user_id, unsafe_id, role, full_name) VALUES ($1, $2, $3, $4) RETURNING *",
+      [user_id, unsafe_id, role || RBAC.USER, name]
     );
     return result.rows[0];
   }
