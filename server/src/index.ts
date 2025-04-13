@@ -117,7 +117,7 @@ app.post("/api/v1/open-ai", (req, res) => {
       model: "gpt-4.0-turbo",
       choices: [
         {
-          text: flags.find((flag) => flag.secureCodeID === 4),
+          text: flags.find((flag) => flag.secureCodeID === 2),
           index: 0,
           logprobs: null,
           finish_reason: "stop",
