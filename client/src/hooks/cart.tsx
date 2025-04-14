@@ -31,3 +31,15 @@ export const removeFromCart = async (product: {}) => {
     console.error("Error removing from cart:", error);
   }
 };
+
+export const updateCartQuantity = async (product: {}, quantity: number) => {
+  try {
+    const response = await axiosInstance.post("/cart/new-quantity", {
+      product: product,
+      quantity: quantity
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating cart quantity:", error);
+  }
+}

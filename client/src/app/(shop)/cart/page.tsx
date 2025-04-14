@@ -1,14 +1,16 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
-import { getCart, removeFromCart } from "@/hooks/cart";
+import { getCart, removeFromCart, updateCartQuantity } from "@/hooks/cart";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { indexFunction } from "@/hooks";
-import { getUserInfo } from "@/hooks/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import MenuItem from "@mui/material/MenuItem";
 
 interface CartItem {
   product: {
@@ -22,6 +24,7 @@ interface CartItem {
   quantity: number;
 }
 
+
 const CartItemComponent = ({
   item,
   onRemove,
@@ -29,23 +32,61 @@ const CartItemComponent = ({
   item: CartItem;
   onRemove: (product: any) => void;
 }) => (
-  <div className="flex items-center justify-between w-full border-b border-gray-200 p-4">
-    <div className="flex items-center">
+  
+  <div className="flex items-center justify-between w-full border-b border-gray-200 py-4 pr-4">
+    <div className="flex items-center justify-between w-full">
+      <div className="flex items-center w-[28%]">
+      <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/shop/${item.product.id}`}>
       <Image
         src={`http://localhost:4000/public/${item.product.imagepath}`}
         alt={item.product.title}
         width={100}
         height={100}
       />
+      </Link>
       <div className="ml-4">
-        <h3 className="text-lg font-semibold">{item.product.title}</h3>
-        <p className="text-sm text-gray-500">Price: ${item.product.price}</p>
-        <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+        <h3 className="text-lg">{item.product.title}</h3>
+        <p className="text-gray-500 text-sm">Variant: test</p>
       </div>
+      </div>
+      <div className="flex flex-col">
+      <h3 className="text-lg line-through">${item.product.price}</h3>
+      <p className="text-blue-700 text-lg">${item.product.discountprice}</p>
+      </div>
+      <div className="flex items-center justify-between gap-2">
+        <FormControl variant="standard" sx={{ scale: "0.8" }}>
+          <Select
+            value={item.quantity.toString()}
+            onChange={async (e: SelectChangeEvent) => {
+              const newQuantity = parseInt(e.target.value);
+              if (newQuantity > 0) {
+                await updateCartQuantity(item.product, newQuantity);
+                window.location.reload();
+              } else {
+                onRemove(item.product);
+              }
+            }
+            }
+    
+          >
+            {[...Array(10)].map((_, index) => (
+              <MenuItem key={index} value={index + 1}>
+                {index + 1}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+          <RemoveCircleOutlineIcon 
+            className="text-gray-600 cursor-pointer"
+            fontSize="small"
+            onClick={() => onRemove(item.product)}
+          />
+        </div>
+        <h3 className="text-lg font-semibold">
+          ${(item.product.calculatedPrice * item.quantity).toFixed(2)}
+        </h3>
+
     </div>
-    <button onClick={() => onRemove(item.product)} className="text-red-500">
-      Remove
-    </button>
   </div>
 );
 
@@ -147,26 +188,34 @@ export default function Cart() {
     }
   };
 
+
   if (isLoading) {
     return <div>Loading cart...</div>;
   }
 
 
   return (
-    <div className="flex flex-col xl:w-[1080px] xl:mx-auto">
+    <div className="flex flex-col w-[95%] xl:mx-auto">
       <div className="relative w-full align-center justify-center">
         <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative xs:max-w-[95%] sm:max-w-[100%] mx-auto lg:space-between">
           <div className="flex flex-col items-center justify-between p-4 w-full md:flex-row">
             {cartItems.length > 0 ? (
-              <div className="flex flex-col items-center justify-between my-4 w-full md:w-1/2">
+              <div className="flex flex-col items-center justify-between my-4 w-full md:w-3/5">
                 <div className="flex flex-col items-start justify-between w-full">
-                  <h1 className="text-2xl font-semibold p-4">Cart</h1>
+                  <h1 className="text-2xl font-semibold mb-4">Cart</h1>
+                </div>
+                <div className="flex flex-row items-center justify-between w-full border-b border-gray-200">
+                  <h3 className="text-lg p-4 w-[30%]">Product</h3>
+                  <h3 className="text-lg p-4">Price</h3>
+                  <h3 className="text-lg p-4">Quantity</h3> 
+                  <h3 className="text-lg p-4">Total</h3>
                 </div>
                 {cartItems.map((item) => (
                   <CartItemComponent
                     key={item.product.title}
                     item={item}
                     onRemove={() => handleRemoveFromCart(item.product)}
+                    
                   />
                 ))}
               </div>

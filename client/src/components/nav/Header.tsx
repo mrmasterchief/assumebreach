@@ -12,9 +12,6 @@ import SearchBar from "../search/searchbar";
 import Cart from "../cart/Cart";
 import { getCart } from "@/hooks/cart";
 import { useCart } from "@/context/CartContext";
-import { axiosInstance } from "@/hooks/axios";
-import { useRouter } from "next/navigation";
-import { useRefreshToken } from "@/hooks/user";
 import { indexFunction } from "@/hooks";
 
 type MenuItemWithSubMenuProps = {
@@ -189,13 +186,12 @@ const Header = ({
               >
                 Cart ({cartItemsCount || 0})
               </Link>
-              {isCartOpen && (
                 <Cart
                   isCartOpen={isCartOpen}
                   toggleCart={toggleCart}
                   cartItems={cartItems}
                 />
-              )}
+              
               {showSearchBar && (
                 <SearchBar setShowSearchBar={setShowSearchBar} />
               )}

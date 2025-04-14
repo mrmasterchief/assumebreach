@@ -80,4 +80,30 @@ router.post("/remove", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/new-quantity", async (req: Request, res: Response) => {
+  const userId = await getUserIdFromToken(req);
+  if (!userId) {
+    res.status(401).json({ message: errors[401] });
+    return;
+  }
+  const { product, quantity } = req.body;
+  const productID = product?.id;
+  if (!productID) {
+    res.status(400).json({ message: errors[400] });
+    return;
+  }
+  if (!quantity) {
+    res.status(400).json({ message: errors[400] });
+    return;
+  }
+  try {
+    await updateCartItemQuantity(userId, productID, quantity);
+    res.status(200).json({ message: errors[200] });
+    return;
+  } catch (error) {
+    res.status(500).json({ message: errors[500] });
+    return;
+  }
+});
+
 export default router;

@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { showMessage } from "@/components/messages/Message";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -18,15 +17,14 @@ export default function Account() {
         ]
         ,
         (results) => {
-          setUserDetails(results[0].user);
           if(!results[0]) {
             window.location.href = "/account/authenticate";
           }
+          setUserDetails(results[0].user);
         },
         true
       );
     } catch (error) {
-
       window.location.href = "/account/authenticate";
     }
   }, []);
