@@ -16,7 +16,7 @@ const OverviewComponent = ({
   userDetails: any;
   orders: any;
 }) => (
-  <div className="flex flex-col w-full gap-4 mb-10">
+  <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
     <div className="flex flex-row items-center justify-between w-full border-b border-gray-200">
       <h1 className="text-2xl font-semibold pb-2">
         Hi {userDetails.full_name}</h1>
@@ -92,20 +92,42 @@ const ProfileTab = ({
   }
 ) => {
   return (
-    <div className="flex flex-col w-full gap-4">
+    <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
       <h1 className="text-2xl font-semibold">
         Profile</h1>
       <p className="text-gray-600">
       View and update your profile information, including your name, email, and phone number. You can also update your billing address, or change your password.
       </p>
       <div className="flex flex-col gap-4 mt-4">
-        {Object.keys(userDetails).map((key) => (
+        {Object.keys(userDetails).filter((key) => key !== "role").map((key) => (
           <div key={key} className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-2">
-            <h1 className="text-lg font-semibold">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+            <div className="flex flex-col">
+            <h1 className="text-md">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
             </h1>
-            <p className="text-gray-500">{userDetails[key]}</p>
+            <p className="font-bold text-sm">{userDetails[key] || "N/A"}</p>
+            </div>
+            <Link
+              href="#"
+              className="text-blue-700 hover:underline"
+            >
+              Edit
+            </Link>
           </div>
         ))}
+        <div className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-2">
+            <div className="flex flex-col">
+            <h1 className="text-md">Password
+            </h1>
+            <p className="font-bold text-sm">Password is not shown for security reasons.</p>
+            </div>
+            <Link
+              href="#"
+              className="text-blue-700 hover:underline"
+            >
+              Edit
+            </Link>
+          </div>
+
       </div>
     </div>
   );

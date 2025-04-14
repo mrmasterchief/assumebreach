@@ -55,12 +55,13 @@ async function fetchUserDetails(userId: string | null, unsafeId: string | null, 
 
   return withTransaction(async (client) => {
     const result = await client.query(`SELECT * FROM user_details WHERE ${column} = $1`, [value]);
-    const filteredResult = result.rows.map((row: { email: string; full_name: string; address: string; phone: string; birthdate: string }) => ({
+    const filteredResult = result.rows.map((row: { email: string; full_name: string; address: string; phone: string; birthdate: string, role: string }) => ({
       email: row.email,
       full_name: row.full_name,
       address: row.address,
       phone: row.phone,
       birthdate: row.birthdate,
+      role: row.role,
     }));
     if (filteredResult.length === 0) return null;
     return filteredResult[0];
