@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import {getUserIdFromToken} from "../helpers/getUserIdFromToken";
-import { getCartItems, addCartItem, removeCartItem, clearCart, updateCartItemQuantity } from "../controllers/cartController";
+import { getCartItems, addCartItem, removeCartItem, updateCartItemQuantity, fetchOrders } from "../controllers/cartController";
 import { errors } from "../data/errors";
 
 
@@ -99,6 +99,22 @@ router.post("/new-quantity", async (req: Request, res: Response) => {
   try {
     await updateCartItemQuantity(userId, productID, quantity);
     res.status(200).json({ message: errors[200] });
+    return;
+  } catch (error) {
+    res.status(500).json({ message: errors[500] });
+    return;
+  }
+});
+
+router.get("/orders", async (req: Request, res: Response) => {
+  const userId = await getUserIdFromToken(req);
+  if (!userId) {
+    res.status(401).json({ message: errors[401] });
+    return;
+  }
+  try {
+    const orders = await fetchOrders(userId);
+    res.status(200).json({ orders });
     return;
   } catch (error) {
     res.status(500).json({ message: errors[500] });

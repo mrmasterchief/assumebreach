@@ -191,7 +191,6 @@ const Header = ({
                   toggleCart={toggleCart}
                   cartItems={cartItems}
                 />
-              
               {showSearchBar && (
                 <SearchBar setShowSearchBar={setShowSearchBar} />
               )}

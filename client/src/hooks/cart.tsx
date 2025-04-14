@@ -43,3 +43,23 @@ export const updateCartQuantity = async (product: {}, quantity: number) => {
     console.error("Error updating cart quantity:", error);
   }
 }
+
+export const checkout = async (cartItems: any) => {
+  try {
+    const response = await axiosInstance.post("/cart/checkout", {
+      cartItems: cartItems
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error during checkout:", error);
+  }
+}
+
+export const fetchOrders = async () => {
+  try {
+    const response = await axiosInstance.get("/cart/orders");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+  }
+}

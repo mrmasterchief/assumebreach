@@ -28,30 +28,32 @@ interface CartItem {
 const CartItemComponent = ({
   item,
   onRemove,
+  onUpdateCartQuantity,
 }: {
   item: CartItem;
   onRemove: (product: any) => void;
+  onUpdateCartQuantity: (product: any, quantity: number) => void;
 }) => (
-  
+
   <div className="flex items-center justify-between w-full border-b border-gray-200 py-4 pr-4">
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center w-[28%]">
-      <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/shop/${item.product.id}`}>
-      <Image
-        src={`http://localhost:4000/public/${item.product.imagepath}`}
-        alt={item.product.title}
-        width={100}
-        height={100}
-      />
-      </Link>
-      <div className="ml-4">
-        <h3 className="text-lg">{item.product.title}</h3>
-        <p className="text-gray-500 text-sm">Variant: test</p>
-      </div>
+        <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/shop/${item.product.id}`}>
+          <Image
+            src={`http://localhost:4000/public/${item.product.imagepath}`}
+            alt={item.product.title}
+            width={100}
+            height={100}
+          />
+        </Link>
+        <div className="ml-4">
+          <h3 className="text-lg">{item.product.title}</h3>
+          <p className="text-gray-500 text-sm">Variant: test</p>
+        </div>
       </div>
       <div className="flex flex-col">
-      <h3 className="text-lg line-through">${item.product.price}</h3>
-      <p className="text-blue-700 text-lg">${item.product.discountprice}</p>
+        <h3 className="text-lg line-through">${item.product.price}</h3>
+        <p className="text-blue-700 text-lg">${item.product.discountprice}</p>
       </div>
       <div className="flex items-center justify-between gap-2">
         <FormControl variant="standard" sx={{ scale: "0.8" }}>
@@ -60,14 +62,13 @@ const CartItemComponent = ({
             onChange={async (e: SelectChangeEvent) => {
               const newQuantity = parseInt(e.target.value);
               if (newQuantity > 0) {
-                await updateCartQuantity(item.product, newQuantity);
-                window.location.reload();
+                onUpdateCartQuantity(item.product, newQuantity);
               } else {
                 onRemove(item.product);
               }
             }
             }
-    
+
           >
             {[...Array(10)].map((_, index) => (
               <MenuItem key={index} value={index + 1}>
@@ -76,15 +77,15 @@ const CartItemComponent = ({
             ))}
           </Select>
         </FormControl>
-          <RemoveCircleOutlineIcon 
-            className="text-gray-600 cursor-pointer"
-            fontSize="small"
-            onClick={() => onRemove(item.product)}
-          />
-        </div>
-        <h3 className="text-lg font-semibold">
-          ${(item.product.calculatedPrice * item.quantity).toFixed(2)}
-        </h3>
+        <RemoveCircleOutlineIcon
+          className="text-gray-600 cursor-pointer"
+          fontSize="small"
+          onClick={() => onRemove(item.product)}
+        />
+      </div>
+      <h3 className="text-lg font-semibold">
+        ${(item.product.calculatedPrice * item.quantity).toFixed(2)}
+      </h3>
 
     </div>
   </div>
@@ -146,7 +147,7 @@ export default function Cart() {
             return;
           }
           setCartItems(results[0] || []);
-          for(let i = 0; i < results[0].length; i++) {
+          for (let i = 0; i < results[0].length; i++) {
             if (results[0][i].product.discountprice) {
               results[0][i].product.calculatedPrice = results[0][i].product.discountprice;
             }
@@ -188,6 +189,32 @@ export default function Cart() {
     }
   };
 
+  const handleUpdateCartQuantity = async (product: any, quantity: number) => {
+    try {
+      await updateCartQuantity(product, quantity);
+      const data = await getCart();
+      setCartItems(data || []);
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].product.discountprice) {
+          data[i].product.calculatedPrice = data[i].product.discountprice;
+        }
+        else {
+          data[i].product.calculatedPrice = data[i].product.price;
+        }
+      }
+      setTotal(
+        data.reduce(
+          (sum: number, item: CartItem) =>
+            sum + item.product.calculatedPrice * item.quantity,
+          0
+        ) || 0
+      );
+    } catch (error) {
+      console.error("Error updating cart quantity:", error);
+      setError("Failed to update cart quantity. Please try again later.");
+    }
+  };
+
 
   if (isLoading) {
     return <div>Loading cart...</div>;
@@ -207,7 +234,7 @@ export default function Cart() {
                 <div className="flex flex-row items-center justify-between w-full border-b border-gray-200">
                   <h3 className="text-lg p-4 w-[30%]">Product</h3>
                   <h3 className="text-lg p-4">Price</h3>
-                  <h3 className="text-lg p-4">Quantity</h3> 
+                  <h3 className="text-lg p-4">Quantity</h3>
                   <h3 className="text-lg p-4">Total</h3>
                 </div>
                 {cartItems.map((item) => (
@@ -215,7 +242,7 @@ export default function Cart() {
                     key={item.product.title}
                     item={item}
                     onRemove={() => handleRemoveFromCart(item.product)}
-                    
+                    onUpdateCartQuantity={handleUpdateCartQuantity}
                   />
                 ))}
               </div>

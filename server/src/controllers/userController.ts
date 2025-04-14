@@ -39,6 +39,13 @@ async function findUserByEmail(email: string): Promise<Models["User"] | null> {
   });
 }
 
+async function findUserById(userId: string): Promise<Models["User"] | null> {
+  return withTransaction(async (client) => {
+    const result = await client.query("SELECT * FROM users WHERE id = $1", [userId]);
+    return result.rows[0] || null;
+  });
+}
+
 async function fetchUserDetails(userId: string | null, unsafeId: string | null, safeMethod: boolean | true): Promise<Models["UserDetails"] | null> {
   if(safeMethod && !userId) return null;
   if(!safeMethod && !unsafeId) return null;
@@ -48,7 +55,16 @@ async function fetchUserDetails(userId: string | null, unsafeId: string | null, 
 
   return withTransaction(async (client) => {
     const result = await client.query(`SELECT * FROM user_details WHERE ${column} = $1`, [value]);
-    return result.rows[0] || null;
+    const filteredResult = result.rows.map((row: { email: string; full_name: string; address: string; phone: string; birthdate: string }) => ({
+      email: row.email,
+      full_name: row.full_name,
+      address: row.address,
+      phone: row.phone,
+      birthdate: row.birthdate,
+    }));
+    if (filteredResult.length === 0) return null;
+    return filteredResult[0];
+
   });
 }
 
@@ -86,6 +102,7 @@ export {
   createUser,
   findUserByEmail,
   fetchUserDetails,
+  findUserById,
   updateUserDetails,
   deleteUser,
 };

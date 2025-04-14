@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { fetchUserDetails } from "../controllers/userController";
+import { fetchUserDetails, findUserById } from "../controllers/userController";
 import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 import { errors } from "../data/errors";
 import { User } from "../models/User";
@@ -17,11 +17,13 @@ router.get("/details", async (req: Request, res: Response) => {
     }
     try {
         const userDetails = await fetchUserDetails(userId, unsafeID, false);
-        if (!userDetails) {
+        const user = await findUserById(userId);
+        if (!user || !userDetails) {
             res.status(401).json({ error: errors[401] });
             return;
         }
-        res.status(200).json({ user: userDetails });
+        res.status(200).json({ user: userDetails, userId: user.id, email: user.email });
+
     }
     catch (error) {
         res.status(500).json({ error: errors[500] });

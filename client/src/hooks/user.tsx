@@ -37,3 +37,12 @@ export const authenticate = async (endpoint: string, data: any) => {
       throw error;
     });
 }
+
+export const logout = async () => {
+  try {
+    const response = await axiosInstance.post("/auth/logout");
+    return response.data;
+  } catch (error) {
+    console.error("Error logging out:", error);
+  }
+}

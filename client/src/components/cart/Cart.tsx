@@ -45,6 +45,8 @@ const Cart = ({
     };
   }, [toggleCart]);
 
+
+
   return (
     <div
       ref={cartRef}

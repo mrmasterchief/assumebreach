@@ -100,3 +100,36 @@ export async function updateCartItemQuantity(
     }
   });
 }
+
+export async function fetchOrders(userId: string): Promise<Models["Cart"][]> {
+  return withTransaction(async (client) => {
+    const orders = await client.query(
+      "SELECT * FROM orders WHERE user_id = $1",
+      [userId]
+    );
+    const ordersWithProductDetails = await Promise.all(
+      orders.rows.map(async (order: any) => { 
+        const orderItems = await client.query(
+          "SELECT * FROM order_items WHERE order_id = $1",
+          [order.id]
+        );
+        const products = await Promise.all(
+          orderItems.rows.map(async (item: any) => {
+            const product = await fetchProductById(item.product_id);
+            return {
+              ...item,
+              product,
+            };
+          })
+        );
+        return {
+          ...order,
+          items: products,
+        };
+      }
+    )
+    );
+    return ordersWithProductDetails;
+    
+  });
+}
