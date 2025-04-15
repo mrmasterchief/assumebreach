@@ -37,7 +37,7 @@ const CartItemComponent = ({
   <div className="flex items-center justify-between w-full border-b border-gray-200 py-4 pr-4">
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center w-[28%]">
-        <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/shop/${item.product.id}`}>
+        <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/products/${item.product.id}`}>
           <Image
             src={`http://localhost:4000/public/${item.product.imagepath}`}
             alt={item.product.title}
@@ -55,8 +55,10 @@ const CartItemComponent = ({
         </div>
       </div>
       <div className="flex flex-col">
-        <h3 className="text-lg line-through">${item.product.price}</h3>
+        <h3 className={`text-lg ${item.product.discountprice ? 'line-through' : ''}`}>${item.product.price}</h3>
+        {item.product.discountprice && (
         <p className="text-blue-700 text-lg">${item.product.discountprice}</p>
+        )}
       </div>
       <div className="flex items-center justify-between gap-2">
         <FormControl variant="standard" sx={{ scale: "0.8" }}>

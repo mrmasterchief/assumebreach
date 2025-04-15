@@ -56,7 +56,6 @@ export const FOOTER_LINKS: NavItem[] = [
     subMenuItems: [
       { title: 'Contact Us', path: '/customer-service/contact-us' },
       { title: 'Shipping', path: '/customer-service/shipping' },
-      { title: 'Returns', path: '/customer-service/returns' },
       { title: 'FAQ', path: '/customer-service/faq' },
     ],
   },

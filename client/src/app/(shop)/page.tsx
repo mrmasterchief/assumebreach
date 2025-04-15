@@ -20,9 +20,9 @@ export default function Home() {
         () => getProductsByCategory("Sale"),
       ],
       (results) => {
-        setWeeklyPicks(results[0].slice(0, 3));
-        setLatestDrops(results[1].slice(0, 3));
-        setSale(results[2].slice(0, 3));
+        setWeeklyPicks(results[0].sort(() => 0.5 - Math.random()).slice(0, 3));
+        setLatestDrops(results[1].sort(() => 0.5 - Math.random()).slice(0, 3));
+        setSale(results[2].sort(() => 0.5 - Math.random()).slice(0, 3));
       },
       false
     );
