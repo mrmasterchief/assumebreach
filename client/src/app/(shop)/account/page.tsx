@@ -8,6 +8,7 @@ import { indexFunction } from "@/hooks";
 import { logout } from "@/hooks/user";
 import { fetchOrders } from "@/hooks/cart";
 import EditTemplate from "@/components/form/Edit";
+import { axiosInstance } from "@/hooks/axios";
 
 
 const OverviewComponent = ({
@@ -91,6 +92,7 @@ const ProfileTab = ({
   setSelectedEdit,
   showEdit,
   setShowEdit,
+  handleFormSubmit,
 }
   : {
     userDetails: any;
@@ -98,6 +100,7 @@ const ProfileTab = ({
     setSelectedEdit: any;
     showEdit: any;
     setShowEdit: any;
+    handleFormSubmit: (values: any, formikHelpers: any) => Promise<void>;
   }
 ) => {
   return (
@@ -115,7 +118,13 @@ const ProfileTab = ({
               <div className="flex flex-col">
                 <h1 className="text-md">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                 </h1>
-                <p className="font-bold text-sm">{userDetails[key] || "N/A"}</p>
+                {key === "address" ? (
+                  <p className="font-bold text-sm">
+                    {userDetails[key].country ? userDetails[key].country : "N/A"}
+                  </p>
+                ) : (
+                  <p className="font-bold text-sm">{userDetails[key] || "N/A"}</p>
+                )}
               </div>
               <Link
                 href="#"
@@ -134,7 +143,11 @@ const ProfileTab = ({
                 formType={key as "address" | "phone" | "birthdate" | "email" | "full_name" | "password"}
                 onSubmit={async (values: any) => {
                   setShowEdit(false);
-                  console.log("values", values);
+                  handleFormSubmit(values, {
+                    setSubmitting: () => { },
+                    resetForm: () => { },
+                    setErrors: () => { },
+                  });
                 }
                 }
                 formVisible={showEdit}
@@ -166,7 +179,11 @@ const ProfileTab = ({
             formType="password"
             onSubmit={async (values: any) => {
               setShowEdit(false);
-              console.log("values", values);
+              handleFormSubmit(values, {
+                setSubmitting: () => { },
+                resetForm: () => { },
+                setErrors: () => { },
+              });
             }
             }
             formVisible={showEdit}
@@ -178,11 +195,30 @@ const ProfileTab = ({
   );
 }
 
+const OrdersTab = ({
+  orders,
+  setOrders,
+}: {
+  orders: any;
+  setOrders: any;
+}) => {
+  return(
+  <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
+  <h1 className="text-2xl font-semibold">
+    Orders</h1>
+  <p className="text-gray-600">
+    View and manage your orders. You can view your order history, track your orders, and request returns or exchanges.
+  </p>
+
+</div>
+  )
+}
+
 
 export default function Account() {
   const [userDetails, setUserDetails] = useState<any>(null);
   const [orders, setOrders] = useState<any>([]);
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("overview");
   const [selectedEdit, setSelectedEdit] = useState<any>(null);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -212,6 +248,39 @@ export default function Account() {
       window.location.href = "/account/authenticate";
     }
   }, []);
+
+
+const handleFormSubmit = async (values: any, formikHelpers: any) => {
+    try {
+      const result = await axiosInstance.post("/user/update", {
+        ...values,
+      });
+      if (result.status === 200) {
+        formikHelpers.resetForm();
+        formikHelpers.setSubmitting(false);
+        setShowEdit(false);
+
+
+        delete values.password;
+        Object.keys(values).forEach((key) => {
+          if (values[key] === "") {
+            delete values[key];
+          }
+        });
+        setUserDetails(
+          {
+            ...userDetails,
+            ...values,
+          }
+        );
+        
+      }
+    } catch (error) {
+      console.error("Error updating user info:", error);
+      formikHelpers.setSubmitting(false);
+      formikHelpers.setErrors({ general: "An error occurred. Please try again." });
+    }
+  };
 
 
 
@@ -270,8 +339,11 @@ export default function Account() {
             <OverviewComponent userDetails={userDetails} orders={orders} />
           )}
           {activeTab === "profile" && (
-            <ProfileTab userDetails={userDetails} selectedEdit={selectedEdit} setSelectedEdit={setSelectedEdit} showEdit={showEdit} setShowEdit={setShowEdit} />
+            <ProfileTab userDetails={userDetails} selectedEdit={selectedEdit} setSelectedEdit={setSelectedEdit} showEdit={showEdit} setShowEdit={setShowEdit} handleFormSubmit={handleFormSubmit} />
 
+          )}
+          {activeTab === "orders" && (
+            <OrdersTab orders={orders} setOrders={setOrders} />
           )}
         </div>
       </div>

@@ -48,7 +48,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <ContentContainer styles="gap-20">
+      <ContentContainer styles="gap-20 mb-20">
           <ShowCaseContainer
             headerTitle="Latest Drops"
             destination="/products?category=drops"

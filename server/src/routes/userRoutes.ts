@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { fetchUserDetails, findUserById } from "../controllers/userController";
+import { fetchUserDetails, findUserById, updateUserDetails } from "../controllers/userController";
 import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 import { errors } from "../data/errors";
 import { User } from "../models/User";
@@ -48,6 +48,38 @@ router.get("/user", async (req: Request, res: Response) => {
         res.status(500).json({ error: errors[500] });
     }
 }); 
+
+router.post("/update", async (req: Request, res: Response) => {
+    const userId = await getUserIdFromToken(req);
+    if (!userId) {
+        res.status(401).json({ error: errors[401] });
+        return;
+    }
+    const { full_name, email, password, phone, birth_date, address } = req.body;
+    try {
+        const userDetails = await fetchUserDetails(userId, null, true);
+        if (!userDetails) {
+            res.status(401).json({ error: errors[401] });
+            return;
+        }
+        const updatedFields = {
+            ...(full_name && { full_name }),
+            ...(phone && { phone }),
+            ...(birth_date && { birth_date }),
+            ...(address && { address })
+        }; 
+        const updatedUser = await updateUserDetails(userId, null, { ...updatedFields });
+        if (!updatedUser) {
+            res.status(401).json({ error: errors[401] });
+            return;
+        }
+        res.status(200).json({ message: errors[200], user: updatedUser });
+    }
+    catch (error) {
+        res.status(500).json({ error: errors[500] });
+    }
+}
+);
 
 
 export default router;
