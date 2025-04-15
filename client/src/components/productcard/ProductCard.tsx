@@ -32,8 +32,9 @@ const ProductCard = ({
       >
         <Image
           src={`http://localhost:4000/public/${cardInfo.imagepath}`}
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{objectFit: "cover", objectPosition: "center"}}
+          sizes="( max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw"
           alt={cardInfo.title}
         />
       </div>
@@ -54,8 +55,9 @@ const ProductCard = ({
       }`}>
         <Image
           src={`http://localhost:4000/public/${cardInfo.imagepath}`}
-          layout="fill"
-          objectFit="cover"
+          fill
+          sizes="( max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw"
+          style={{ objectPosition: "center", objectFit: "cover" }}
           alt={cardInfo.title}
           className="absolute inset-0 object-cover object-center"
         />

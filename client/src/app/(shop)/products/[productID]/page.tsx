@@ -64,7 +64,7 @@ export default function ProductDetails() {
     <ContentContainer>
       <div className="relative w-full align-center justify-center">
         <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative xs:max-w-[90%] sm:max-w-[95%] mx-auto lg:space-between">
-          <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[300px] w-full py-8 gap-y-6 max-h-[100vh]">
+          <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[300px] w-full py-8 max-h-[100vh]">
             <div id="product-info">
               <div className="flex flex-col gap-y-4 lg:max-w-[500px] mx-auto">
                 <Link
@@ -81,6 +81,7 @@ export default function ProductDetails() {
                 </p>
               </div>
             </div>
+            <div className="flex flex-col mt-5 lg:max-w-[500px] mx-auto">
             <ProductSection
               title="Product Information"
               content={<ProductInfoContent productDetails={productDetails} />}
@@ -93,6 +94,8 @@ export default function ProductDetails() {
               isOpen={isShippingReturnsOpen}
               toggle={toggleShippingReturns}
             />
+            </div>
+            
           </div>
           <div className="block w-full relative px-4">
             <div className="flex items-center relative">

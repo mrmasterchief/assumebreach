@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 import { removeFromCart } from "@/hooks/cart";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const Cart = ({
   toggleCart,
@@ -16,7 +16,7 @@ const Cart = ({
       imagepath: string;
       title: string;
       price: number;
-      discountPrice: number;
+      discountprice: number;
     };
     quantity: number;
   }[];
@@ -87,11 +87,7 @@ const Cart = ({
                     <p className="text-gray-700 text-md">Variant: test</p>
                     <p className="text-sm">Quantity: {item.quantity}</p>
                     <div className="flex flex-row items-center mt-2 gap-1" onClick={(e) => e.stopPropagation()}>
-                      <RemoveCircleOutlineIcon
-                        className="text-gray-600"
-                        fontSize="small"
-                        onClick={() => removeFromCart(item.product.id)}
-                      />
+                      <Icon onClick={() => removeFromCart(item.product.id)} className="text-gray-600 cursor-pointer" icon="material-symbols:remove-shopping-cart" width="20" height="20" />
                       <p
                         className="text-sm text-gray-600 cursor-pointer"
                         onClick={() => [removeFromCart(item.product),
@@ -104,10 +100,10 @@ const Cart = ({
                   </div>
                 </div>
                 <p className="text-md font-semibold text-gray-800 self-start">
-                  {item.product.discountPrice ? (
+                  {item.product.discountprice ? (
                     <span>
                       $
-                      {(item.product.discountPrice * item.quantity).toFixed(2)}
+                      {(item.product.discountprice * item.quantity).toFixed(2)}
                     </span>
                   ) : (
                     <span>
@@ -126,8 +122,8 @@ const Cart = ({
               $
               {cartItems
                 .reduce((acc, item) => {
-                  const price = item.product.discountPrice
-                    ? item.product.discountPrice
+                  const price = item.product.discountprice
+                    ? item.product.discountprice
                     : item.product.price;
                   return acc + price * item.quantity;
                 }, 0)

@@ -55,17 +55,31 @@ async function fetchUserDetails(userId: string | null, unsafeId: string | null, 
 
   return withTransaction(async (client) => {
     const result = await client.query(`SELECT * FROM user_details WHERE ${column} = $1`, [value]);
-    const filteredResult = result.rows.map((row: { email: string; full_name: string; address: string; phone: string; birthdate: string, role: string }) => ({
+    const filteredResult = result.rows.map((row: { email: string; full_name: string; address: string; phone: string; birth_date: string, role: string }) => ({
       email: row.email,
       full_name: row.full_name,
       address: row.address,
       phone: row.phone,
-      birthdate: row.birthdate,
+      birthdate: row.birth_date,
       role: row.role,
     }));
     if (filteredResult.length === 0) return null;
     return filteredResult[0];
 
+  });
+}
+
+async function fetchUserDetailsUnrestricted(userId: string | null, unsafeId: string | null): Promise<Models["UserDetails"] | null> {
+  if (!userId && !unsafeId) {
+    throw new Error("Either userId or unsafeId must be provided.");
+  }
+  const column = userId ? "user_id" : "unsafe_id";
+  const value = userId || unsafeId;
+
+  return withTransaction(async (client) => {
+    const result = await client.query(`SELECT * FROM user_details WHERE ${column} = $1`, [value]);
+   
+    return result.rows[0] || null;
   });
 }
 
@@ -93,6 +107,7 @@ async function updateUserDetails(
   });
 }
 
+
 async function deleteUser(userId: string): Promise<void> {
   return withTransaction(async (client) => {
     await client.query("DELETE FROM users WHERE id = $1", [userId]);
@@ -105,5 +120,6 @@ export {
   fetchUserDetails,
   findUserById,
   updateUserDetails,
+  fetchUserDetailsUnrestricted,
   deleteUser,
 };

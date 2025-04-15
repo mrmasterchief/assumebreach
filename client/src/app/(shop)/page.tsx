@@ -36,6 +36,8 @@ export default function Home() {
           src="https://xsuit.com/cdn/shop/articles/suit_wearing_1200x1200_crop_center.webp?v=1720118555"
           alt="hero"
           fill
+          priority
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
         />
         <div className="absolute inset-0 bg-black/50" />

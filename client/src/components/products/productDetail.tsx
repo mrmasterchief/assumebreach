@@ -14,8 +14,8 @@ export const ProductSection = ({
   <div className="border-grey-20 group border-t last:mb-0 last:border-b py-3">
     <h3 className="px-1" onClick={toggle}>
       <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-4">
-          <p className="font-normal font-sans txt-medium text-[#4b5563] text-lg">
+        <div className="flex items-center">
+          <p className="font-normal font-san text-[#4b5563] text-lg">
             {title}
           </p>
         </div>

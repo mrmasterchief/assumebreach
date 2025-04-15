@@ -7,6 +7,7 @@ import { getUserInfo } from "@/hooks/user";
 import { indexFunction } from "@/hooks";
 import { logout } from "@/hooks/user";
 import { fetchOrders } from "@/hooks/cart";
+import EditTemplate from "@/components/form/Edit";
 
 
 const OverviewComponent = ({
@@ -29,25 +30,25 @@ const OverviewComponent = ({
       information, and more.
     </p>
     <div className="flex flex-row items-center justify-between w-full">
-    <div className="flex flex-col gap-4 mt-4">
-      <h1 className="text-xl font-semibold">Your Orders</h1>
-      <div className="flex flex-row items-center gap-2">
-      <h1 className="text-3xl font-semibold">{orders.length}</h1>
-      <h1 className="text-md text-gray-600">
-        ORDERS
-      </h1>
-      </div>
+      <div className="flex flex-col gap-4 mt-4">
+        <h1 className="text-xl font-semibold">Your Orders</h1>
+        <div className="flex flex-row items-center gap-2">
+          <h1 className="text-3xl font-semibold">{orders.length}</h1>
+          <h1 className="text-md text-gray-600">
+            ORDERS
+          </h1>
+        </div>
       </div>
       <div className="flex flex-col gap-4 mt-4">
-      <h1 className="text-xl font-semibold">Addresses</h1>
-      <div className="flex flex-row items-center gap-2">
-      <h1 className="text-3xl font-semibold">{orders.length}</h1>
-      <h1 className="text-md text-gray-600">
-        SAVED
-      </h1>
+        <h1 className="text-xl font-semibold">Addresses</h1>
+        <div className="flex flex-row items-center gap-2">
+          <h1 className="text-3xl font-semibold">{orders.length}</h1>
+          <h1 className="text-md text-gray-600">
+            SAVED
+          </h1>
+        </div>
       </div>
-      </div>
-      </div>
+    </div>
     <div className="flex flex-col gap-4 mt-4">
       <h1 className="text-xl font-semibold">Recent Orders</h1>
       {orders.length > 0 ? (
@@ -71,62 +72,106 @@ const OverviewComponent = ({
               >
                 View Order
               </Link>
-              </div>
+            </div>
           ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">
-            You have no recent orders.
-          </p>
-        )}
-          
-      </div>
+        </div>
+      ) : (
+        <p className="text-gray-500">
+          You have no recent orders.
+        </p>
+      )}
+
+    </div>
   </div>
 );
 
 const ProfileTab = ({
-  userDetails
+  userDetails,
+  selectedEdit,
+  setSelectedEdit,
+  showEdit,
+  setShowEdit,
 }
   : {
     userDetails: any;
+    selectedEdit: any;
+    setSelectedEdit: any;
+    showEdit: any;
+    setShowEdit: any;
   }
 ) => {
   return (
+
     <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
       <h1 className="text-2xl font-semibold">
         Profile</h1>
       <p className="text-gray-600">
-      View and update your profile information, including your name, email, and phone number. You can also update your billing address, or change your password.
+        View and update your profile information, including your name, email, and phone number. You can also update your billing address, or change your password.
       </p>
       <div className="flex flex-col gap-4 mt-4">
         {Object.keys(userDetails).filter((key) => key !== "role").map((key) => (
-          <div key={key} className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-2">
-            <div className="flex flex-col">
-            <h1 className="text-md">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-            </h1>
-            <p className="font-bold text-sm">{userDetails[key] || "N/A"}</p>
+          <div key={key} className="border-b border-gray-200 py-2">
+            <div className="flex flex-row items-center justify-between w-full py-2">
+              <div className="flex flex-col">
+                <h1 className="text-md">{key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                </h1>
+                <p className="font-bold text-sm">{userDetails[key] || "N/A"}</p>
+              </div>
+              <Link
+                href="#"
+                className="text-blue-700 hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSelectedEdit(key);
+                  setShowEdit(!showEdit);
+                }}
+              >
+                {showEdit && selectedEdit === key ? "Cancel" : "Edit"}
+              </Link>
             </div>
-            <Link
-              href="#"
-              className="text-blue-700 hover:underline"
-            >
-              Edit
-            </Link>
+            {selectedEdit === key && (
+              <EditTemplate
+                formType={key as "address" | "phone" | "birthdate" | "email" | "full_name" | "password"}
+                onSubmit={async (values: any) => {
+                  setShowEdit(false);
+                  console.log("values", values);
+                }
+                }
+                formVisible={showEdit}
+              />
+            )}
+
           </div>
         ))}
         <div className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-2">
-            <div className="flex flex-col">
+          <div className="flex flex-col">
             <h1 className="text-md">Password
             </h1>
             <p className="font-bold text-sm">Password is not shown for security reasons.</p>
-            </div>
-            <Link
-              href="#"
-              className="text-blue-700 hover:underline"
-            >
-              Edit
-            </Link>
           </div>
+          <Link
+            href="#"
+            className="text-blue-700 hover:underline"
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedEdit("password");
+              setShowEdit(!showEdit);
+            }}
+          >
+            {showEdit && selectedEdit === "password" ? "Cancel" : "Edit"}
+          </Link>
+        </div>
+        {selectedEdit === "password" && (
+          <EditTemplate
+            formType="password"
+            onSubmit={async (values: any) => {
+              setShowEdit(false);
+              console.log("values", values);
+            }
+            }
+            formVisible={showEdit}
+          />
+        )}
 
       </div>
     </div>
@@ -137,7 +182,9 @@ const ProfileTab = ({
 export default function Account() {
   const [userDetails, setUserDetails] = useState<any>(null);
   const [orders, setOrders] = useState<any>([]);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("profile");
+  const [selectedEdit, setSelectedEdit] = useState<any>(null);
+  const [showEdit, setShowEdit] = useState(false);
 
   useEffect(() => {
     try {
@@ -219,12 +266,13 @@ export default function Account() {
           </div>
         </div>
         <div className="flex w-[60%] md:w-[60%] mx-auto">
-        {activeTab === "overview" && (
+          {activeTab === "overview" && (
             <OverviewComponent userDetails={userDetails} orders={orders} />
-        )}
-        {activeTab === "profile" && (
-            <ProfileTab userDetails={userDetails} />
-        )}
+          )}
+          {activeTab === "profile" && (
+            <ProfileTab userDetails={userDetails} selectedEdit={selectedEdit} setSelectedEdit={setSelectedEdit} showEdit={showEdit} setShowEdit={setShowEdit} />
+
+          )}
         </div>
       </div>
       <h1 className="text-2xl mt-4 font-semibold">Got questions?</h1>

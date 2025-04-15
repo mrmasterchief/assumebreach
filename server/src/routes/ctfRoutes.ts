@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { errors } from "../data/errors";
-import { fetchUserDetails } from "../controllers/userController";
+import { fetchUserDetails, fetchUserDetailsUnrestricted } from "../controllers/userController";
 import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 import { flags } from "../data/flags";
 import { Flag } from "../models/Flag";
@@ -19,7 +19,7 @@ router.post("/flags", async (req: Request, res: Response) => {
   }
 
   try {
-    const userDetails = await fetchUserDetails(userId, unsafeId, true);
+    const userDetails = await fetchUserDetailsUnrestricted(userId, unsafeId);
 
     if (!userDetails) {
       res.status(401).json({ error: errors[401] });
@@ -53,7 +53,7 @@ router.post("/flag", async (req: Request, res: Response) => {
     return;
   }
   try {
-    const userDetails = await fetchUserDetails(userId, unsafeId, true);
+    const userDetails = await fetchUserDetailsUnrestricted(userId, unsafeId);
     if (!userDetails) {
       res.status(401).json({ error: errors[401] });
       return;

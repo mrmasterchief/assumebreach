@@ -9,7 +9,6 @@ import { indexFunction } from "@/hooks";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import MenuItem from "@mui/material/MenuItem";
 
 interface CartItem {
@@ -47,7 +46,11 @@ const CartItemComponent = ({
           />
         </Link>
         <div className="ml-4">
-          <h3 className="text-lg">{item.product.title}</h3>
+          <h3 className="text-lg"> 
+            {item.product.title.length > 12
+              ? item.product.title.slice(0, 12) + "..."
+              : item.product.title}
+          </h3>
           <p className="text-gray-500 text-sm">Variant: test</p>
         </div>
       </div>
@@ -77,11 +80,14 @@ const CartItemComponent = ({
             ))}
           </Select>
         </FormControl>
-        <RemoveCircleOutlineIcon
+        <Icon
+          icon="material-symbols:remove-shopping-cart"
           className="text-gray-600 cursor-pointer"
-          fontSize="small"
+          width="20"
+          height="20"
           onClick={() => onRemove(item.product)}
         />
+       
       </div>
       <h3 className="text-lg font-semibold">
         ${(item.product.calculatedPrice * item.quantity).toFixed(2)}
