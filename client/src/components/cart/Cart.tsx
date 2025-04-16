@@ -32,18 +32,20 @@ const Cart = ({
         toggleCart();
       }
     };
-
+  
     const cartElement = cartRef.current;
-    if (cartElement) {
+  
+    if (isCartOpen && cartElement) {
       cartElement.addEventListener("mouseleave", handleMouseLeave);
     }
-
+  
     return () => {
       if (cartElement) {
         cartElement.removeEventListener("mouseleave", handleMouseLeave);
       }
     };
-  }, [toggleCart]);
+  }, [isCartOpen, toggleCart]);
+  
 
 
 
@@ -53,7 +55,7 @@ const Cart = ({
       className={`
         absolute right-50 w-[420px] bg-white top-[70px] z-50 rounded-b-lg border shadow-lg origin-top transition-all duration-300 ease-in-out
         overflow-hidden
-        ${isCartOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}
+      ${isCartOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}
       `}
       style={{ transformOrigin: "top center" }}
     >

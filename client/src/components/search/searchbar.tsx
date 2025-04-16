@@ -33,6 +33,21 @@ const SearchBar = ({
       }, 2000);
     }
   };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
+        setTimeout(() => setShowSearchBar(false), 200);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setShowSearchBar]);
 
   useEffect(() => {
     setVisible(true);
@@ -54,9 +69,8 @@ const SearchBar = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-[rgba(255,255,255,0.9)] transition-opacity duration-500 !ml-0 ease-in-out backdrop-filter backdrop-blur-lg  ${
-        visible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 bg-[rgba(255,255,255,0.9)] transition-opacity duration-500 !ml-0 ease-in-out backdrop-filter backdrop-blur-lg  ${visible ? "opacity-100" : "opacity-0"
+        }`}
       onClick={(e) => e.preventDefault()}
     >
       <div className="w-full h-full flex top-[100px] justify-center absolute">
@@ -87,21 +101,13 @@ const SearchBar = ({
               style={{ color: "#f4f5f5" }}
               onChange={handleChange}
               onFocus={() => setIsFocused(true)}
-              onBlur={(e) => {
-                if (e.relatedTarget?.classList.contains("product-card")) return;
-                setTimeout(() => setShowSearchBar(false), 100);
-              }}
               autoFocus
             />
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
             {searchResults.map((item, idx) => (
-              <div
-                onClick={(e) => e.preventDefault()}
-                key={idx}
-                className="w-full"
-              >
+
                 <ProductCard
                   key={idx}
                   cardType="search"
@@ -113,7 +119,6 @@ const SearchBar = ({
                   }}
                   setShowSearchBar={setShowSearchBar}
                 />
-              </div>
             ))}
           </div>
         </div>

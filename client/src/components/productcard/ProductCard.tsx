@@ -28,7 +28,7 @@ const ProductCard = ({
     >
       <div
         className="rounded-lg 
-       relative overflow-hidden bg-[#f9fafb] border border-gray-200 rounded-large group h-12 w-12 sm:h-full sm:w-full aspect-[1/1] shadow-md"
+       relative overflow-hidden bg-[#f9fafb] border border-gray-200 rounded-large group  sm:h-full sm:w-full aspect-[1/1] shadow-md  group justify-center items-center flex"
       >
         <Image
           src={`http://localhost:4000/public/${cardInfo.imagepath}`}

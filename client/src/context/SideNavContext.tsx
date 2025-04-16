@@ -1,21 +1,21 @@
 'use client';
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const SidenavContext = createContext({
   isSidenavOpen: false,
   toggleSidenav: () => {},
+  closeSidenav: () => {},
 });
 
 export const SidenavProvider = ({ children }  : { children: React.ReactNode }
 ) => {
   const [isSidenavOpen, setIsSidenavOpen] = useState(false);
+  const toggleSidenav = () => setIsSidenavOpen(prev => !prev);
+  const closeSidenav = () => setIsSidenavOpen(false);
 
-  const toggleSidenav = () => {
-    setIsSidenavOpen(!isSidenavOpen);
-  };
 
   return (
-    <SidenavContext.Provider value={{ isSidenavOpen, toggleSidenav }}>
+    <SidenavContext.Provider value={{ isSidenavOpen, toggleSidenav, closeSidenav }}>
       {children}
     </SidenavContext.Provider>
   );

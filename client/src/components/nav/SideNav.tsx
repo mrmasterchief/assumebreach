@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,44 +8,56 @@ import { usePathname } from "next/navigation";
 import { SIDENAV_ITEMS } from "@/constants";
 import { NavItem } from "./NavTypes";
 import { Icon } from "@iconify/react";
+import { useSidenav } from "@/context/SideNavContext";
 
-const SideNav = ({
-  toggleSidenav,
-}: {
-  toggleSidenav: (show: boolean) => void;
-}) => {
+const SideNav = ({}: {}) => {
   const [visible, setVisible] = useState(false);
+  const { toggleSidenav, closeSidenav } = useSidenav();
+  const sideNavRef = useRef<HTMLDivElement>(null);
 
   const toggleVisible = () => {
     setVisible(!visible);
 
     setTimeout(() => {
-      toggleSidenav(false);
+      closeSidenav();
     }, 300);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (sideNavRef.current && !sideNavRef.current.contains(event.target as Node)) {
+      setVisible(false);
+      closeSidenav();
+    }
   };
 
   useEffect(() => {
     setVisible(true);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
+
   return (
     <div
-      className={`fixed inset-0 transition-opacity duration-300 ease-in-out z-50 w-[20%] p-2  ${
+      ref={sideNavRef}
+      className={`fixed inset-0 transition-opacity duration-300 ease-in-out z-50 w-[20%] p-2 ${
         visible ? "opacity-100" : "opacity-0"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-full h-[99%] flex align-center absolute bg-[#818388] rounded flex-col">
-      <div className="flex flex-row justify-end w-[95%] mt-5">
-        <button
-          onClick={() => toggleVisible()}
-          aria-label="Close Sidebar"
-          className="p-2 rounded-lg hover:bg-[#525457]"
-        >
-          <Icon icon="ant-design:close-outlined" width="16" height="16" color="white" />
-        </button>
+        <div className="flex flex-row justify-end w-[95%] mt-5">
+          <button
+            onClick={() => toggleVisible()}
+            aria-label="Close Sidebar"
+            className="p-2 rounded-lg hover:bg-[#525457]"
+          >
+            <Icon icon="ant-design:close-outlined" width="16" height="16" color="white" />
+          </button>
         </div>
         <div className="flex flex-col space-y-6 w-full h-full align-center justify-center">
-          <div className="flex flex-col space-y-2  md:px-6 ">
+          <div className="flex flex-col space-y-2 md:px-6">
             {SIDENAV_ITEMS.map((item, idx) => {
               return <MenuItem key={idx} item={item} toggleSideNav={toggleVisible} />;
             })}
@@ -58,7 +70,13 @@ const SideNav = ({
 
 export default SideNav;
 
-const MenuItem = ({toggleSideNav, item } : { toggleSideNav: (show: boolean) => void, item: NavItem }) => {
+const MenuItem = ({
+  toggleSideNav,
+  item,
+}: {
+  toggleSideNav: (show: boolean) => void;
+  item: NavItem;
+}) => {
   const pathname = usePathname();
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {

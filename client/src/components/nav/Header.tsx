@@ -13,6 +13,7 @@ import Cart from "../cart/Cart";
 import { getCart } from "@/hooks/cart";
 import { useCart } from "@/context/CartContext";
 import { indexFunction } from "@/hooks";
+import { useSidenav } from "@/context/SideNavContext";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -38,11 +39,8 @@ const sidebar = {
   },
 };
 
-const Header = ({
-  toggleSidenav,
-  type,
+const Header = ({  type,
 }: {
-  toggleSidenav?: (show: boolean) => void;
   type?: string;
 }) => {
   const pathname = usePathname();
@@ -53,6 +51,7 @@ const Header = ({
   const { isCartOpen, toggleCart } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const { toggleSidenav } = useSidenav();
 
   useEffect(() => {
     if (showSearchBar || isOpen) {
@@ -64,6 +63,7 @@ const Header = ({
       document.body.style.overflow = "auto";
     };
   }, [showSearchBar]);
+
 
 
 
@@ -154,7 +154,8 @@ const Header = ({
         <div className="flex h-[70px] items-center justify-between px-4">
           {type !== "cms" && (
             <button
-              onClick={() => toggleSidenav && toggleSidenav(true)}
+              onClick={() => [
+                toggleSidenav()]}
               aria-label="Toggle Sidenav"
               className="hidden md:block"
             >
@@ -186,11 +187,11 @@ const Header = ({
               >
                 Cart ({cartItemsCount || 0})
               </Link>
-                <Cart
-                  isCartOpen={isCartOpen}
-                  toggleCart={toggleCart}
-                  cartItems={cartItems}
-                />
+              <Cart
+                isCartOpen={isCartOpen}
+                toggleCart={toggleCart}
+                cartItems={cartItems}
+              />
               {showSearchBar && (
                 <SearchBar setShowSearchBar={setShowSearchBar} />
               )}
