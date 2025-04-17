@@ -73,9 +73,10 @@ const Header = ({  type,
       [
         () => getCart(),
       ]
-      , (response: any) => {
-        setCartItemsCount(response[0].length);
-        setCartItems(response[0]);
+      , (results: any) => {
+        if (!results[0]) return
+        setCartItemsCount(results[0].length);
+        setCartItems(results[0]);
       }, true
     );
   }, [isCartOpen]);

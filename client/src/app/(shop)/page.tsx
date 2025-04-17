@@ -13,19 +13,26 @@ export default function Home() {
   const [sale, setSale] = useState<any[]>([]);
 
   useEffect(() => {
-    indexFunction(
-      [
-        () => getProductsByCategory("Weekly Picks"),
-        () => getProductsByCategory("Latest Drops"),
-        () => getProductsByCategory("Sale"),
-      ],
-      (results) => {
-        setWeeklyPicks(results[0].sort(() => 0.5 - Math.random()).slice(0, 3));
-        setLatestDrops(results[1].sort(() => 0.5 - Math.random()).slice(0, 3));
-        setSale(results[2].sort(() => 0.5 - Math.random()).slice(0, 3));
-      },
-      false
-    );
+    try {
+      indexFunction(
+        [
+          () => getProductsByCategory("Weekly Picks"),
+          () => getProductsByCategory("Latest Drops"),
+          () => getProductsByCategory("Sale"),
+        ],
+        (results) => {
+          if (!results[0] || !results[1] || !results[2]) return;
+          setWeeklyPicks(results[0].sort(() => 0.5 - Math.random()).slice(0, 3));
+          setLatestDrops(results[1].sort(() => 0.5 - Math.random()).slice(0, 3));
+          setSale(results[2].sort(() => 0.5 - Math.random()).slice(0, 3));
+        },
+        true
+      );
+    }
+    catch (error) {
+      console.error(error);
+      showMessage("Error", "Something went wrong", "error");
+    }
 
   }, []);
 
@@ -49,24 +56,24 @@ export default function Home() {
         </div>
       </div>
       <ContentContainer styles="gap-20 mb-20">
-          <ShowCaseContainer
-            headerTitle="Latest Drops"
-            destination="/products?category=drops"
-            type="discover"
-            data={latestDrops}
-          />
-          <ShowCaseContainer
-            headerTitle="Weekly Picks"
-            destination="/products?category=picks"
-            type="discover"
-            data={weeklyPicks}
-          />
-          <ShowCaseContainer
-            headerTitle="Sale"
-            destination="/products?category=sale"
-            type="discover"
-            data={sale}
-          />
+        <ShowCaseContainer
+          headerTitle="Latest Drops"
+          destination="/products?category=drops"
+          type="discover"
+          data={latestDrops}
+        />
+        <ShowCaseContainer
+          headerTitle="Weekly Picks"
+          destination="/products?category=picks"
+          type="discover"
+          data={weeklyPicks}
+        />
+        <ShowCaseContainer
+          headerTitle="Sale"
+          destination="/products?category=sale"
+          type="discover"
+          data={sale}
+        />
 
       </ContentContainer>
     </>

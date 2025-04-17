@@ -10,12 +10,14 @@ import ContentContainer from "@/components/content-container";
 import { useRefreshToken } from "@/hooks/user";
 import { indexFunction } from "@/hooks";
 import { authenticate } from "@/hooks/user";
+import { useCTF } from "@/context/CtfContext";
 
 export default function Authenticate() {
   const [formType, setFormType] = useState<
     "login" | "register" | "forgotPassword"
   >("login");
   const router = useRouter();
+  const { ctfOpen } = useCTF();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,6 +33,11 @@ export default function Authenticate() {
   }, [router]);
 
   const handleFormSubmit = async (values: any, formikHelpers: any) => {
+    if(!ctfOpen) {
+      showMessage("Error", "CTF is not open. Wait until the administrator activates the website.", "error");
+      formikHelpers.setSubmitting(false);
+      return;
+    }
     try {
       let endpoint = "";
       let data = {};
@@ -56,7 +63,6 @@ export default function Authenticate() {
         ],
         (results: any) => {
           if(results[0].status === 200 || results[0].status === 201) {
-            showMessage("Success", results[0].data.message, "success");
             formikHelpers.resetForm();
             formikHelpers.setSubmitting(false);
             if (formType === "login") {
@@ -65,7 +71,10 @@ export default function Authenticate() {
                 return
               }
               localStorage.setItem("unsafeID", results[0].data.unsafeID);
+              if(ctfOpen) {
               window.location.href = "/account";
+              }
+              
             }  
             if(formType === "register") {
               window.location.href = "/account";
@@ -100,7 +109,7 @@ export default function Authenticate() {
         </p>
         <FormTemplate formType={formType} onSubmit={handleFormSubmit} />
         <div className="flex justify-center flex-col gap-2 mt-4">
-          <button
+          {/* <button
             className="text-gray-500 hover:text-black"
             onClick={() =>
               setFormType(formType === "login" ? "register" : "login")
@@ -109,7 +118,7 @@ export default function Authenticate() {
             {formType === "login"
               ? "Don't have an account? Register"
               : "Already have an account? Sign in"}
-          </button>
+          </button> */}
           {formType === "register" && (
             <p className="text-center">
               By signing up, you agree to our Terms, Data Policy and Cookies
@@ -119,7 +128,7 @@ export default function Authenticate() {
         </div>
         </div>
       </ContentContainer>
-
+{ctfOpen &&
       <div className="flex w-[60%] md:w-[70%] mx-auto flex-col justify-center py-8 gap-4 border-t border-gray-200">
         <h1 className="text-2xl mt-4 font-semibold">Got questions?</h1>
         <div className="flex flex-row gap-2">
@@ -136,6 +145,7 @@ export default function Authenticate() {
           </Link>
         </div>
       </div>
+}
     </>
   );
 }

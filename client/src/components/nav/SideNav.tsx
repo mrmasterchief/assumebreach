@@ -9,11 +9,13 @@ import { SIDENAV_ITEMS } from "@/constants";
 import { NavItem } from "./NavTypes";
 import { Icon } from "@iconify/react";
 import { useSidenav } from "@/context/SideNavContext";
+import { useRouter } from "next/navigation";
 
-const SideNav = ({}: {}) => {
+const SideNav = ({ctfOpen}: {ctfOpen: boolean}) => {
   const [visible, setVisible] = useState(false);
   const { toggleSidenav, closeSidenav } = useSidenav();
   const sideNavRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const toggleVisible = () => {
     setVisible(!visible);
@@ -28,6 +30,16 @@ const SideNav = ({}: {}) => {
       setVisible(false);
       closeSidenav();
     }
+  };
+
+  const handleLinkClick = (targetPath: string) => {
+    if (!ctfOpen && targetPath !== "/account/authenticate") {
+      router.push("/account/authenticate");
+    } else {
+      router.push(targetPath);
+    }
+
+    toggleSidenav(); 
   };
 
   useEffect(() => {
@@ -59,7 +71,7 @@ const SideNav = ({}: {}) => {
         <div className="flex flex-col space-y-6 w-full h-full align-center justify-center">
           <div className="flex flex-col space-y-2 md:px-6">
             {SIDENAV_ITEMS.map((item, idx) => {
-              return <MenuItem key={idx} item={item} toggleSideNav={toggleVisible} />;
+              return <MenuItem key={idx} item={item} toggleSideNav={toggleVisible} handleLinkClick={handleLinkClick} />;
             })}
           </div>
         </div>
@@ -73,9 +85,11 @@ export default SideNav;
 const MenuItem = ({
   toggleSideNav,
   item,
+  handleLinkClick,
 }: {
   toggleSideNav: (show: boolean) => void;
   item: NavItem;
+  handleLinkClick: (targetPath: string) => void;
 }) => {
   const pathname = usePathname();
   const [subMenuOpen, setSubMenuOpen] = useState(false);
@@ -120,16 +134,15 @@ const MenuItem = ({
             <div className="my-2 ml-12 flex flex-col space-y-4">
               {item.subMenuItems?.map((subItem, idx) => {
                 return (
-                  <Link
+                  <div
                     key={idx}
-                    href={subItem.path}
-                    onClick={() => toggleSideNav(false)}
+                    onClick={() => handleLinkClick(subItem.path)}
                     className={`${
                       subItem.path === pathname ? "font-bold" : ""
                     }`}
                   >
                     <span className="text-white">{subItem.title}</span>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
@@ -137,32 +150,30 @@ const MenuItem = ({
         </>
       ) : item.bottom ? (
         <div className="absolute bottom-0 w-full p-6 left-0 align-center">
-          <Link
-            href={item.path}
+          <div
             className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#525457] ${
               item.path === pathname ? "bg-[#525457]" : ""
             }`}
-            onClick={() => toggleSideNav(false)}
+            onClick={() => handleLinkClick(item.path)}
           >
             {item.icon}
             <span className="font-semibold text-2xl flex text-white">
               {item.title}
             </span>
-          </Link>
+          </div>
         </div>
       ) : (
-        <Link
-          href={item.path}
+        <div
           className={`flex flex-row space-x-4 items-center p-2 rounded-lg hover:bg-[#525457] ${
             item.path === pathname ? "bg-[#525457]" : ""
           }`}
-          onClick={() => toggleSideNav(false)}
+          onClick={() => handleLinkClick(item.path)}
         >
           {item.icon}
           <span className="font-semibold text-2xl flex text-white">
             {item.title}
           </span>
-        </Link>
+        </div>
       )}
     </div>
   );

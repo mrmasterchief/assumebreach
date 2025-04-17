@@ -8,7 +8,8 @@ export const flags = [
         "securityCategory": "Insecure API",
         "difficulty": "Easy",
         "flag": "CTF{3ndp0int5_4r3_c00l}",
-        "youtubeExplainer": "tGv7CUutzqU"
+        "youtubeExplainer": "tGv7CUutzqU",
+        "active": true
         },
         {
         "id": 2,
@@ -19,7 +20,8 @@ export const flags = [
         "securityCategory": "Insecure API",
         "difficulty": "Easy",
         "flag": "CTF{3nv_v4r14bl3s_4r3_1mp0rt4nt}",
-        "youtubeExplainer": "WoTaqZW13bY"
+        "youtubeExplainer": "WoTaqZW13bY",
+        "active": true
         },
         {
         "id": 3,
@@ -30,7 +32,8 @@ export const flags = [
         "securityCategory": "IDOR",
         "difficulty": "Medium",
         "flag": "CTF{1d0r_15_4_b4d_pr4ct1c3}",
-        "youtubeExplainer": "tGv7CUutzqU"
+        "youtubeExplainer": "tGv7CUutzqU",
+        "active": true
         },
         {
         "id": 4,
@@ -41,7 +44,8 @@ export const flags = [
         "securityCategory": "SQL Injection",
         "difficulty": "Easy",
         "flag": "CTF{5ql_1nj3ct10n5_4r3_d4ng3r0u5}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "",
+        "active": true
         },
         {   
         "id": 5,
@@ -52,7 +56,8 @@ export const flags = [
         "securityCategory": "XSS",
         "difficulty": "Easy",
         "flag": "CTF{X55_15_4w350m3}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "",
+        "active": true
         },
         {
         "id": 6,
@@ -63,7 +68,8 @@ export const flags = [
         "securityCategory": "Broken Access Control",
         "difficulty": "Hard",
         "flag": "CTF{br0k3n_4cc355_c0ntr0l}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "",
+        "active": true
         },
         {
         "id": 7,
@@ -74,6 +80,7 @@ export const flags = [
         "securityCategory": "Insecure API",
         "difficulty": "Medium",
         "flag": "CTF{r41nb0w_t4bl3_4r3_c00l}",
-        "youtubeExplainer": ""
+        "youtubeExplainer": "",
+        "active": true
         },
     ]

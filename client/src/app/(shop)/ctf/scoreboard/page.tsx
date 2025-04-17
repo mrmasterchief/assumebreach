@@ -12,10 +12,17 @@ import { indexFunction } from "@/hooks";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
+import { useCTF } from "@/context/CtfContext";
+import { db } from "@/firebase/config";
+import { onSnapshot, doc, setDoc, getDoc } from "firebase/firestore";
+import { getUserInfo } from "@/hooks/user";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function ScoreBoard() {
   const [score, setScore] = useState<number>(0);
   const [flagInput, setFlagInput] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
+  const [liveScoreBoard, setLiveScoreBoard] = useState<any[]>([]);
 
   interface Flag {
     title: string;
@@ -24,11 +31,11 @@ export default function ScoreBoard() {
     hint: string;
     difficulty: "Easy" | "Medium" | "Hard";
     securityCategory:
-      | "IDOR"
-      | "XSS"
-      | "SQL Injection"
-      | "Insecure API"
-      | "Broken Access Control";
+    | "IDOR"
+    | "XSS"
+    | "SQL Injection"
+    | "Insecure API"
+    | "Broken Access Control";
     youtubeExplainer: string;
     secureCodeID: number;
   }
@@ -39,6 +46,7 @@ export default function ScoreBoard() {
     "difficulty" | "collected" | "securityCategory"
   >("difficulty");
   const [unsafeID, setUnsafeID] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("flags");
 
   useEffect(() => {
     const fetchUnsafeID = async () => {
@@ -53,14 +61,21 @@ export default function ScoreBoard() {
 
       try {
         await indexFunction(
-          [() => getFlagsList({ unsafeID: unsafeID })],
-          (results) => {
-            if (!results[0]) {
+          [() => getFlagsList({ unsafeID: unsafeID }),
+          () => getUserInfo({ unsafeID: unsafeID })],
+          async (results) => {
+            if (!results[0] || !results[1]) {
               showMessage("Error", "No flags found", "error");
               return;
             }
+            setFullName(results[1].user.full_name);
             setFlagList(results[0].flags);
             setScore(results[0].score);
+            await updateFireStore({
+              unsafeID: unsafeID,
+              fullName: results[1].user.full_name,
+              score: results[0].score,
+            });
           },
           true
         );
@@ -82,8 +97,13 @@ export default function ScoreBoard() {
     try {
       await indexFunction(
         [() => submitFlag({ unsafeID: unsafeID || "", flag: flagInput })],
-        () => {
+        async () => {
           setFlagCorrect(true);
+          await updateFireStore({
+            unsafeID: unsafeID,
+            fullName: fullName,
+            score: score,
+          });
           setFlagInput("");
           showMessage("Success", "You have collected a flag", "success");
         },
@@ -126,6 +146,59 @@ export default function ScoreBoard() {
     setFlagList(sortedList);
   };
 
+  const updateFireStore = async ({
+    unsafeID,
+    fullName,
+    score
+  }: {
+    unsafeID: string | null;
+    fullName: string;
+    score: number;
+  }) => {
+    if (!unsafeID || !fullName) return;
+    const docRef = doc(db, "ctf", unsafeID);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      setScore(data.score);
+    } else {
+      setDoc(
+        doc(db, "ctf", unsafeID),
+        {
+          score: score,
+          name: fullName,
+        },
+        { merge: true }
+      );
+    }
+  }
+
+  useEffect(() => {
+    if (!unsafeID || fullName) return;
+    const docRef = doc(db, "ctf", unsafeID);
+    const unsubscribe = onSnapshot(docRef, (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        setLiveScoreBoard((prev) => {
+          const newScoreBoard = prev.filter(
+            (item) => item.name !== fullName
+          );
+          return [...newScoreBoard, { name: fullName, score: data.score }];
+        });
+      } else {
+
+      }
+    }
+    );
+    return () => {
+      unsubscribe();
+    }
+
+  }, [unsafeID]);
+
+
+
+
   const Filters = () => {
     return (
       <FormControl fullWidth>
@@ -138,9 +211,9 @@ export default function ScoreBoard() {
           onChange={(event: SelectChangeEvent) => {
             setSortBy(
               event.target.value as
-                | "difficulty"
-                | "collected"
-                | "securityCategory"
+              | "difficulty"
+              | "collected"
+              | "securityCategory"
             );
             sortFlagsList({
               sortByOption: event.target.value as
@@ -208,18 +281,39 @@ export default function ScoreBoard() {
   return (
     <>
       <div className="flex w-full max-w-[1440px] mx-auto flex-col">
-        {unsafeID && flagList.length > 0 ? (
+      <div className="w-[50%] flex flex-row justify-between items-center gap-2 my-5 mx-auto">
+              <Link
+                href="#"
+                className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activeTab === "flags" ? "bg-gray-200" : ""
+                  }`}
+                onClick={() => setActiveTab("flags")}
+              >
+                <Icon icon="material-symbols:flag" width="24" height="24" />
+                <span className="text-gray-700">Flags</span>
+              </Link>
+              <Link
+                href="#"
+                className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activeTab === "scoreboard" ? "bg-gray-200" : ""
+                  }`}
+                onClick={() => setActiveTab("scoreboard")}
+              >
+                <Icon icon="material-symbols:leaderboard" width="24" height="24" />
+                <span className="text-gray-700">Scoreboard</span>
+              </Link>
+            </div>
+        {unsafeID && flagList.length > 0  ? (
+          activeTab === "flags" ? (
           <div className="flex flex-col items-center justify-center w-[95%] md:w-[80%] h-full p-4 mx-auto gap-2">
-            <h1 className="text-2xl font-semibold">CTF Scoreboard</h1>
+
             <h2 className="text-lg font-semibold">Your Score: {score}</h2>
             <LinearProgress
-                variant="determinate"
-                value={
-                  (flagList.filter((flag) => flag.collected).length * 100) /
-                  flagList.length
-                }
-                className="w-full rounded-lg"
-              />
+              variant="determinate"
+              value={
+                (flagList.filter((flag) => flag.collected).length * 100) /
+                flagList.length
+              }
+              className="w-full rounded-lg"
+            />
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2 mb-5">
               <FlagsByCategory category="Easy" />
               <FlagsByCategory category="Medium" />
@@ -249,6 +343,19 @@ export default function ScoreBoard() {
             <Filters />
             <FlagsList />
           </div>
+          ): (
+            <div className="flex flex-col items-center justify-center w-[95%] md:w-[80%] h-full p-4 mx-auto gap-2">
+            <h2 className="text-lg font-semibold">Scoreboard</h2>
+            <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2 mb-5">
+              <div className="bg-gray-100 w-full mx-2 aspect-[3/1] md:aspect-[2/1] rounded-lg shadow-md flex flex-col justify-around items-center p-2">
+                <h3 className="text-lg font-semibold">Your Score</h3>
+                <h4 className="text-sm font-semibold">{score}</h4>
+                <h4 className="text-sm font-semibold">Rank: {liveScoreBoard.findIndex((item) => item.name === fullName) + 1}</h4>
+                </div>
+                </div>
+              </div>
+
+          )
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full p-4">
             <h1 className="text-2xl font-bold">Not logged in</h1>

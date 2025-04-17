@@ -26,8 +26,9 @@ function ProductsContent() {
         [
           () => getProductsByCategory("Suits"),
         ],
-        (response) => {
-          setProductData(response[0]);
+        (results) => {
+          if(!results[0]) return
+          setProductData(results[0]);
         },
         false
       );
@@ -38,8 +39,9 @@ function ProductsContent() {
         () => getProductsByCategory(Object.keys(CATEGORIES).find((key) => CATEGORIES[key] === category) ||
           (category ? category.charAt(0).toUpperCase() + category.slice(1) : "")),
       ],
-      (response) => {
-        setProductData(response[0]);
+      (results) => {
+        if(!results[0]) return
+        setProductData(results[0]);
       },
       false
     );
