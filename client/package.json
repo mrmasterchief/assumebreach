@@ -31,7 +31,8 @@
     "react-syntax-highlighter": "^15.6.1",
     "react-toastify": "^11.0.3",
     "sass": "^1.86.3",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

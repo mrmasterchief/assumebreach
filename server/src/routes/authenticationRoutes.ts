@@ -13,7 +13,7 @@ import {
   blacklistToken,
 } from "../functions/blacklistToken";
 import { sqlInjectionFilter } from "../helpers/sqlInjectionFilter";
-import { User } from "../models/User";
+import { encryptFlag } from "../helpers/flagcrypto";
 
 const router = express.Router();
 
@@ -29,6 +29,7 @@ router.post("/login", async (req: Request, res: Response) => {
     if (data) {
       if (data.flag) {
         flag = data.flag;
+        flag = await encryptFlag({ req, flag });
       }
       user = data.user;
       res.status(200).json({
@@ -56,6 +57,9 @@ router.post("/login", async (req: Request, res: Response) => {
     }
     if (user.email.includes(`user[0-9]@example.com`)) {
       flag = getFlagBySecureCodeID(7);
+      if(flag) {
+      flag = await encryptFlag({ req, flag });
+      }
     }
     let userDetails = await fetchUserDetails(user.id, user.unsafe_id, true);
     if (!userDetails) {

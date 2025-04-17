@@ -7,6 +7,7 @@ import { flags } from "../data/flags";
 import { Flag } from "../models/Flag";
 import { addFlagAndScoreToUser } from "../controllers/ctfController";
 import { secureCode } from "../data/secureCode";
+import { decryptFlag, encryptFlag } from "../helpers/flagcrypto";
 
 const router = express.Router();
 
@@ -52,18 +53,19 @@ router.post("/flag", async (req: Request, res: Response) => {
     res.status(400).json({ error: errors[400] });
     return;
   }
+  const decryptedFlag = await decryptFlag({ req, flag });
   try {
     const userDetails = await fetchUserDetailsUnrestricted(userId, unsafeId);
     if (!userDetails) {
       res.status(401).json({ error: errors[401] });
       return;
     }
-    const collected = userDetails.collected_flags.includes(flag);
+    const collected = userDetails.collected_flags.includes(decryptedFlag);
     if (collected) {
       res.status(400).json({ error: errors[400] });
       return;
     }
-    const flagDetails = flags.find((f) => f.flag === flag);
+    const flagDetails = flags.find((f) => f.flag === decryptedFlag);
     if (!flagDetails) {
       res.status(400).json({ error: errors[400] });
       return;

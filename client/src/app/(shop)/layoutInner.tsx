@@ -9,6 +9,7 @@ import { useSidenav } from "@/context/SideNavContext";
 import { onSnapshot, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config'; 
 import { useCTF } from "@/context/CtfContext";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function LayoutInner({ children }: { children: React.ReactNode }) {
     const { isSidenavOpen, toggleSidenav } = useSidenav();  
@@ -29,6 +30,17 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const cookieName = "--anon-ctf-unique-identifier";
+    const cookieValue = uuidv4();
+    const cookieExists = document.cookie.split(';').some((item) => item.trim().startsWith(`${cookieName}=`));
+    if (!cookieExists) {
+        document.cookie = `${cookieName}=${cookieValue}; path=/; max-age=31536000;`;
+    }
+  }, []);
+    
+
 
     return (
         <html lang="en">
