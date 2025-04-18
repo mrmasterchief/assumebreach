@@ -39,7 +39,7 @@ const sidebar = {
   },
 };
 
-const Header = ({  type,
+const Header = ({ type,
 }: {
   type?: string;
 }) => {
@@ -68,7 +68,7 @@ const Header = ({  type,
 
 
   useEffect(() => {
-    if (pathname === "/account/authenticate") return;
+    if (pathname === "/account/authenticate" || pathname == "/account/forgot-password" || pathname == "/cms/login") return;
     indexFunction(
       [
         () => getCart(),

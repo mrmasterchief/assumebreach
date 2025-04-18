@@ -18,6 +18,18 @@ export  async function createAdminAccount() {
     }
 }
 
+export async function createDummyAdminAccount() {
+    const email = process.env.OSINT_EMAIL;
+    const password = process.env.OSINT_PASSWORD;
+    if (!email || !password) {
+        throw new Error("OSINT_EMAIL and OSINT_PASSWORD environment variables must be set");
+    }
+    const existingUser = await findUserByEmail(email);
+    if(existingUser) return;
+    if (!existingUser) {
+        createUser(email, password, 'Camryn Terlouw', true, RBAC.DUMMY_ADMIN);
+    }
+}
 
 export async function createDummyAcccount() {
     const crackPasswordList = [

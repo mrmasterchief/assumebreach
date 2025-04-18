@@ -3,6 +3,7 @@ import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
 
 export enum RBAC {
   ADMIN = "admin",
+  DUMMY_ADMIN = "dummy_admin",
   MODERATOR = "moderator",
   USER = "user",
 }

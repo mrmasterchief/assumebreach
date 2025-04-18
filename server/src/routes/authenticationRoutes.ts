@@ -183,4 +183,31 @@ router.post("/logout", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/reset-password", async (req: Request, res: Response) => {
+  const { email, securityQuestion } = req.body;
+  if (!email || !securityQuestion) {
+    res.status(400).json({ message: errors[400] });
+    return;
+  }
+  try {
+    const answer = process.env.SECURITY_ANSWER;
+    const correctEmail = process.env.OSINT_EMAIL;
+    if (email === correctEmail && securityQuestion === answer) {
+      const flag = getFlagBySecureCodeID(8);
+      if (flag) {
+        const encryptedFlag = await encryptFlag({ req, flag });
+        res.status(200).json({ message: errors[200], flag: encryptedFlag });
+        return;
+      }
+    } else {
+      res.status(401).json({ message: errors[401.1] });
+      return;
+    }
+  } catch (error) {
+    console.error("Error in forgot-password:", error);
+    res.status(500).json({ message: errors[500] });
+    return;
+  }
+});
+
 export default router;

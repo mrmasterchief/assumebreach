@@ -14,10 +14,14 @@ interface FormValues {
   forgotPassword: {
     email: string;
   };
+  forgotPassword2: {
+    securityQuestion: string;
+  };
 }
 
 interface Props {
-  formType: "login" | "register" | "forgotPassword";
+  formType: "login" | "register" | "forgotPassword" | "forgotPassword2";
+  ctfOpen: boolean;
   onSubmit: (
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>
@@ -26,7 +30,7 @@ interface Props {
 
 const inputStyles = "border-2 border-gray-300 rounded-md p-2 w-full";
 
-const FormTemplate = ({ formType, onSubmit }: Props) => {
+const FormTemplate = ({ formType, onSubmit, ctfOpen }: Props) => {
   return (
     <Formik
       initialValues={{
@@ -42,6 +46,9 @@ const FormTemplate = ({ formType, onSubmit }: Props) => {
         },
         forgotPassword: {
           email: "",
+        },
+        forgotPassword2: {
+          securityQuestion: "",
         },
       }}
       onSubmit={onSubmit}
@@ -109,6 +116,17 @@ const FormTemplate = ({ formType, onSubmit }: Props) => {
               />
             </>
           )}
+          {formType === "forgotPassword2" && (
+            <>
+              <Field
+                name="forgotPassword2.securityQuestion"
+                type="text"
+                placeholder="Security Question"
+                className={inputStyles}
+                required
+              />
+            </>
+          )}
           <button
             type="submit"
             className="bg-black text-white p-2 rounded-md hover:bg-gray-900"
@@ -120,6 +138,18 @@ const FormTemplate = ({ formType, onSubmit }: Props) => {
               ? "Sign Up"
               : "Reset Password"}
           </button>
+          {formType === "login" && ctfOpen && (
+            <p className="text-center text-gray-500">
+             Forgot your password?
+              <a
+                href={`/account/forgot-password`}
+                className="text-blue-500 hover:underline"
+                aria-label="Forgot password"
+              >
+                {" "}Reset it
+              </a>
+            </p>
+          )}
         </Form>
       )}
     </Formik>

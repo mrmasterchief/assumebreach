@@ -107,18 +107,8 @@ export default function Authenticate() {
             ? "Sign in to your account to access your orders."
             : "Sign up to access exclusive deals and offers."}
         </p>
-        <FormTemplate formType={formType} onSubmit={handleFormSubmit} />
+        <FormTemplate formType={formType} onSubmit={handleFormSubmit} ctfOpen={ctfOpen} />
         <div className="flex justify-center flex-col gap-2 mt-4">
-          {/* <button
-            className="text-gray-500 hover:text-black"
-            onClick={() =>
-              setFormType(formType === "login" ? "register" : "login")
-            }
-          >
-            {formType === "login"
-              ? "Don't have an account? Register"
-              : "Already have an account? Sign in"}
-          </button> */}
           {formType === "register" && (
             <p className="text-center">
               By signing up, you agree to our Terms, Data Policy and Cookies

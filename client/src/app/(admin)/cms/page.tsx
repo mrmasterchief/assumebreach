@@ -9,10 +9,10 @@ import { onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import { useCTF } from "@/context/CtfContext";
 import Switch from '@mui/material/Switch';
-import { createCTFUsers, CTFCleanUp, useRefreshToken } from "@/hooks/user";
 import { showMessage } from "@/components/messages/Message";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { createCTFUsers, CTFCleanUp } from "@/hooks/ctf";
 
 export default function CMSHomePage() {
   const { activePage, toggleActivePage } = useCMS();

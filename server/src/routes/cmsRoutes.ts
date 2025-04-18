@@ -7,7 +7,7 @@ import { findUserByEmail, createUser, fetchUserDetails } from "../controllers/us
 import { randomNameGenerator } from "../functions/randomNameGenerator";
 import fs from "fs";
 import { RBAC } from "../middleware/rbac";
-import { createDummyAcccount } from "../data/dummyAccounts";
+import { createDummyAcccount, createDummyAdminAccount } from "../data/dummyAccounts";
 
 const router = express.Router();
 
@@ -244,6 +244,7 @@ router.delete("/delete-ctf-users", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM users WHERE email LIKE '%@assumebreach.tech%' OR email LIKE '%@example.com%'");
     await createDummyAcccount();
+    await createDummyAdminAccount();
     const files = fs.readdirSync("./uploads");
     for (const file of files) {
       const filePath = `./uploads/${file}`;

@@ -17,7 +17,7 @@ import authenticationRoutes from "./routes/authenticationRoutes.js";
 import ctfRoutes from "./routes/ctfRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import { flags } from "./data/flags.js";
-import { createAdminAccount, createDummyAcccount } from "./data/dummyAccounts.js";
+import { createAdminAccount, createDummyAcccount, createDummyAdminAccount } from "./data/dummyAccounts.js";
 
 
 dotenv.config();
@@ -45,12 +45,12 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/auth", authenticationRoutes);
 app.use(
   "/api/v1/cart",
-  authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]),
+  authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER, RBAC.DUMMY_ADMIN]),
   cartRoutes
 );
 app.use("/api/v1/cms", authorize([RBAC.MODERATOR, RBAC.ADMIN]), cmsRoutes);
-app.use("/api/v1/ctf", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]), ctfRoutes);
-app.use("/api/v1/user", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER]), userRoutes);
+app.use("/api/v1/ctf", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER, RBAC.DUMMY_ADMIN]), ctfRoutes);
+app.use("/api/v1/user", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER, RBAC.DUMMY_ADMIN]), userRoutes);
 
 // Serve static files from the 'public' directory
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -141,3 +141,4 @@ app.listen(port, () => {
 
 createAdminAccount();
 createDummyAcccount();
+createDummyAdminAccount();

@@ -39,41 +39,39 @@ app.listen(4000, () => {
 });`,
         php: `
 <?php
-header('Access-Control-Allow-Origin: https://your-client-domain.com');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-// Example route
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+require 'vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+header("Access-Control-Allow-Origin: https://your-client-domain.com");
+header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json");
+
+$authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
 }
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $token = $_SERVER['HTTP_AUTHORIZATION'];
-    if (!$token) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Unauthorized']);
-        exit();
-    }
-    // DO NOT PUT YOUR SECRET KEY IN THE CODE. PUT IT IN A .ENV FILE
-    $decoded = jwt_verify($token, 'your-secret-key');
-    if (!$decoded) {
-        http_response_code(403);
-        echo json_encode(['error' => 'Forbidden']);
-        exit();
-    }
-    echo json_encode(['message' => 'This is a secure endpoint']);
-}
-function jwt_verify($token, $secret) {
-    $parts = explode('.', $token);
-    if (count($parts) !== 3) {
-        return false;
-    }
-    $header = json_decode(base64_decode($parts[0]), true);
-    $payload = json_decode(base64_decode($parts[1]), true);
-    $signature = base64_decode($parts[2]);
-    $expectedSignature = hash_hmac('sha256', "$parts[0].$parts[1]", $secret, true);
-    return hash_equals($signature, $expectedSignature);
+
+$jwt = $matches[1];
+$secretKey = $_ENV['JWT_SECRET'];
+
+try {
+    $decoded = JWT::decode($jwt, new Key($secretKey, 'HS256'));
+
+    echo json_encode([
+        'message' => 'This is a secure endpoint',
+        'user' => $decoded,
+    ]);
+} catch (Exception $e) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Forbidden', 'message' => $e->getMessage()]);
 }
 ?>`,
         resourceLinks: [

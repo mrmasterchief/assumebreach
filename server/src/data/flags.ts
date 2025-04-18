@@ -83,4 +83,17 @@ export const flags = [
         "youtubeExplainer": "",
         "active": true
         },
+        {
+        "id": 8,
+        "title": "Open Source Intelligence Flag",
+        "description": "You have managed to reset the account password of an admin account using Open Source Intelligence (OSINT) techniques.",
+        "hint" : "Look for a unique e-mail address that you have found in an earlier flag. Find information about that user on LinkedIn or other social media platforms to answer the security question and reset the password.",
+        "secureCodeID": 8,
+        "securityCategory": "OSINT",
+        "difficulty": "Hard",
+        "flag": "CTF{0p3n_50urc3_1nt3ll1g3nc3}",
+        "youtubeExplainer": "",
+        "active": true
+        }
+
     ]
