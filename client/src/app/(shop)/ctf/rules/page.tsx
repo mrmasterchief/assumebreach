@@ -1,60 +1,93 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { Icon } from "@iconify/react";
+import Section from "@/components/section/Section";
 
 export default function RulesOfEngagement() {
+    const [activeTab, setActiveTab] = useState(0);
+
+    const tabs = [
+        { id: 0, label: "What You Can Do", icon: "mdi:check-circle-outline" },
+        { id: 1, label: "What You Can't Do", icon: "mdi:close-circle-outline" },
+        { id: 2, label: "Ethical Hacking", icon: "mdi:lightbulb-outline" },
+    ];
+
     return (
-        <div className="flex flex-col w-full max-w-[1440px] mx-auto">
-            <div className="flex flex-col w-[80%] mx-auto py-12 gap-6">
-                <h1 className="text-4xl font-bold text-center text-gray-800">
-                    📜 Rules of Engagement
-                </h1>
-
-                <p className="text-lg text-gray-700 text-center">
-                    To ensure a fair, safe, and educational experience for everyone,
-                    please follow these simple but important rules while using Assume Breach.
-                </p>
-
-                <div className="bg-white rounded-2xl shadow-md p-6">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">📜 What You Can Do</h2>
-                    <ul className="list-disc pl-5 text-gray-700 space-y-2">
-                        <li>✅ Explore and test vulnerabilities within the boundaries of this platform.</li>
-                        <li>✅ Use tools like Burp Suite, browser dev tools, curl, etc. to find and exploit bugs.</li>
-                        <li>✅ Submit flags to earn points and learn more.</li>
-                        <li>✅ Watch the included videos to deepen your understanding of each issue.</li>
-                    </ul>
+        <div className="w-full flex justify-center px-4 py-16">
+            <div className="w-full max-w-[1080px] flex flex-col md:flex-row gap-10">
+                <div className="w-full md:w-[220px] flex-shrink-0 space-y-2">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition font-medium
+                ${activeTab === tab.id
+                                    ? "bg-gray-100 text-blue-700"
+                                    : "text-gray-600 hover:bg-gray-50"}`}
+                        >
+                            <Icon icon={tab.icon} className="text-xl" />
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
-
-                <div className="bg-white rounded-2xl shadow-md p-6">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">🚫 What You Can’t Do</h2>
-                    <ul className="list-disc pl-5 text-gray-700 space-y-2">
-                        <li>❌ Don’t attack infrastructure (e.g. server, network, or database outside the app scope).</li>
-                        <li>❌ Don’t perform denial-of-service (DoS) or spam attacks.</li>
-                        <li>❌ Don’t attempt to access or tamper with other users' flags or accounts unless explicitly allowed.</li>
-                        <li>❌ Don’t share flags or solutions with others.</li>
-                        <li>❌ While SQL Injections are allowed. Refrain from using destructive SQL Injections like DELETE, INSERT or UPDATE. Keep this tool fun for everyone.</li>
-                        <li>❌ Don’t use this platform for anything outside the scope of learning and ethical hacking.</li>
-                    </ul>
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-md p-6">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">🧠 Play Smart. Play Ethical.</h2>
-                    <p className="text-gray-700 leading-relaxed">
-                        Assume Breach is built to educate. Stay ethical, stay curious, and always follow the principles of
-                        <span className="text-blue-600 font-medium"> responsible disclosure</span>. Treat every bug you find as a chance to
-                        learn how to prevent it in the real world. Hacking is illegal when done outside of a controlled environment or without permission according to the law. We do not encourage or condone any illegal activities.
+                <div className="flex-1 space-y-10">
+                    <h1 className="text-4xl font-bold text-gray-900">
+                        Rules of Engagement
+                    </h1>
+                    <p className="text-lg text-gray-600">
+                        To ensure a fair, safe, and educational experience, please follow these guidelines while using Assume Breach.
                     </p>
-                </div>
 
-                <div className="text-center mt-6">
-                    <Link
-                        href="/ctf/info"
-                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium px-6 py-3 rounded-xl transition duration-200 shadow-md"
-                    >
-                        Got it! Show Me the Info Page
-                    </Link>
+                    {activeTab === 0 && (
+                        <Section title={tabs[0].label}>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>Explore and test vulnerabilities within the boundaries of this platform.</li>
+                                <li>Use tools like Burp Suite, browser dev tools, curl, etc. to find and exploit bugs.</li>
+                                <li>Submit flags to earn points and learn more.</li>
+                                <li>Watch the included videos to deepen your understanding of each issue.</li>
+                            </ul>
+                        </Section>
+                    )}
+
+                    {activeTab === 1 && (
+                        <Section title={tabs[1].label}>
+                            <ul className="list-disc pl-5 space-y-1">
+                                <li>Do not attack infrastructure (e.g., server, network, or database outside the app scope).</li>
+                                <li>Do not perform denial-of-service (DoS) or spam attacks.</li>
+                                <li>Do not attempt to access or tamper with other users' flags or accounts unless explicitly allowed.</li>
+                                <li>Do not share flags or solutions with others.</li>
+                                <li>Avoid using destructive SQL operations like DELETE, INSERT, or UPDATE.</li>
+                                <li>Please don't delete or modify cookies. They don't hide any flag and are there to make the CTF work properly.</li>
+                                <li>Only use this platform for ethical, educational purposes.</li>
+                            </ul>
+                        </Section>
+                    )}
+
+                    {activeTab === 2 && (
+                        <Section title={tabs[2].label}>
+                            <p>
+                                Assume Breach is designed as a controlled environment to learn about security vulnerabilities.
+                                Users are expected to behave responsibly and ethically at all times.
+                            </p>
+                            <p className="mt-2">
+                                Treat every bug you find as an opportunity to learn how to prevent it in real applications.
+                                Hacking without permission is illegal and violates the goals of this platform.
+                            </p>
+                        </Section>
+                    )}
+
+                    <div className="text-center">
+                        <Link
+                            href="/ctf/info"
+                            className="inline-block bg-blue-600 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-200 ease-in-out text-lg font-medium"
+                        >
+                            Back to Info Page
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+

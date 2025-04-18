@@ -50,30 +50,7 @@ function ProductsContent() {
 
   return (
     <ContentContainer styles="gap-20">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex flex-col w-1/4">
-          <div className="flex flex-col gap-4 align-start justify-start">
-            <p>Sort by</p>
-            <a
-              href="/products?category=drops&sort=arrivals"
-              className="text-md"
-            >
-              Latest Arrivals
-            </a>
-            <a
-              href="/products?category=drops&sort=pricelowtohigh"
-              className="text-md"
-            >
-              Price Low -{">"} High
-            </a>
-            <a
-              href="/products?category=drops&sort=pricehightolow"
-              className="text-md"
-            >
-              Price High -{">"} Low
-            </a>
-          </div>
-        </div>
+      <div className="flex flex-col md:flex-row gap-4">  
         <div className="flex flex-col w-full">
           <h1 className="text-4xl font-bold">
             {Object.keys(CATEGORIES).find(

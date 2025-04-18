@@ -202,15 +202,15 @@ const OrdersTab = ({
   orders: any;
   setOrders: any;
 }) => {
-  return(
-  <div className="flex flex-col gap-4 mb-10 w-[1080px]">
-  <h1 className="text-2xl font-semibold">
-    Orders</h1>
-  <p className="text-gray-600">
-    View and manage your orders. You can view your order history, track your orders, and request returns or exchanges.
-  </p>
+  return (
+    <div className="flex flex-col gap-4 mb-10 w-[1080px]">
+      <h1 className="text-2xl font-semibold">
+        Orders</h1>
+      <p className="text-gray-600">
+        View and manage your orders. You can view your order history, track your orders, and request returns or exchanges.
+      </p>
 
-</div>
+    </div>
   )
 }
 
@@ -250,7 +250,7 @@ export default function Account() {
   }, []);
 
 
-const handleFormSubmit = async (values: any, formikHelpers: any) => {
+  const handleFormSubmit = async (values: any, formikHelpers: any) => {
     try {
       const result = await axiosInstance.post("/user/update", {
         ...values,
@@ -273,7 +273,7 @@ const handleFormSubmit = async (values: any, formikHelpers: any) => {
             ...values,
           }
         );
-        
+
       }
     } catch (error) {
       console.error("Error updating user info:", error);
@@ -281,6 +281,13 @@ const handleFormSubmit = async (values: any, formikHelpers: any) => {
       formikHelpers.setErrors({ general: "An error occurred. Please try again." });
     }
   };
+
+  const tabs = [
+    { id: 0, name: "overview", label: "Overview", icon: "material-symbols:dashboard" },
+    { id: 1, name: "orders", label: "Orders", icon: "material-symbols:shopping-bag" },
+    { id: 2, name: "profile", label: "Profile", icon: "material-symbols:person" },
+    { id: 3, name: "logout", label: "Logout", icon: "material-symbols:logout" },
+  ];
 
 
 
@@ -292,45 +299,25 @@ const handleFormSubmit = async (values: any, formikHelpers: any) => {
     userDetails &&
     <div className="flex flex-col max-w-[1080px] mx-auto mt-10 gap-4">
       <div className="flex flex-row justify-between w-full border-b border-gray-200 pb-5">
-        <div className="flex flex-row gap-4 bg-white">
-          <div className="flex flex-col gap-2 items-center">
-            <Link
-              href="#"
-              className={`flex flex-row w-full items-center gap-2 p-4 rounded-lg ${activeTab === "overview" ? "bg-gray-200" : ""
-                }`}
-              onClick={() => setActiveTab("overview")}
-            >
-              <Icon icon="material-symbols:dashboard" />
-              <span className="text-gray-700">Overview</span>
-            </Link>
-            <Link
-              href="#"
-              className={`flex flex-row w-full items-center gap-2 p-4 rounded-lg 
-              ${activeTab === "orders" ? "bg-gray-200" : ""
-                }`}
-              onClick={() => setActiveTab("orders")}
-            >
-              <Icon icon="material-symbols:shopping-bag" />
-              <span className="text-gray-700">Orders</span>
-            </Link>
-            <Link
-              href="#"
-              className={`flex flex-row w-full items-center gap-2 p-4 rounded-lg ${activeTab === "profile" ? "bg-gray-200" : ""
-                }`}
-              onClick={() => setActiveTab("profile")}
-            >
-              <Icon icon="material-symbols:person" />
-              <span className="text-gray-700">Profile</span>
-            </Link>
-            <Link
-              href="#"
-              className={`flex flex-row w-full items-center gap-2 p-4 rounded-lg bg-black`}
-              onClick={async () => [await logout(), window.location.href = "/account/authenticate"]}
-            >
-              <Icon icon="material-symbols:logout" color="white" />
-              <span className="text-white">Logout</span>
-            </Link>
-
+        <div className="flex flex-row gap-4 bg-white w-[20%]">
+          <div className="flex flex-col gap-2 items-center w-full">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() =>
+                  tab.name === "logout" ?
+                    [logout(), window.location.href = "/account/authenticate"]
+                    : setActiveTab(tab.name)
+                }
+                className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition font-medium
+                  ${activeTab === tab.name
+                    ? "bg-gray-100 text-blue-700"
+                    : "text-gray-600 hover:bg-gray-50"}`}
+              >
+                <Icon icon={tab.icon} className="text-xl" />
+                {tab.label}
+              </button>
+            ))}
 
           </div>
         </div>

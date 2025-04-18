@@ -46,10 +46,11 @@ const ShowCaseContainer = ({
                   discountprice: item.discountprice,
                 }}
               />
+            
             ))}
-          </>
-          //
-         
+      
+          </> 
+          
         )
          : (
           <>

@@ -49,6 +49,11 @@ export default function ScoreBoard() {
   const [unsafeID, setUnsafeID] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("flags");
 
+  const tabs = [
+    { id: 0, label: "Flags", icon: "material-symbols:flag" },
+    { id: 1, label: "Scoreboard", icon: "material-symbols:leaderboard" },
+  ];
+
   useEffect(() => {
     const fetchUnsafeID = async () => {
       if (!unsafeID) {
@@ -245,97 +250,120 @@ export default function ScoreBoard() {
   }: {
     category: "Easy" | "Medium" | "Hard";
   }) => {
+    const filteredFlags = flagList.filter((flag) => flag.difficulty === category);
+    const collectedCount = filteredFlags.filter((flag) => flag.collected).length;
+    const totalCount = filteredFlags.length;
+
+    if (totalCount === 0) {
+      return (
+        <div className="bg-gray-100 w-full mx-2 aspect-[3/1] md:aspect-[2/1] rounded-lg shadow-md flex flex-col justify-center items-center p-4">
+          <h3 className="text-lg font-semibold mb-2">{category} Difficulty</h3>
+          <p className="text-sm text-gray-600">No flags available in this category.</p>
+        </div>
+      );
+    }
+
+    const progressValue = (collectedCount * 100) / totalCount;
+    const progressColor = progressValue === 100 ? 'bg-green-500' : progressValue > 50 ? 'bg-yellow-500' : 'bg-red-500';
+
     return (
-      <div className="bg-gray-100 w-full mx-2 aspect-[3/1] md:aspect-[2/1] rounded-lg shadow-md flex flex-col justify-around items-center p-2">
-        <h3 className="text-lg font-semibold">{category} Difficulty</h3>
-        <h4 className="text-sm font-semibold">Collected</h4>
+      <div className="bg-gray-100 w-full mx-2 aspect-[3/1] md:aspect-[2/1] rounded-lg shadow-md flex flex-col justify-center items-center p-4">
+        <h3 className="text-lg font-semibold mb-2">{category} Difficulty</h3>
+        <h4 className="text-sm font-semibold mb-2">Collected</h4>
+
         <LinearProgress
           variant="determinate"
-          value={
-            (flagList
-              .filter((flag) => flag.difficulty === category)
-              .filter((flag) => flag.collected).length *
-              100) /
-            flagList.filter((flag) => flag.difficulty === category).length
-          }
-          className="w-full rounded-lg"
+          value={progressValue}
+          className={`w-full rounded-lg mb-2 ${progressColor}`}
+          aria-label={`Progress for ${category} difficulty`}
         />
+
         <h4 className="text-sm font-semibold">
-          {
-            flagList
-              .filter((flag) => flag.difficulty === category)
-              .filter((flag) => flag.collected).length
-          }
-          /{flagList.filter((flag) => flag.difficulty === category).length}
+          {collectedCount}/{totalCount}
         </h4>
       </div>
     );
   };
+
+
   return (
     <>
       <div className="flex w-full max-w-[1440px] mx-auto flex-col">
         <div className="w-[50%] flex flex-row justify-between items-center gap-2 my-5 mx-auto">
-          <Link
-            href="#"
-            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activeTab === "flags" ? "bg-gray-200" : ""
-              }`}
-            onClick={() => setActiveTab("flags")}
-          >
-            <Icon icon="material-symbols:flag" width="24" height="24" />
-            <span className="text-gray-700">Flags</span>
-          </Link>
-          <Link
-            href="#"
-            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activeTab === "scoreboard" ? "bg-gray-200" : ""
-              }`}
-            onClick={() => setActiveTab("scoreboard")}
-          >
-            <Icon icon="material-symbols:leaderboard" width="24" height="24" />
-            <span className="text-gray-700">Scoreboard</span>
-          </Link>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.label.toLowerCase())}
+              className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition font-medium
+                ${activeTab === tab.label.toLowerCase()
+                  ? "bg-gray-100 text-blue-700"
+                  : "text-gray-600 hover:bg-gray-50"}`}
+            >
+              <Icon icon={tab.icon} className="text-xl" />
+              {tab.label}
+            </button>
+          ))}
         </div>
+
         {unsafeID && flagList.length > 0 ? (
           activeTab === "flags" ? (
-            <div className="flex flex-col items-center justify-center w-[95%] md:w-[80%] h-full p-4 mx-auto gap-2">
+            <div className="flex flex-col items-center justify-center w-[95%] md:w-[80%] h-full p-6 mx-auto gap-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Score: {score}</h2>
 
-              <h2 className="text-lg font-semibold">Your Score: {score}</h2>
               <LinearProgress
                 variant="determinate"
                 value={
                   (flagList.filter((flag) => flag.collected).length * 100) /
                   flagList.length
                 }
-                className="w-full rounded-lg"
+                className="w-full rounded-full h-3 mb-6 bg-gray-200"
+                sx={{
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: '#4CAF50',
+                  },
+                }}
               />
-              <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2 mb-5">
+
+              <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
                 <FlagsByCategory category="Easy" />
                 <FlagsByCategory category="Medium" />
                 <FlagsByCategory category="Hard" />
               </div>
-              <div className="w-full flex flex-row justify-between items-center gap-2 mb-5">
+
+              <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
                 <TextField
                   id="flag-input"
-                  label="Flag"
+                  label="Enter Flag"
                   variant="outlined"
                   value={flagInput}
                   onChange={(e) => setFlagInput(e.target.value)}
-                  placeholder="Enter a flag. e.g. CTF{I_L0VE_CTF}"
-                  className="w-full"
+                  placeholder="e.g. 0UCd+3QzVigUUdtBnUz1EtCOTlUauHp7HXxEcAVehSt2zFytqsZEG4Sd0Mmu7q5k"
+                  className="w-full py-2 px-4 rounded-md"
                   type="password"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      '&:hover fieldset': {
+                        borderColor: '#4CAF50',
+                      },
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontSize: '1rem',
+                    },
+                  }}
                 />
                 <button
-                  onClick={() => {
-                    handleFlagSubmit();
-                  }}
-                  className="bg-black text-white rounded-lg h-16 w-16"
+                  onClick={() => handleFlagSubmit()}
+                  className="bg-black text-white rounded-full h-14 w-14 flex items-center justify-center hover:bg-gray-700 transition-all duration-200"
                 >
-                  <SendIcon />
+                  <SendIcon className="text-white" />
                 </button>
               </div>
-
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Flags to Collect</h2>                  
               <Filters />
               <FlagsList />
             </div>
+
           ) : (
             <div className="flex flex-col items-center justify-center w-[95%] md:w-[80%] h-full p-6 mx-auto gap-4 bg-white rounded-2xl shadow-lg">
               <h2 className="text-2xl font-bold text-center mb-4">Live Scoreboard</h2>
@@ -348,11 +376,10 @@ export default function ScoreBoard() {
                 </div>
                 {liveScoreBoard.length > 0 ? (
                   <AnimatePresence>
-
                     {liveScoreBoard.map((user, index) => (
                       <motion.div
                         key={index}
-                        layout 
+                        layout
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}

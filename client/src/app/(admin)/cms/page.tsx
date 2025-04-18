@@ -112,36 +112,35 @@ export default function CMSHomePage() {
 
   return (
     <>
-      <div className="flex w-full max-w-[1080px] mx-auto flex-row">
-        <div className="flex flex-col w-[20%] p-4">
+      <div className="flex w-[1080px] mx-auto flex-row">
+        <div className="flex flex-col w-[25%] p-4 gap-2">
           <Link
             href="#"
-            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activePage === "Products" ? "bg-gray-200" : ""
+            className={`flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg ${activePage === "Products" ? "bg-gray-100 text-blue-600" : ""
               }`}
             onClick={() => { toggleActivePage("Products"); setListPage(1); }}>
             <Icon icon="material-symbols:store" width="20" height="20" />
-            <p className="text-lg font-semibold">Products</p>
+            <p className="text-lg">Products</p>
           </Link>
           <Link
             href="#"
-            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activePage === "Settings" ? "bg-gray-200" : ""
+            className={`flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg ${activePage === "Settings" ? "bg-gray-100 text-blue-600" : ""
               }`}
             onClick={() => { toggleActivePage("Settings"); setListPage(1); }}>
             <Icon icon="material-symbols:settings" width="20" height="20" />
-            <p className="text-lg font-semibold">Settings</p>
+            <p className="text-lg">Settings</p>
           </Link>
           <Link
             href="#"
-            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activePage === "Customers" ? "bg-gray-200" : ""
+            className={`flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg ${activePage === "Customers" ? "bg-gray-100 text-blue-600" : ""
               }`}
             onClick={() => { toggleActivePage("Customers"); setListPage(1); }}>
-            {/* customers icon */}
             <Icon icon="material-symbols:person" width="20" height="20" />
-            <p className="text-lg font-semibold">Customers</p>
+            <p className="text-lg">Customers</p>
           </Link>
         </div>
 
-        <div className="flex flex-col justify-center w-full p-4">
+        <div className="flex flex-col justify-center w-[70%] p-4">
           <h1 className="text-3xl font-semibold">{activePage}</h1>
           {activePage == "Products" && (
             <List

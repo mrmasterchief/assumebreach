@@ -65,7 +65,6 @@ const ProductCard = ({
       <div className="flex flex-row justify-between group">
         <div className="flex flex-row justify-between w-full gap-4">
           <p className="font-normal font-sans txt-medium text-[#4b5563]">
-            {/* if screen is small truncate to 10 characters */}
             {cardInfo.title.length > 12 && screen.width < 640
               ? `${cardInfo.title.substring(0, 10)}...`
               : cardInfo.title}
