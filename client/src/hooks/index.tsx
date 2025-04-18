@@ -13,6 +13,7 @@ export const indexFunction = async (
   const fakeAPI = await fetchFakeAPI();
 
   if (!csrfToken || !unsafeID || (requiresRefreshToken && !refreshToken)) {
+    console.error("Missing tokens");
     throw new Error("Missing tokens");
   }
 

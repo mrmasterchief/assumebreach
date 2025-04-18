@@ -1,17 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { axiosInstance } from "@/hooks/axios";
 import { useRouter } from "next/navigation";
 import { useCMS } from "@/context/CMSContext";
 import List from "@/components/cms/List";
 import { getAllProducts, searchProducts } from "@/hooks/products";
 import { indexFunction } from "@/hooks";
 import { onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/config'; 
+import { db } from '@/firebase/config';
 import { useCTF } from "@/context/CtfContext";
 import Switch from '@mui/material/Switch';
-import { createCTFUsers, CTFCleanUp } from "@/hooks/user";
+import { createCTFUsers, CTFCleanUp, useRefreshToken } from "@/hooks/user";
 import { showMessage } from "@/components/messages/Message";
+import Link from "next/link";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function CMSHomePage() {
   const { activePage, toggleActivePage } = useCMS();
@@ -32,7 +33,7 @@ export default function CMSHomePage() {
             () => getAllProducts(listPage)
           ],
           (results: any[]) => {
-            if(!results[0]) {
+            if (!results[0]) {
               window.location.href = "/cms/login";
               return;
             }
@@ -46,7 +47,6 @@ export default function CMSHomePage() {
         );
       }
       catch (error) {
-        console.error(error);
         window.location.href = "/cms/login";
       }
     };
@@ -57,7 +57,7 @@ export default function CMSHomePage() {
     const unsubscribe = onSnapshot(doc(db, 'settings', 'gameStatus'), (docSnapshot) => {
       const data = docSnapshot.data();
       if (data && data.CTFOpen) {
-        setCTFOpen(true);        
+        setCTFOpen(true);
       } else {
         setCTFOpen(false);
       }
@@ -88,95 +88,127 @@ export default function CMSHomePage() {
       showMessage("Error", "Please enter a number between 1 and 100.", "error");
       return;
     }
-  
+
     try {
       const response = await createCTFUsers(userInputValue);
-  
+
       const blob = new Blob([response.data], { type: "text/plain" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-  
+
       link.href = url;
       link.setAttribute("download", `ctf_users_${Date.now()}.txt`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-  
+
       showMessage("Success", "CTF users created and file downloaded.", "success");
     } catch (error) {
       showMessage("Error", "Failed to create CTF users.", "error");
     }
   };
-  
+
 
   return (
     <>
-      <div className="flex w-full max-w-[1080px] mx-auto flex-col">
-        <h1 className="text-3xl font-semibold">{activePage}</h1>
-        {activePage == "Products" && (
-        <List
-          props={{
-            type: activePage,
-            data: data.products,
-            listPage: listPage,
-            setListPage: setListPage,
-            pages: pages,
-            maxPerPage: maxPerPage,
-            setSearch: setSearch,
-            search: search,
-          }}
-        />
-        )}
-        {activePage == "Settings" && (
-          <>
-          <div className="flex flex-col items-center justify-center w-full h-full p-4">
-            <div className="flex flex-row items-center justify-between w-fullm t-4">
-              <p className="text-lg font-semibold">CTF Mode</p>
-              <Switch
-                checked={ctfOpen}
-                onChange={handleToggleCTF}
-                color="primary"
-              />
-            </div>
-            <p className="text-sm text-gray-500">
-              Toggle the CTF mode to enable or disable the Capture The Flag game.
-            </p>
-          </div>
-          <div className="flex flex-col items-center justify-center w-full h-full p-4">
-            <p className="text-lg font-semibold">Create Users for the CTF</p>
-            <p className="text-sm text-gray-500">
-              Create users for the CTF game. This will create a specified number of users.
-            </p>
-            <div className="flex flex-row items-center justify-center w-full mt-4">
-              <input
-                type="number"
-                min="1"
-                max="100"
-                placeholder="Number of users"
-                className="border border-gray-300 rounded p-2 w-1/4"
-                onChange={(e) => setUserInputValue(Number(e.target.value))}
-                value={userInputValue}
-              />
-              <button
-                className="bg-blue-500 text-white p-2 rounded ml-4"
-                onClick={() => handleCreateCTFUsers()}
-              >
-                Create Users
-              </button>
-              </div>
-            <div className="flex flex-row items-center justify-center w-full mt-4">
-              <button
-                className="bg-red-500 text-white p-2 rounded ml-4"
-                onClick={() => CTFCleanUp()}
-              >
-                Clean Up CTF Users
-              </button>
+      <div className="flex w-full max-w-[1080px] mx-auto flex-row">
+        <div className="flex flex-col w-[20%] p-4">
+          <Link
+            href="#"
+            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activePage === "Products" ? "bg-gray-200" : ""
+              }`}
+            onClick={() => { toggleActivePage("Products"); setListPage(1); }}>
+            <Icon icon="material-symbols:store" width="20" height="20" />
+            <p className="text-lg font-semibold">Products</p>
+          </Link>
+          <Link
+            href="#"
+            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activePage === "Settings" ? "bg-gray-200" : ""
+              }`}
+            onClick={() => { toggleActivePage("Settings"); setListPage(1); }}>
+            <Icon icon="material-symbols:settings" width="20" height="20" />
+            <p className="text-lg font-semibold">Settings</p>
+          </Link>
+          <Link
+            href="#"
+            className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activePage === "Customers" ? "bg-gray-200" : ""
+              }`}
+            onClick={() => { toggleActivePage("Customers"); setListPage(1); }}>
+            {/* customers icon */}
+            <Icon icon="material-symbols:person" width="20" height="20" />
+            <p className="text-lg font-semibold">Customers</p>
+          </Link>
+        </div>
+
+        <div className="flex flex-col justify-center w-full p-4">
+          <h1 className="text-3xl font-semibold">{activePage}</h1>
+          {activePage == "Products" && (
+            <List
+              props={{
+                type: activePage,
+                data: data.products,
+                listPage: listPage,
+                setListPage: setListPage,
+                pages: pages,
+                maxPerPage: maxPerPage,
+                setSearch: setSearch,
+                search: search,
+              }}
+            />
+          )}
+          {activePage == "Settings" && (
+            <div className="flex flex-col gap-6 p-6 bg-white shadow-md rounded-xl w-full max-w-2xl mx-auto mt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-lg font-semibold">CTF Mode</p>
+                  <p className="text-sm text-gray-500">
+                    Toggle the CTF mode to enable or disable the Capture The Flag game.
+                  </p>
+                </div>
+                <Switch checked={ctfOpen} onChange={handleToggleCTF} color="primary" />
               </div>
 
-          </div>
-            </>
-        )}
+              <div>
+                <p className="text-lg font-semibold">Create CTF Users</p>
+                <p className="text-sm text-gray-500">
+                  Enter the number of users to create. A text file with credentials will be downloaded.
+                </p>
+                <div className="flex items-center mt-3 gap-3">
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    placeholder="Number of users"
+                    className="border border-gray-300 rounded-lg p-2 w-32 text-center focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    onChange={(e) => setUserInputValue(Number(e.target.value))}
+                    value={userInputValue}
+                  />
+                  <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
+                    onClick={handleCreateCTFUsers}
+                  >
+                    Create Users
+                  </button>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <p className="text-lg font-semibold mb-2">Reset CTF</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  This will clean up all CTF-related data so it can be started fresh.
+                </p>
+                <button
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all"
+                  onClick={CTFCleanUp}
+                >
+                  Clean Up CTF
+                </button>
+              </div>
+            </div>
+
+          )}
+        </div>
       </div>
     </>
   );

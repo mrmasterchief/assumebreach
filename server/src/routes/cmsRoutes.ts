@@ -243,7 +243,7 @@ router.post("/create-ctf-users", async (req: Request, res: Response) => {
 router.delete("/delete-ctf-users", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM users WHERE email LIKE '%@assumebreach.tech%' OR email LIKE '%@example.com%'");
-    createDummyAcccount();
+    await createDummyAcccount();
     const files = fs.readdirSync("./uploads");
     for (const file of files) {
       const filePath = `./uploads/${file}`;

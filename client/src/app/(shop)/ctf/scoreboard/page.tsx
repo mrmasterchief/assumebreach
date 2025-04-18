@@ -44,7 +44,7 @@ export default function ScoreBoard() {
   const [flagList, setFlagList] = useState<Flag[]>([]);
   const [flagCorrect, setFlagCorrect] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<
-    "difficulty" | "collected" | "securityCategory"
+    "difficulty" | "collected"
   >("difficulty");
   const [unsafeID, setUnsafeID] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("flags");
@@ -209,19 +209,16 @@ export default function ScoreBoard() {
               event.target.value as
               | "difficulty"
               | "collected"
-              | "securityCategory"
             );
             sortFlagsList({
               sortByOption: event.target.value as
                 | "difficulty"
                 | "collected"
-                | "securityCategory",
             });
           }}
         >
           <MenuItem value="difficulty">Difficulty</MenuItem>
           <MenuItem value="collected">Collected</MenuItem>
-          <MenuItem value="securityCategory">Security Category</MenuItem>
         </Select>
       </FormControl>
     );
