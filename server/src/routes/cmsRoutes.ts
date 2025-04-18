@@ -3,7 +3,11 @@ import type { Request, Response } from "express";
 import pool from "../config/db";
 import jwt from "jsonwebtoken";
 import { uploadFileMiddleware } from "../controllers/imageUploadController";
-
+import { findUserByEmail, createUser, fetchUserDetails } from "../controllers/userController";
+import { randomNameGenerator } from "../functions/randomNameGenerator";
+import fs from "fs";
+import { RBAC } from "../middleware/rbac";
+import { createDummyAcccount } from "../data/dummyAccounts";
 
 const router = express.Router();
 
@@ -197,5 +201,65 @@ router.get("/all-users", async (_req: Request, res: Response) => {
     return;
   }
 });
+
+router.post("/create-ctf-users", async (req: Request, res: Response) => {
+  try {
+    const { amount } = req.body;
+    const users = [];
+    for (let i = 0; i < amount; i++) {
+      const randomName = randomNameGenerator();
+      const formattedName = randomName.replace(/\s+/g, ".").toLowerCase();
+      const randomEmail = `${formattedName}@assumebreach.tech`;
+      const randomPassword = Math.random().toString(36).substring(2, 15);
+      const newUser = await createUser(randomEmail, randomPassword, randomName, true, RBAC.USER);
+      users.push({
+        email: randomEmail,
+        password: randomPassword,
+        name: randomName
+      });
+    }
+    const fileContent = users.map(user => `${user.email}:${user.password}`).join("\n");
+    const fileName = `users_${Date.now()}.txt`;
+    const filePath = `./uploads/${fileName}`;
+    if (!fs.existsSync("./uploads")) {
+      fs.mkdirSync("./uploads");
+    }
+    fs.writeFileSync(filePath, fileContent);
+    res.download(filePath, fileName, (err) => {
+      if (err) {
+        console.error("Error downloading file:", err);
+        res.status(500).json({ error: "Error downloading file" });
+        return;
+      }});
+    res.json({ message: "Users created", users });
+    return;
+  } catch (error: any) {
+    console.error("Error creating users:", error);
+    res.status(500).json({ error: error.message });
+    return;
+  }
+});
+
+router.delete("/delete-ctf-users", async (req: Request, res: Response) => {
+  try {
+    await pool.query("DELETE FROM users WHERE email LIKE '%@assumebreach.tech%' OR email LIKE '%@example.com%'");
+    createDummyAcccount();
+    const files = fs.readdirSync("./uploads");
+    for (const file of files) {
+      const filePath = `./uploads/${file}`;
+      fs.unlinkSync(filePath);
+    }
+    res.json({ message: "Users deleted" });
+    return;
+  } catch (error: any) {
+    console.error("Error deleting users:", error);
+    res.status(500).json({ error: error.message });
+    return;
+  }
+});
+
+
+
+
 
 export default router;

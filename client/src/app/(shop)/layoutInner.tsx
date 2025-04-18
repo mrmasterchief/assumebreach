@@ -22,8 +22,8 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
       if (data && data.CTFOpen) {
         setCTFOpen(true);        
       } else {
-        if (window.location.pathname === "/account/authenticate") return;
         setCTFOpen(false);
+        if (window.location.pathname === "/account/authenticate") return;
         window.location.href = "/account/authenticate";
       }
     });

@@ -7,9 +7,11 @@ import { useCMS } from "@/context/CMSContext";
 import React from "react";
 import SideBar from "@/components/cms/Sidebar";
 import Header from "@/components/nav/Header";
+import { CTFProvider } from "@/context/CtfContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
+      <CTFProvider>
         <CMSProvider>
         <html lang="en">
           <body>
@@ -27,5 +29,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </body>
         </html>
         </CMSProvider>
+      </CTFProvider>
   );
 }

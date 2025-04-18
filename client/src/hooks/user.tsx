@@ -38,6 +38,29 @@ export const authenticate = async (endpoint: string, data: any) => {
     });
 }
 
+export const createCTFUsers = async (amount: number) => {
+  try {
+    const response = await axiosInstance.post(
+      "/cms/create-ctf-users",
+      { amount },
+      { responseType: "blob" }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error creating CTF users:", error);
+    throw error;
+  }
+};
+
+export const CTFCleanUp = async () => {
+  try {
+    const response = await axiosInstance.delete("/cms/delete-ctf-users");
+    return response.data;
+  } catch (error) {
+    console.error("Error during CTF cleanup:", error);
+  }
+}
+
 export const logout = async () => {
   try {
     const response = await axiosInstance.post("/auth/logout");

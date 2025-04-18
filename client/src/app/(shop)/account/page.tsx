@@ -18,7 +18,7 @@ const OverviewComponent = ({
   userDetails: any;
   orders: any;
 }) => (
-  <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
+  <div className="flex flex-col gap-4 mb-10 w-[1080px]">
     <div className="flex flex-row items-center justify-between w-full border-b border-gray-200">
       <h1 className="text-2xl font-semibold pb-2">
         Hi {userDetails.full_name}</h1>
@@ -105,7 +105,7 @@ const ProfileTab = ({
 ) => {
   return (
 
-    <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
+    <div className="flex flex-col gap-4 mb-10 w-[1080px]">
       <h1 className="text-2xl font-semibold">
         Profile</h1>
       <p className="text-gray-600">
@@ -203,7 +203,7 @@ const OrdersTab = ({
   setOrders: any;
 }) => {
   return(
-  <div className="flex flex-col w-full gap-4 mb-10 w-[1080px]">
+  <div className="flex flex-col gap-4 mb-10 w-[1080px]">
   <h1 className="text-2xl font-semibold">
     Orders</h1>
   <p className="text-gray-600">
