@@ -94,6 +94,18 @@ export const flags = [
         "flag": "CTF{0p3n_50urc3_1nt3ll1g3nc3}",
         "youtubeExplainer": "",
         "active": true
+        },
+        {
+        "id": 9,
+        "title": "IDOR Flag on orders",
+        "description": "You have found an Insecure Direct Object Reference (IDOR) vulnerability in the orders. This could allow an attacker to access other users orders.",
+        "hint" : "Try changing the user ID in the request header to another orderID using a proxy tool or just the url bar.",
+        "secureCodeID": 9,
+        "securityCategory": "IDOR",
+        "difficulty": "Medium",
+        "flag": "CTF{1d0r_1n_0rd3r5_4r3_b4d_pr4ct1c3}",
+        "youtubeExplainer": "",
+        "active": true
         }
 
     ]

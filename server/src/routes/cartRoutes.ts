@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import {getUserIdFromToken} from "../helpers/getUserIdFromToken";
-import { getCartItems, addCartItem, removeCartItem, updateCartItemQuantity, fetchOrders } from "../controllers/cartController";
+import { getCartItems, addCartItem, removeCartItem, updateCartItemQuantity, fetchOrders, fetchOrderDetails } from "../controllers/cartController";
 import { errors } from "../data/errors";
 
 
@@ -115,6 +115,32 @@ router.get("/orders", async (req: Request, res: Response) => {
   try {
     const orders = await fetchOrders(userId);
     res.status(200).json({ orders });
+    return;
+  } catch (error) {
+    res.status(500).json({ message: errors[500] });
+    return;
+  }
+});
+
+router.post("/orders", async (req: Request, res: Response) => {
+  const userId = await getUserIdFromToken(req);
+  if (!userId) {
+    res.status(401).json({ message: errors[401] });
+    return;
+  }
+  const { orderID } = req.body;
+  if (!orderID) {
+    res.status(400).json({ message: errors[400] });
+    return;
+  }
+  try {
+    const orderDetails = await fetchOrderDetails(req, orderID, userId);
+    if (!orderDetails) {
+      res.status(404).json({ message: errors[404] });
+      return;
+    }
+ 
+    res.status(200).json({ orderDetails });
     return;
   } catch (error) {
     res.status(500).json({ message: errors[500] });

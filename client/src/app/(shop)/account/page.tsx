@@ -75,7 +75,7 @@ const OverviewComponent = ({
                 />
               </div>
               <Link
-                href={`/account/orders/${order.id}`}
+                href={`/orders/${order.id}`}
                 className="text-blue-700 hover:underline"
               >
                 View Order

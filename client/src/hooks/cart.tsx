@@ -63,3 +63,14 @@ export const fetchOrders = async () => {
     console.error("Error fetching orders:", error);
   }
 }
+
+export const fetchOrderDetails = async (orderID: number) => {
+  try {
+    const response = await axiosInstance.post('/cart/orders/', {
+      orderID: orderID
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+  }
+}

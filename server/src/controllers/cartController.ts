@@ -1,6 +1,9 @@
+import { flags } from "../data/flags";
 import withTransaction from "../functions/withTransaction";
+import { encryptFlag } from "../helpers/flagcrypto";
 import { Models } from "../models/Models";
 import { fetchProductById } from "./productController";
+import { Request } from "express";
 
 export async function getCartItems(userId: string): Promise<Models["Cart"][]> {
   return withTransaction(async (client) => {
@@ -131,6 +134,48 @@ export async function fetchOrders(userId: string): Promise<Models["Cart"][]> {
     );
     return ordersWithProductDetails;
     
+  });
+}
+
+export async function fetchOrderDetails(req: Request, orderID: string, userId: string): Promise<Models["Cart"][]> {
+  return withTransaction(async (client) => {
+    const order = await client.query(
+      "SELECT * FROM orders WHERE id = $1",
+      [orderID]
+    );
+    if (order.rows.length === 0) {
+      throw new Error("Order not found");
+    }
+    const orderItems = await client.query(
+      "SELECT * FROM order_items WHERE order_id = $1",
+      [orderID]
+    );    
+    const products = await Promise.all(
+      orderItems.rows.map(async (item: any) => {
+        const product = await fetchProductById(item.product_id);
+        return {
+          ...item,
+          product,
+        };
+      })
+    );
+    if (order.rows[0].user_id !== userId) {
+      let flag = flags.find((flag) => flag.secureCodeID === 9)?.flag;
+      if (flag) {
+        flag = await encryptFlag({req, flag});
+      
+      return {
+        ...order.rows[0],
+        items: products,
+        flag: flag,
+      };
+    }
+    }
+
+    return {
+      ...order.rows[0],
+      items: products,
+    };
   });
 }
 

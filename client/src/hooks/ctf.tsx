@@ -1,4 +1,6 @@
 import { axiosInstance } from "./axios";
+import { onSnapshot, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
+import { db } from '@/firebase/config';
 
 
 
@@ -76,6 +78,13 @@ export const createCTFUsers = async (amount: number) => {
 export const CTFCleanUp = async () => {
   try {
     const response = await axiosInstance.delete("/cms/delete-ctf-users");
+    const ctfCollectionRef = collection(db, 'ctf');
+    const ctfSnapshot = await getDocs(ctfCollectionRef);
+    ctfSnapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+
+    
     return response.data;
   } catch (error) {
     console.error("Error during CTF cleanup:", error);

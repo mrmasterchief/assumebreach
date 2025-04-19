@@ -40,7 +40,6 @@ export const decryptFlag = async (
     }
   
     try {
-        console.log("Decrypting flag:", flag);
       const decipher = crypto.createDecipheriv(
         "aes-256-cbc",
         Buffer.from(process.env.FLAG_ENCRYPTION_KEY!, "hex"),

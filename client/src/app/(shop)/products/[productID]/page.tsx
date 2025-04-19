@@ -158,7 +158,6 @@ export default function ProductDetails() {
                   async () => toggleCart()
                     ],
                     () => {
-                      console.log("Product added to cart");
                     },
                     true
                   );
