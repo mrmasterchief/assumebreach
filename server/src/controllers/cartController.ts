@@ -133,3 +133,27 @@ export async function fetchOrders(userId: string): Promise<Models["Cart"][]> {
     
   });
 }
+
+export async function placeOrder(
+  userId: string,
+  orderObject: any
+): Promise<void> {
+
+  return withTransaction(async (client) => {
+    const orderResult = await client.query(
+      "INSERT INTO orders (user_id, total_price, status, address, payment_method, cart_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [userId, orderObject.totalPrice, "pending", orderObject.address, orderObject.paymentMethod, orderObject.cartItems[0].cart_id]
+    );
+    const orderId = orderResult.rows[0].id;
+
+    for (const item of orderObject.cartItems) {
+      await client.query(
+        "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)",
+        [orderId, item.product_id, item.quantity, item.product.price]
+      );
+    }
+    await clearCart(userId);
+  }
+  );
+}
+

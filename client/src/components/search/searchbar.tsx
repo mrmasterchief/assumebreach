@@ -25,12 +25,19 @@ const SearchBar = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
 
+    if(!search) return;
+
     if (e.target.value.length > 0) {
       setTimeout(() => {
         searchProducts(search).then((response) => {
           setSearchResults(response.slice(0, 6));
         });
-      }, 2000);
+      }, 1000);
+    }
+    else {
+      searchProducts('S').then((response) => {
+        setSearchResults(response.slice(0, 6));
+      });
     }
   };
   useEffect(() => {
@@ -106,6 +113,11 @@ const SearchBar = ({
           </div>
 
           <div className="flex flex-col lg:flex-row lg:flex-wrap gap-3 mt-4 justify-between overflow-y-scroll">
+            {searchResults.length === 0 && (
+              <div className="flex flex-col items-center justify-center w-full h-full">
+                <p className="text-gray-500">No results found</p>
+              </div>
+            )}
             {searchResults.map((item, idx) => (
 
                 <ProductCard

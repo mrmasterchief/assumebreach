@@ -15,6 +15,7 @@ import { getUserInfo } from "@/hooks/user";
 export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
+    if(window.location.pathname === "/cms/login") return;
     const checkAuth = async () => {
       try {
         indexFunction(

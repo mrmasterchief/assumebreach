@@ -43,7 +43,7 @@ const OverviewComponent = ({
       <div className="flex flex-col gap-4 mt-4">
         <h1 className="text-xl font-semibold">Addresses</h1>
         <div className="flex flex-row items-center gap-2">
-          <h1 className="text-3xl font-semibold">{orders.length}</h1>
+          <h1 className="text-3xl font-semibold">1</h1>
           <h1 className="text-md text-gray-600">
             SAVED
           </h1>
@@ -64,8 +64,15 @@ const OverviewComponent = ({
                   Order ID: {order.id}
                 </h3>
                 <p className="text-gray-500 text-sm">
-                  Placed on: {new Date(order.createdAt).toLocaleDateString()}
+                  Placed on: {new Date(order.created_at).toLocaleDateString()}
                 </p>
+                <p className="text-gray-500 text-sm">
+                  Paid with: {order.payment_method}
+                </p>
+                <Icon
+                  icon={`logos:${order.payment_method.toLowerCase()}`}
+                  className="text-2xl text-gray-500"
+                />
               </div>
               <Link
                 href={`/account/orders/${order.id}`}
@@ -209,6 +216,44 @@ const OrdersTab = ({
       <p className="text-gray-600">
         View and manage your orders. You can view your order history, track your orders, and request returns or exchanges.
       </p>
+      <div className="flex flex-col gap-4 mt-4">
+        {orders.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            {orders.map((order: any) => (
+              <div
+                key={order.id}
+                className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-4"
+              >
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-semibold">
+                    Order ID: {order.id}
+                  </h3>
+                  <p className="text-gray-500 text-sm">
+                    Placed on: {new Date(order.created_at).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                  Paid with: {order.payment_method}
+                </p>
+                <Icon
+                  icon={`logos:${order.payment_method.toLowerCase()}`}
+                  className="text-2xl text-gray-500"
+                />
+                </div>
+                <Link
+                  href={`/account/orders/${order.id}`}
+                  className="text-blue-700 hover:underline"
+                >
+                  View Order
+                </Link>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">
+            You have no recent orders.
+          </p>
+        )}
+      </div>
 
     </div>
   )

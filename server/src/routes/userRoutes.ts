@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { fetchUserDetails, findUserById, updateUserDetails } from "../controllers/userController";
+import { placeOrder } from "../controllers/cartController";
 import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 import { errors } from "../data/errors";
 import { User } from "../models/User";
@@ -80,6 +80,26 @@ router.post("/update", async (req: Request, res: Response) => {
     }
 }
 );
+
+router.post("/place-order", async (req: Request, res: Response) => {
+    const userId = await getUserIdFromToken(req);
+    if (!userId) {
+        res.status(401).json({ error: errors[401] });
+        return;
+    }
+    const { orderObject } = req.body;
+    if (!orderObject) {
+        res.status(400).json({ error: errors[400] });
+        return;
+    }
+    try {
+        const orderDetails = await placeOrder(userId, orderObject);
+        res.status(200).json({ message: errors[200] });
+    }
+    catch (error) {
+        res.status(500).json({ error: errors[500] });
+    }
+});
 
 
 export default router;

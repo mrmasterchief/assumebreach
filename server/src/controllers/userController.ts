@@ -107,12 +107,12 @@ async function updateUserDetails(
   });
 }
 
-
 async function deleteUser(userId: string): Promise<void> {
   return withTransaction(async (client) => {
     await client.query("DELETE FROM users WHERE id = $1", [userId]);
   });
 }
+
 
 export {
   createUser,

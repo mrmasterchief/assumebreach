@@ -50,6 +50,17 @@ export const resetCTFPassword = async (email: string, securityQuestion: string) 
   }
 }
 
+export const placeOrder = async (orderObject: any) => {
+  try {
+    const response = await axiosInstance.post("/user/place-order", {
+      orderObject: orderObject,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error placing order:", error);
+  }
+}
+
 
 
 export const logout = async () => {

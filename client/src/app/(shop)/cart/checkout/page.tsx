@@ -10,6 +10,9 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
+import { getUserInfo, placeOrder } from "@/hooks/user";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 interface CartItem {
     product: {
@@ -42,7 +45,7 @@ const CartItemComponent = ({
                     />
                 </Link>
                 <div className="ml-4">
-                    <h3 className="text-lg">{item.product.title}</h3>
+                    <h3 className="text-lg">{item.product.title.length > 12 ? item.product.title.slice(0, 12) + "..." : item.product.title}</h3>
                     <p className="text-gray-500 text-sm">Variant: test</p>
                 </div>
             </div>
@@ -97,22 +100,93 @@ export default function Checkout() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [userInfo, setUserInfo] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState("Shipping Address");
+    const [address, setAddress] = useState<string | null>(null);
+    const [radioOption, setRadioOption] = useState<number | null>(0);
+    const [paymentMethod, setPaymentMethod] = useState<string | null>("Visa");
+    const [userAddress, setUserAddress] = useState<any>(null);
+    const [zipCode, setZipCode] = useState<string | null>(null);
+    const [city, setCity] = useState<string | null>(null);
+    const [state, setState] = useState<string | null>(null);
+    const [country, setCountry] = useState<string | null>(null);
+
+    const [activeTab, setActiveTab] = useState(0);
+    const tabs = [
+        {
+            id: 0,
+            title: "shipping",
+            label: "Shipping Address",
+            icon: "material-symbols:home",
+        },
+        {
+            id: 1,
+            title: "payment",
+            label: "Payment",
+            icon: "material-symbols:payments",
+        },
+        {
+            id: 2,
+            title: "order",
+            label: "Order Summary",
+            icon: "material-symbols:receipt",
+        },
+        {
+            id: 3,
+            title: "complete",
+            label: "Complete Order",
+            icon: "material-symbols:check-circle",
+        },
+        {
+            id: 4,
+            title: "thankyou",
+            label: "Thank You",
+            icon: "material-symbols:check-circle",
+        },
+    ];
+
+    const paymentMethods = [
+        {
+            id: 0,
+            title: "Visa",
+            icon: "logos:visa",
+        },
+        {
+            id: 1,
+            title: "Mastercard",
+            icon: "logos:mastercard",
+        },
+        {
+            id: 2,
+            title: "Paypal",
+            icon: "logos:paypal",
+        },
+        {
+            id: 3,
+            title: "Apple Pay",
+            icon: "logos:apple",
+        },
+    ];
 
     useEffect(() => {
         try {
             indexFunction(
                 [
                     () => getCart(),
+                    () => getUserInfo({ unsafeID: localStorage.getItem("unsafeID") || "" }),
                 ]
                 ,
                 (results) => {
-                    if (!results[0]) {
+                    if (!results[0] || !results[1]) {
                         setIsLoading(false);
+                        showMessage("error", "Error fetching cart items", "error");
                         return;
                     }
                     setCartItems(results[0] || []);
+                    setUserInfo(results[1]);
+                    setUserAddress(JSON.parse(results[1].user.address));
+
+
                     for (let i = 0; i < results[0].length; i++) {
                         if (results[0][i].product.discountprice) {
                             results[0][i].product.calculatedPrice = results[0][i].product.discountprice;
@@ -136,6 +210,84 @@ export default function Checkout() {
         }
     }, []);
 
+    const handleShippingSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        let addressObject = {
+            zip: zipCode,
+            city: city,
+            state: state,
+            country: country,
+        };
+        if (radioOption == 1 && (!zipCode || !city || !state || !country)) {
+
+            showMessage("Error", "Please fill in all fields", "error");
+            return;
+        }
+
+        if (userAddress && radioOption == 0 && !zipCode && !city && !state && !country) {
+            addressObject = {
+                zip: userAddress.zip,
+                city: userAddress.city,
+                state: userAddress.state,
+                country: userAddress.country,
+            };
+            setAddress(JSON.stringify(addressObject));
+            setActiveTab(1);
+            return;
+        }
+        addressObject = {
+            zip: zipCode,
+            city: city,
+            state: state,
+            country: country,
+        };
+        setAddress(JSON.stringify(addressObject));
+        setActiveTab(1);
+    }
+
+    const handlePaymentSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!paymentMethod) {
+            showMessage("Error", "Please select a payment method", "error");
+            return;
+        }
+        setActiveTab(2);
+    }
+
+    const handleOrderSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!address || !paymentMethod) {
+            showMessage("Error", "Please fill in all fields", "error");
+            return;
+        }
+        let orderObject = {
+            address: address,
+            paymentMethod: paymentMethod,
+            cartItems: cartItems,
+            totalPrice: total,
+        };
+        try {
+            const response = await indexFunction(
+                [
+                    () => placeOrder(orderObject),
+                ],
+                (results) => {
+                    if (!results[0]) {
+                        showMessage("Error", "Error placing order", "error");
+                        return;
+                    }
+                    showMessage("Success", "Order placed successfully", "success");
+                    setActiveTab(4);
+                },
+                true
+            );
+        } catch (error) {
+            console.error(error);
+            showMessage("Error", "Error placing order", "error");
+        }
+    }
+
 
 
     if (isLoading) {
@@ -144,51 +296,149 @@ export default function Checkout() {
 
 
     return (
-        <div className="flex flex-col w-[95%] xl:mx-auto">
+        <div className="flex flex-col w-[95%] xl:mx-auto w-[1080px]">
             <div className="relative w-full align-center justify-center">
                 <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative xs:max-w-[95%] sm:max-w-[100%] mx-auto lg:space-between">
-                    <div className="flex flex-col  p-4 w-full md:flex-row">
+                    <div className="flex flex-col p-4 w-full md:flex-row">
                         {cartItems.length > 0 ? (
-                            <div className="flex flex-col w-full">
-                                <h1 className="text-3xl font-semibold mb-4">{activeTab}</h1>
-                                <div className="flex flex-row items-center justify-between w-full">
-                                    <div className="flex flex-col items-center gap-2">
-                                    <Link
-                                        href="#"
-                                        className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activeTab === "Shipping Address" ? "bg-gray-200" : ""
-                                            }`}
-                                        onClick={() => setActiveTab("Shipping Address")}
-                                    >
-                                        <Icon icon="material-symbols:home" />
-                                        <span className="text-gray-700">Shipping Address</span>
-                                    </Link>
-                                    <Link
-                                        href="#"
-                                        className={`flex flex-row items-center w-full gap-2 p-4 rounded-lg ${activeTab === "Payment" ? "bg-gray-200" : ""
-                                            }`}
-                                        onClick={() => setActiveTab("Payment")}
-                                    >   
-                                        <Icon icon="material-symbols:payments" />
-                                        <span className="text-gray-700">Payment</span>
-                                    </Link>
-                                    <Link
-                                        href="#"
-                                        className={`flex flex-row items-center gap-2 p-4 w-full rounded-lg ${activeTab === "Order Summary" ? "bg-gray-200" : ""
-                                            }`}
-                                        onClick={() => setActiveTab("Order Summary")}
-                                    >
-                                        <Icon icon="material-symbols:receipt" />
-                                        <span className="text-gray-700">Order Summary</span>
-                                    </Link>
-                                    <Link
-                                        href="#"
-                                        className={`flex flex-row items-center w-full gap-2 p-4 rounded-lg bg-black }`}
-                                    >
-                                        <Icon icon="material-symbols:check-circle" color="white" />
-                                        <span className="text-white">Complete Order</span>
-                                    </Link>
+                            <div className="flex flex-row gap-4 w-full">
+                                <div className="flex flex-col w-[30%]">
+                                    <h1 className="text-3xl font-semibold mb-4">{tabs[activeTab].label}</h1>
+                                    <div className="flex flex-row items-center justify-between w-full">
+                                        <div className="flex flex-col items-center gap-2">
+                                            {/* make a button for each tab eccept tab id 4 */}
+
+                                            {tabs.map((tab) => (
+                                                tab.id === 4 ? null :
+                                                <button
+                                                    key={tab.id}
+                                                    className={`flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg ${activeTab === tab.id ? "bg-gray-100 text-blue-600" : ""
+                                                        }`}
+                                                    onClick={() =>
+                                                        tab.id === 3 ? null :
+                                                            setActiveTab(tab.id)
+                                                    }
+                                                >
+                                                    <Icon icon={tab.icon} />
+                                                    <p>{tab.label}</p>
+                                                </button>
+                                            ))}
+
+                                        </div>
+                                    </div>
                                 </div>
-                                </div>
+                                {activeTab === 0 && (
+                                    <div className="flex flex-col w-[60%] p-4">
+                                        <RadioGroup
+                                            aria-labelledby="address-radio-buttons-group"
+                                            name="address-radio-buttons-group"
+                                            defaultValue={userAddress.zip ? 0 : 1}
+                                            className="gap-4"
+                                        >
+                                            {userInfo && userInfo.user.address && (
+                                                <>
+                                                    <div className="flex flex-col w-full">
+                                                        <h1 className="text-xl mb-4">Saved Address</h1>
+                                                    </div>
+
+                                                    <button className="flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg bg-gray-100 text-blue-600">
+                                                        <Radio
+                                                            value={0}
+                                                            className="text-blue-600"
+                                                            onChange={(e) => setRadioOption(Number(e.target.value))}
+                                                        />
+                                                        <Icon icon="material-symbols:home" />
+                                                        <div className="flex flex-col items-start">
+                                                            <p className="font-bold text-black">{userInfo.user.full_name}</p>
+                                                            <p className="text-black">{userAddress.zip}, {userAddress.city}, {userAddress.state}</p>
+                                                            <p className="text-black">{userAddress.country}</p>
+                                                        </div>
+
+
+                                                    </button>
+                                                </>
+                                            )}
+
+                                            <div className="flex flex-col w-full">
+                                                <h1 className="text-xl mb-4">New Shipping Address</h1>
+                                                <div className="bg-gray-100 p-4 rounded-lg flex flex-row align-center justify-center">
+                                                    <div className="justify-center items-center flex flex-col">
+                                                        <Radio
+                                                            value={1}
+                                                            className="text-blue-600"
+                                                            onChange={(e) => setRadioOption(Number(e.target.value))}
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col w-full">
+                                                        <div className="flex flex-row gap-4">
+                                                            <input type="text" placeholder="Zip Code" className="border border-gray-300 rounded-lg p-2 mb-2" onChange={(e) => setZipCode(e.target.value)} />
+                                                            <input type="text" placeholder="City" className="border border-gray-300 rounded-lg p-2 mb-2" onChange={(e) => setCity(e.target.value)} />
+                                                        </div>
+                                                        <div className="flex flex-row gap-4">
+                                                            <input type="text" placeholder="State" className="border border-gray-300 rounded-lg p-2 mb-2" onChange={(e) => setState(e.target.value)} />
+                                                            <input type="text" placeholder="Country" className="border border-gray-300 rounded-lg p-2 mb-2" onChange={(e) => setCountry(e.target.value)} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button className="bg-black text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-800 transition duration-300" onClick={handleShippingSubmit}>Choose Address</button>
+                                            </div>
+                                        </RadioGroup>
+
+                                    </div>
+                                )}
+                                {activeTab === 1 && (
+                                    <div className="flex flex-col w-[60%] p-4">
+                                        <h1 className="text-xl mb-4">Fake Payment Method</h1>
+                                        <div className="flex flex-col gap-4">
+                                            <RadioGroup
+                                                aria-labelledby="payment-method-radio-buttons-group"
+                                                name="payment-method-radio-buttons-group"
+                                                defaultValue="Visa"
+                                                className="gap-4"
+                                            >
+                                                {paymentMethods.map((method) => (
+                                                    <button key={method.title} className="flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg bg-gray-100">
+                                                        <Radio
+                                                            value={method.title}
+                                                            className="text-blue-600"
+                                                            onChange={(e) => setPaymentMethod(method.title)}
+                                                        />
+                                                        <Icon icon={method.icon} />
+                                                        <p>{method.title}</p>
+                                                    </button>
+                                                ))}
+                                            </RadioGroup>
+                                            <button className="bg-black text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-800 transition duration-300" onClick={handlePaymentSubmit}>Choose Payment Method</button>
+
+                                        </div>
+                                    </div>
+                                )}
+                                {activeTab === 2 && (
+                                    <div className="flex flex-col w-[60%] p-4">
+                                        <div className="flex flex-col gap-4">
+                                            <h1 className="text-lg font-semibold">Shipping Address</h1>
+                                            {radioOption == 0 && userAddress && (
+                                                <p>{userAddress.zip}, {userAddress.city}, {userAddress.state}, {userAddress.country}</p>
+                                            )}
+                                            {radioOption == 1 && (
+                                                <p>{zipCode}, {city}, {state}, {country}</p>
+                                            )}
+                                            <h1 className="text-lg font-semibold">Payment Method</h1>
+                                            <div className="flex flex-row items-center gap-2">
+                                                <Icon icon={paymentMethods.find((method) => method.title === paymentMethod)?.icon || ""} />
+                                                <p>{paymentMethod}</p>
+                                            </div>
+                                            <button className="bg-black text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-800 transition duration-300" onClick={handleOrderSubmit}>Place Order</button>
+                                        </div>
+                                    </div>
+                                )}
+                                {activeTab === 4 && (
+                                    <div className="flex flex-col w-[60%] p-4">
+                                        <h1 className="text-3xl font-semibold mb-4">Thank You!</h1>
+                                        <p className="text-lg">Your order has been placed successfully.</p>
+                                        <Link href="/account" className="bg-black text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-800 transition duration-300">View Orders</Link>
+                                    </div>
+                                )}  
 
                             </div>
                         ) : (

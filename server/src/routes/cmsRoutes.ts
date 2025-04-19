@@ -231,7 +231,6 @@ router.post("/create-ctf-users", async (req: Request, res: Response) => {
         res.status(500).json({ error: "Error downloading file" });
         return;
       }});
-    res.json({ message: "Users created", users });
     return;
   } catch (error: any) {
     console.error("Error creating users:", error);

@@ -45,9 +45,13 @@ router.get("/category/:category", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/search/:query", async (req: Request, res: Response) => {
+router.get("/search", async (req: Request, res: Response) => {
   try {
-    const { query } = req.params;
+    const { query } = req.query;
+    if (!query || typeof query !== "string") {
+      res.status(400).json({ error: "Missing search query." });
+      return;
+    }
     const products = await searchProducts(query);
     res.status(200).json(products);
   } catch (error) {

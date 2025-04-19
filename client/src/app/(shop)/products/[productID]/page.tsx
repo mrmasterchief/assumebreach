@@ -63,8 +63,8 @@ export default function ProductDetails() {
   return (
     <ContentContainer>
       <div className="relative w-full align-center justify-center">
-        <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative xs:max-w-[90%] sm:max-w-[95%] mx-auto lg:space-between">
-          <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[300px] w-full py-8 max-h-[100vh]">
+        <div className="content-container flex flex-col lg:flex-row lg:items-start py-6 relative mx-auto lg:space-between">
+          <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[250px] w-full py-8 max-h-[100vh]">
             <div id="product-info">
               <div className="flex flex-col gap-y-4 lg:max-w-[500px] mx-auto">
                 <Link
@@ -120,7 +120,7 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[300px] w-full py-8 gap-y-12">
+          <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[250px] w-full py-8 gap-y-12">
             <div className="flex flex-col gap-y-2">
               <div className="flex flex-row gap-x-2">
                 <h1

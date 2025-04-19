@@ -5,6 +5,8 @@ import { showMessage } from "@/components/messages/Message";
 import FormTemplate from "@/components/form/Form";
 import { useRouter } from "next/navigation";
 import { useRefreshToken } from "@/hooks/user";
+import { indexFunction } from "@/hooks";
+import { authenticate } from "@/hooks/user";
 
 export default function Authenticate() {
   const [formType, setFormType] = useState<
@@ -38,25 +40,27 @@ export default function Authenticate() {
             cms: true,
           };
         }
-
-        const response = await axiosInstance.post(endpoint, data);
-
-        if (response.status === 200 || response.status === 201) {
-          showMessage("Success", response.data.message, "success");
-          formikHelpers.resetForm();
-          formikHelpers.setSubmitting(false);
-          if (formType === "login") {
+        await indexFunction(
+          [
+            () => authenticate(endpoint, data)
+          ],
+          (results: any[]) => {
+            if (!results[0]) {
+              showMessage("Error", "Error during authentication", "error");
+              return;
+            }
+            if (results[0].flag) {
+              showMessage("Success", "OSINT Flag found: " + results[0].flag, "success");
+            }
             window.location.href = "/cms";
-          }
-        } else {
-          showMessage("Error", response.data.message, "error");
-          formikHelpers.setSubmitting(false);
-        }
+          },
+          false
+        );
+
       } catch (error) {
         showMessage("Error", "Something went wrong", "error");
         formikHelpers.setSubmitting(false);
       }
-    
   };
 
   return (
@@ -66,7 +70,7 @@ export default function Authenticate() {
           <h1 className="font-bold text-black text-xl text-center">
             CMS Login
           </h1>
-          <FormTemplate formType={formType} onSubmit={handleFormSubmit} />
+          <FormTemplate formType={formType} onSubmit={handleFormSubmit} ctfOpen />
         </div>
         
       </div>
