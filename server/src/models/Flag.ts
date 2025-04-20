@@ -8,4 +8,5 @@ export interface Flag {
     difficulty: string;
     flag: string;
     youtubeExplainer: string;
+    active: boolean;
 }

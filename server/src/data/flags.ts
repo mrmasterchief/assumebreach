@@ -25,13 +25,13 @@ export const flags = [
         },
         {
         "id": 3,
-        "title": "Shopping Cart IDOR Flag",
-        "description": "You have found an Insecure Direct Object Reference (IDOR) vulnerability in the shopping cart. This could allow an attacker to delete other users shopping cart items.",
-        "hint" : "Try changing the user ID in the request header to another user ID using a proxy tool.",
+        "title": "Hidden Page Flag",
+        "description": "You have found a hidden page using a tool like Go Buster or looked up common directories. This page shouldn't be accessible to the public and could contain sensitive information.",
+        "hint" : "Try finding a hidden page using a tool like Go Buster or by looking up common directories. Source can be found in the secure code.",
         "secureCodeID": 3,
-        "securityCategory": "IDOR",
+        "securityCategory": "Enumeration",
         "difficulty": "Medium",
-        "flag": "CTF{1d0r_15_4_b4d_pr4ct1c3}",
+        "flag": "CTF{h1dd3n_p4g3s_4r3_c00l}",
         "youtubeExplainer": "tGv7CUutzqU",
         "active": true
         },

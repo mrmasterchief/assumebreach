@@ -20,7 +20,7 @@ const router = express.Router();
 
 
 router.post("/login", async (req: Request, res: Response) => {
-  const { email, password, cms } = req.body;
+  const { email, password, cms, admin } = req.body;
   let user: any;
   let flag: string | undefined = undefined;
 
@@ -111,6 +111,10 @@ router.post("/login", async (req: Request, res: Response) => {
     }
 
     if (cms && userDetails.role !== RBAC.ADMIN) {
+      res.status(403).json({ message: [errors[403.1]] });
+      return;
+    }
+    if(admin && userDetails.role !== RBAC.ADMIN || userDetails.role !== RBAC.DUMMY_ADMIN) {
       res.status(403).json({ message: [errors[403.1]] });
       return;
     }
