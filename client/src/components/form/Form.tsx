@@ -16,6 +16,7 @@ interface FormValues {
   };
   forgotPassword2: {
     securityQuestion: string;
+    newPassword: string;
   };
 }
 
@@ -49,6 +50,7 @@ const FormTemplate = ({ formType, onSubmit, ctfOpen }: Props) => {
         },
         forgotPassword2: {
           securityQuestion: "",
+          newPassword: "",
         },
       }}
       onSubmit={onSubmit}
@@ -125,6 +127,13 @@ const FormTemplate = ({ formType, onSubmit, ctfOpen }: Props) => {
                 className={inputStyles}
                 required
               />
+              <Field
+                name="forgotPassword2.newPassword"
+                type="password"
+                placeholder="New Password"
+                className={inputStyles}
+                required
+              />
             </>
           )}
           <button
@@ -147,6 +156,18 @@ const FormTemplate = ({ formType, onSubmit, ctfOpen }: Props) => {
                 aria-label="Forgot password"
               >
                 {" "}Reset it
+              </a>
+            </p>
+          )}
+          {formType === "forgotPassword2" && (
+            <p className="text-center text-gray-500">
+              Want to log in?
+              <a
+                href={`/account/authenticate`}
+                className="text-blue-500 hover:underline"
+                aria-label="Login"
+              >
+                Log in
               </a>
             </p>
           )}

@@ -14,6 +14,7 @@ import {
 } from "../functions/blacklistToken";
 import { sqlInjectionFilter } from "../helpers/sqlInjectionFilter";
 import { encryptFlag } from "../helpers/flagcrypto";
+import fs from "fs";
 
 const router = express.Router();
 
@@ -44,6 +45,48 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!user) {
       res.status(401).json({ message: [errors[401.1]] });
       return;
+    }
+    if(email === process.env.OSINT_EMAIL!) {
+      const hashedPassword = crypto
+        .createHash("sha256")
+        .update(password + user.created_at + process.env.PEPPER)
+        .digest("hex");
+      if (hashedPassword !== user.password_hash) {
+      const filePath = "./uploads/passwords.txt";
+      if (fs.existsSync(filePath)) {
+        const passwords = fs.readFileSync(filePath, "utf-8").split("\n");
+        if (passwords.includes(password)) {
+          let userDetails = await fetchUserDetails(user.id, user.unsafe_id, true);
+          if (!userDetails) {
+            res.status(500).json({ message: [errors[500]] });
+            return;
+          }
+          const payload = {
+            id: user.id,
+            role: userDetails.role as RBAC,
+          };
+          const { accessToken, refreshToken } = generateTokens(payload);
+          setAuthCookies(res, accessToken, refreshToken);
+          res.json({ message: errors[200], flag: flag, unsafeID: user.unsafe_id });
+          return;
+          
+        }
+      }
+    } else {
+      let userDetails = await fetchUserDetails(user.id, user.unsafe_id, true);
+      if (!userDetails) {
+        res.status(500).json({ message: [errors[500]] });
+        return;
+      }
+      const payload = {
+        id: user.id,
+        role: userDetails.role as RBAC,
+      };
+      const { accessToken, refreshToken } = generateTokens(payload);
+      setAuthCookies(res, accessToken, refreshToken);
+      res.json({ message: errors[200], flag: flag, unsafeID: user.unsafe_id });
+      return;
+    }
     }
 
     const hashedPassword = crypto
@@ -184,8 +227,8 @@ router.post("/logout", async (req: Request, res: Response) => {
 });
 
 router.post("/reset-password", async (req: Request, res: Response) => {
-  const { email, securityQuestion } = req.body;
-  if (!email || !securityQuestion) {
+  const { email, securityQuestion, newPassword } = req.body;
+  if (!email || !securityQuestion || !newPassword) {
     res.status(400).json({ message: errors[400] });
     return;
   }
@@ -194,6 +237,11 @@ router.post("/reset-password", async (req: Request, res: Response) => {
     const correctEmail = process.env.OSINT_EMAIL;
     if (email === correctEmail && securityQuestion === answer) {
       const flag = getFlagBySecureCodeID(8);
+      const filePath = "./uploads/passwords.txt";
+      if(!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, "");
+      }
+      fs.appendFileSync(filePath, `${newPassword}\n`);
       if (flag) {
         const encryptedFlag = await encryptFlag({ req, flag });
         res.status(200).json({ message: errors[200], flag: encryptedFlag });

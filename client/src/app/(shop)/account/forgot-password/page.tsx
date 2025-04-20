@@ -46,7 +46,7 @@ export default function ForgotPassword() {
         try{
             await indexFunction(
                 [
-                    () => resetCTFPassword(email, values.forgotPassword2.securityQuestion)
+                    () => resetCTFPassword(email, values.forgotPassword2.securityQuestion, values.forgotPassword2.newPassword)
                 ],
                 (results: any[]) => {
                     if (!results[0]) {
@@ -54,7 +54,7 @@ export default function ForgotPassword() {
                         return;
                     }
                     if(results[0].flag) {
-                        showMessage("Success", "OSINT Flag found: " + results[0].flag, "success");
+                        showMessage("Success", "OSINT Flag found. You can log in with this account now " + results[0].flag, "success");
                     }
                 },
                 false

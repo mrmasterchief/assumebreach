@@ -64,7 +64,7 @@ export const fetchOrders = async () => {
   }
 }
 
-export const fetchOrderDetails = async (orderID: number) => {
+export const fetchOrderDetails = async (orderID: string) => {
   try {
     const response = await axiosInstance.post('/cart/orders/', {
       orderID: orderID

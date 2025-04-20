@@ -38,11 +38,12 @@ export const authenticate = async (endpoint: string, data: any) => {
     });
 }
 
-export const resetCTFPassword = async (email: string, securityQuestion: string) => {
+export const resetCTFPassword = async (email: string, securityQuestion: string, newPassword:string) => {
   try {
     const response = await axiosInstance.post("/auth/reset-password", {
       email: email,
       securityQuestion: securityQuestion,
+      newPassword: newPassword,
     });
     return response.data;
   } catch (error) {

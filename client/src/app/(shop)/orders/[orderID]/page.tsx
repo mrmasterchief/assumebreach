@@ -21,7 +21,7 @@ export default function OrderDetails() {
         const fetchDetails = async () => {
             if (!orderID) return;
             await indexFunction([
-                () => fetchOrderDetails(Number(orderID)),
+                () => fetchOrderDetails(orderID),
             ], (results) => {
                 if (!results[0]) return;
                 setOrderDetails(results[0].orderDetails);

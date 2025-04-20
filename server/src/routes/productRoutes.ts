@@ -52,6 +52,7 @@ router.get("/search", async (req: Request, res: Response) => {
       res.status(400).json({ error: "Missing search query." });
       return;
     }
+
     const products = await searchProducts(query);
     res.status(200).json(products);
   } catch (error) {

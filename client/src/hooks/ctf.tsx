@@ -82,7 +82,7 @@ export const CTFCleanUp = async () => {
     const ctfSnapshot = await getDocs(ctfCollectionRef);
     ctfSnapshot.forEach(async (doc) => {
       await deleteDoc(doc.ref);
-    });
+  });
 
     
     return response.data;
