@@ -1,7 +1,7 @@
 
 
 import React from "react";
-import Layout from "../cms/index";
+import Layout from "./index";
 
 
 

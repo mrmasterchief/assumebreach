@@ -3,6 +3,7 @@ import "../../../styles/globals.css";
 import PageWrapper from "@/components/page-wrapper";
 import { ToastContainer } from "react-toastify";
 import { CMSProvider } from "@/context/CMSContext";
+import { useCMS } from "@/context/CMSContext";
 import React, { useEffect } from "react";
 import Header from "@/components/nav/Header";
 import { CTFProvider } from "@/context/CtfContext";
@@ -12,7 +13,7 @@ import { getUserInfo } from "@/hooks/user";
 export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
-    if(window.location.pathname === "/cms/login") return;
+    if(window.location.pathname === "/admin/login") return;
     const checkAuth = async () => {
       try {
         indexFunction(
@@ -22,8 +23,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ],
           (results: any[]) => {
             if(!results[0]) {
-              if(window. location.pathname !== "/cms/login") {
-              window.location.href = "/cms/login";
+              if(window. location.pathname !== "/admin/login") {
+              window.location.href = "/admin/login";
               }
               return;
             }
@@ -32,7 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         );
       }
       catch (error) {
-        window.location.href = "/cms/login";
+        window.location.href = "/admin/login";
       }
     };
     checkAuth();

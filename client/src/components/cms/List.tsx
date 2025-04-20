@@ -15,6 +15,7 @@ const List = ({ props }: { props: any }) => {
       
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Product List</h2>
+        {!props.dummyAdmin && (
         <button
           className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
           onClick={() => {
@@ -24,6 +25,7 @@ const List = ({ props }: { props: any }) => {
         >
           Add Item
         </button>
+        )}
       </div>
 
       <div className="flex justify-center items-center mb-4 text-gray-600">
@@ -64,6 +66,7 @@ const List = ({ props }: { props: any }) => {
                 Categories: {item.categories.join(", ")}
               </span>
             </div>
+            {!props.dummyAdmin && (
 
             <div className="flex flex-col gap-2">
               <button
@@ -86,6 +89,7 @@ const List = ({ props }: { props: any }) => {
                 Delete
               </button>
             </div>
+            )}
           </li>
         ))}
       </ul>

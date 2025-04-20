@@ -62,6 +62,14 @@ export const placeOrder = async (orderObject: any) => {
   }
 }
 
+export const getAllUsers = async (page: number) => {
+  try {
+    const response = await axiosInstance.get(`/admin/all-users/${page}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+  }
+}
 
 
 export const logout = async () => {
