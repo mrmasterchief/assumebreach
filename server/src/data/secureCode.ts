@@ -127,41 +127,43 @@ app.listen(4000, () => {
 `,
         php: `
 <?php
-header('Access-Control-Allow-Origin: https://your-client-domain.com');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-// Example route
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+require 'vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+// Load the environment variables
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+header('Content-Type: application/json');
+
+// Only allow GET requests
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method Not Allowed']);
+    exit;
 }
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $token = $_SERVER['HTTP_AUTHORIZATION'];
-    if (!$token) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Unauthorized']);
-        exit();
-    }
-    $decoded = jwt_verify($token, getenv('JWT_SECRET'));
-    if (!$decoded) {
-        http_response_code(403);
-        echo json_encode(['error' => 'Forbidden']);
-        exit();
-    }
+
+// Get Authorization header
+$headers = getallheaders();
+$authHeader = $headers['Authorization'] ?? '';
+
+if (!$authHeader) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
+// Extract token
+$token = str_replace('Bearer ', '', $authHeader);
+
+try {
+    $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
     echo json_encode(['message' => 'This is a secure endpoint']);
-}
-    
-function jwt_verify($token, $secret) {
-    $parts = explode('.', $token);
-    if (count($parts) !== 3) {
-        return false;
-    }
-    $header = json_decode(base64_decode($parts[0]), true);
-    $payload = json_decode(base64_decode($parts[1]), true);
-    $signature = base64_decode($parts[2]);
-    $expectedSignature = hash_hmac('sha256', "$parts[0].$parts[1]", $secret, true);
-    return hash_equals($signature, $expectedSignature);
+} catch (Exception $e) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Forbidden']);
 }
 ?>`,
         resourceLinks: [
@@ -174,8 +176,56 @@ function jwt_verify($token, $secret) {
                 url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Environment_variables',
             },
         ],
+    },
+    {
+        id: 3,
+        title: 'Directory Enumeration',
+        risks: [
+            'While directory enumeration is not a vulnerability in itself, it can lead to other vulnerabilities if sensitive files or directories are exposed. Make sure to restrict access to sensitive files and directories by using RBAC (Role-Based Access Control).'
+        ],
+        explanation: 'To prevent users from accessing directories that are not intended for them, you can use RBAC(Role-Based Access Control) to restrict access to certain directories. You can also use a package like express-rate-limit to limit the number of requests to your API and prevent brute-force attacks.',
+        js: `
+import express from 'express';
+import rateLimit from 'express-rate-limit';
 
-
-    
+const app = express();
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100,
+    message: 'Too many requests, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false, 
+});
+app.use(limiter);
+app.get('/api/secure-endpoint', (req, res) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+        res.json({ message: 'This is a secure endpoint' });
+    });
+});
+app.listen(4000, () => {
+    console.log('Server is running on port 3000');
+});`,
+        resourceLinks: [
+            {
+                title: 'express-rate-limit - npm',
+                url: 'https://www.npmjs.com/package/express-rate-limit',
+            },
+            {
+                title: 'Directory Enumeration - OWASP',
+                url: 'https://owasp.org/www-community/attacks/Directory_Enumeration',
+            },
+            {
+                title: 'Directory Enumeration Payloads',
+                url: 'https://github.com/danielmiessler/SecLists/blob/master/Discovery/Web-Content/directory-list-2.3-medium.txt',
+            }
+        ]
+    }
+
 ]
