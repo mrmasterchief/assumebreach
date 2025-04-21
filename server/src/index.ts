@@ -19,6 +19,7 @@ import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import { flags } from "./data/flags.js";
 import { createAdminAccount, createDummyAcccount, createDummyAdminAccount } from "./data/dummyAccounts.js";
+import { encryptFlag } from "./helpers/flagcrypto.js";
 
 
 dotenv.config();
@@ -64,7 +65,7 @@ app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
 });
 
 // Health check endpoint (insecure for CTF purposes)
-app.get("/api/v1/health", (_req, res) => {
+app.get("/api/v1/health", async (_req, res) => {
   res.json({
     endpoints: [
       "/api/v1/products",
@@ -78,7 +79,7 @@ app.get("/api/v1/health", (_req, res) => {
       "/api/v1/cart",
       "/api/v1/cart/:id",
       "/api/v1/cart/checkout",
-      flags.find((flag) => flag.secureCodeID === 1)?.flag,
+      await encryptFlag({req: _req, flag: 'CTF{3ndp0int5_4r3_c00l}'}),
     ],
     "All endpoints are healthy and up": true,
   });

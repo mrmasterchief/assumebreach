@@ -76,9 +76,9 @@ export default function AdminHomePage() {
     }
   }, [flag]);
 
-
-
-console.log("users", users);
+  useEffect(() => {
+    console.log("Hi Admins, to access the secret panel, find the flag in the header logo. Use my decryption key to decrypt the hidden image using steganography decoder. The password is ze8hYnDWhvBdgDKKQdqmPGymF5wcz4wOpEeXkOBp3u/qpb/r5X9fTW9rIB6OrcZK");
+  }, []);
 
 
 

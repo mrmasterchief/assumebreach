@@ -14,6 +14,7 @@ import { getCart } from "@/hooks/cart";
 import { useCart } from "@/context/CartContext";
 import { indexFunction } from "@/hooks";
 import { useSidenav } from "@/context/SideNavContext";
+import Image from "next/image";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -168,6 +169,15 @@ const Header = ({ type,
             href="/"
             className="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2"
           >
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={100}
+              height={100}
+              className="h-10 w-auto"
+              priority
+            />
+
             <span className="text-xl flex text-[#4b5563]">ASSUME BREACH</span>
           </Link>
           {type !== "cms" && (

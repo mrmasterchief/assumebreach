@@ -48,24 +48,26 @@ router.post("/flag", async (req: Request, res: Response) => {
     res.status(401).json({ error: errors[401] });
     return;
   }
-  const flag = req.body.flag;
+  let flag = req.body.flag;
   if (!flag) {
     res.status(400).json({ error: errors[400] });
     return;
   }
-  const decryptedFlag = await decryptFlag({ req, flag });
+  if(flag !== 'CTF{57394n09r4phy_15_c001}') {
+  flag = await decryptFlag({ req, flag });
+  }
   try {
     const userDetails = await fetchUserDetailsUnrestricted(userId, unsafeId);
     if (!userDetails) {
       res.status(401).json({ error: errors[401] });
       return;
     }
-    const collected = userDetails.collected_flags.includes(decryptedFlag);
+    const collected = userDetails.collected_flags.includes(flag);
     if (collected) {
       res.status(400).json({ error: errors[400] });
       return;
     }
-    const flagDetails = flags.find((f) => f.flag === decryptedFlag);
+    const flagDetails = flags.find((f) => f.flag === flag);
     if (!flagDetails) {
       res.status(400).json({ error: errors[400] });
       return;

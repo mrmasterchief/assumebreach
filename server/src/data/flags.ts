@@ -5,7 +5,7 @@ export const flags = [
         "description": "You have found an API Endpoint that shouldn't be accessible publicly. This is a security risk and should be fixed.",
         "hint" : "Look for an API endpoint that is being called in the network tab.",
         "secureCodeID": 1,
-        "securityCategory": "Insecure API",
+        "securityCategory": "Enumeration",
         "difficulty": "Easy",
         "flag": "CTF{3ndp0int5_4r3_c00l}",
         "youtubeExplainer": "tGv7CUutzqU",
@@ -17,7 +17,7 @@ export const flags = [
         "description": "You have found an environment variable that shouldn't be accessible publicly. This could result in someone gaining access to our API's which could be a security risk.",
         "hint" : "Look for network requests that are being made to the server.",
         "secureCodeID": 2,
-        "securityCategory": "Insecure API",
+        "securityCategory": "Environment Variable",
         "difficulty": "Easy",
         "flag": "CTF{3nv_v4r14bl3s_4r3_1mp0rt4nt}",
         "youtubeExplainer": "WoTaqZW13bY",
@@ -106,6 +106,19 @@ export const flags = [
         "flag": "CTF{1d0r_1n_0rd3r5_4r3_b4d_pr4ct1c3}",
         "youtubeExplainer": "",
         "active": true
-        }
+        },
+        {
+        "id": 10,
+        "title": "Steganography Flag",
+        "description": "You have found a steganography flag hidden in an image. This is not a vulnerability but a fun way to hide information.",
+        "hint" : "Try using a steganography decoder to find the flag. You need a decryption key to decrypt the image. You can find the decryption key by finding another flag.",
+        "secureCodeID": 10,
+        "securityCategory": "Steganography",
+        "difficulty": "Hard",
+        "flag": "CTF{57394n09r4phy_15_c001}",
+        "youtubeExplainer": "",
+        "active": true
+        },
+
 
     ]
