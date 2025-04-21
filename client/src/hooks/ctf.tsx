@@ -91,4 +91,19 @@ export const CTFCleanUp = async () => {
   }
 }
 
+export const getFlag = async (secureCodeID: number) => {
+  try {
+    const response = await axiosInstance.get(`/ctf/securecode/${secureCodeID}`, {
+      params: {
+        secureCodeID: secureCodeID,
+      },
+    });
+  
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching flag:", error);
+  }
+}
+
+
 

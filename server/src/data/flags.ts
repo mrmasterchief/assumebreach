@@ -50,8 +50,8 @@ export const flags = [
         {   
         "id": 5,
         "title": "Cross Site Scripting Flag",
-        "description": "You have found a Cross Site Scripting (XSS) vulnerability in the search bar. This could allow an attacker to execute malicious scripts in the browser of other users.",
-        "hint" : "Try entering a XSS payload in the search bar.",  
+        "description": "You have found a Cross Site Scripting (XSS) vulnerability in the address bar. This could allow an attacker to execute malicious scripts in the browser.",
+        "hint" : "Try entering a XSS payload in the address bar where a query parameter is present.",  
         "secureCodeID": 5,
         "securityCategory": "XSS",
         "difficulty": "Easy",
@@ -62,7 +62,7 @@ export const flags = [
         {
         "id": 6,
         "title": "Broken Access Control Flag",
-        "description": "You have accessed a page that you shouldn't have access to. This is a broken access control vulnerability and could result in unauthorized access to sensitive information.",
+        "description": "You have accessed an api route that you shouldn't have access to. This could allow an attacker to access sensitive information or perform actions that they shouldn't be able to.",
         "hint" : "Try accessing a page that you shouldn't have access to by changing the request parameters.",
         "secureCodeID": 6,
         "securityCategory": "Broken Access Control",

@@ -112,5 +112,32 @@ router.post("/securecode", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/securecode/:id", async (req: Request, res: Response) => {
+  const secureCodeID = req.params.id;
+  if (!secureCodeID) {
+    res.status(400).json({ error: errors[400] });
+    return;
+  }
+  if(secureCodeID !== '5') {
+    res.status(400).json({ error: errors[400] });
+    return;
+  }
+  try {
+    const flag = flags.find((flag) => flag.secureCodeID === parseInt(secureCodeID));
+    if (!flag) {
+      res.status(400).json({ error: errors[400] });
+      return;
+    }
+    const encryptedFlag = await encryptFlag({ req, flag: flag.flag });
+    res.status(200).json({
+      flag: encryptedFlag
+    });
+    return;
+  } catch (error) {
+    res.status(500).json({ error: errors[500] });
+    return;
+  }
+});
+
 
 export default router;

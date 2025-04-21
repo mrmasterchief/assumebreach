@@ -68,7 +68,7 @@ const Header = ({ type,
 
 
   useEffect(() => {
-    if (pathname === "/account/authenticate" || pathname == "/account/forgot-password" || pathname == "/cms/login") return;
+    if (pathname === "/account/authenticate" || pathname == "/account/forgot-password" || pathname == "/cms/login" ||pathname == '/admin/login') return;
     indexFunction(
       [
         () => getCart(),
