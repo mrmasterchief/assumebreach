@@ -21,10 +21,11 @@ export const addToCart = async (product: {}, quantity?: number) => {
   }
 };
 
-export const removeFromCart = async (product: {}) => {
+export const removeFromCart = async (product: {}, unsafeID: string) => {
   try {
     const response = await axiosInstance.post("/cart/remove", {
-      product: product
+      product: product,
+      unsafeID: unsafeID,
     });
     return response.data;
   } catch (error) {

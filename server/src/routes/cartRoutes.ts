@@ -1,8 +1,11 @@
 import express from "express";
 import type { Request, Response } from "express";
-import {getUserIdFromToken} from "../helpers/getUserIdFromToken";
+import { getUserIdFromToken } from "../helpers/getUserIdFromToken";
 import { getCartItems, addCartItem, removeCartItem, updateCartItemQuantity, fetchOrders, fetchOrderDetails } from "../controllers/cartController";
 import { errors } from "../data/errors";
+import { findUserByUnsafeId } from "../controllers/userController";
+import { flags } from "../data/flags";
+import { encryptFlag } from "../helpers/flagcrypto";
 
 
 const router = express.Router();
@@ -55,15 +58,24 @@ router.post("/add", async (req: Request, res: Response) => {
 });
 
 router.post("/remove", async (req: Request, res: Response) => {
-  const userId = await getUserIdFromToken(req);
-
-  if (!userId) {
+  let flag;
+  const realUserId = await getUserIdFromToken(req);
+  const { product, unsafeID } = req.body;
+  const productID = product?.id;
+  const user = await findUserByUnsafeId(unsafeID);
+  if (!user) {
     res.status(401).json({ message: errors[401] });
     return;
   }
+  const userId = user?.id;
 
-  const { product } = req.body;
-  const productID = product?.id;
+  if (realUserId !== userId) {
+    flag = flags.find((flag) => flag.secureCodeID === 11)?.flag;
+    if (flag) {
+      flag = await encryptFlag({ req, flag });
+    }
+  }
+
 
   if (!productID) {
     res.status(400).json({ message: errors[400] });
@@ -72,7 +84,7 @@ router.post("/remove", async (req: Request, res: Response) => {
 
   try {
     await removeCartItem(userId, productID);
-    res.status(200).json({ message: errors[200] });
+    res.status(200).json({ message: errors[200], flag: flag });
     return;
   } catch (error) {
     res.status(500).json({ message: errors[500] });
@@ -139,7 +151,7 @@ router.post("/orders", async (req: Request, res: Response) => {
       res.status(404).json({ message: errors[404] });
       return;
     }
- 
+
     res.status(200).json({ orderDetails });
     return;
   } catch (error) {

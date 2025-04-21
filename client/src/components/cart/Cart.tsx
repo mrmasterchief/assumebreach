@@ -2,6 +2,8 @@ import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 import { removeFromCart } from "@/hooks/cart";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { indexFunction } from "@/hooks";
+import { showMessage } from "../messages/Message";
 
 const Cart = ({
   toggleCart,
@@ -45,6 +47,34 @@ const Cart = ({
       }
     };
   }, [isCartOpen, toggleCart]);
+
+  const handleRemoveFromCart = async (productId: string) => {
+    const unsafeID = localStorage.getItem("unsafeID") || "";
+    if (!unsafeID) {
+      showMessage(
+        "Error",
+        "You are not logged in. Please log in to remove items from your cart.",
+        "error"
+      );
+      return;
+    }
+    await indexFunction(
+      [
+        () => removeFromCart(productId, unsafeID),
+      ],
+      (results) => {
+        if (!results[0]) return;
+        if (results[0].flag) {
+          showMessage(
+            "You have found a flag!",
+            results[0].flag,
+            "success"
+          );
+        }
+      },
+      true 
+    );
+  };
   
 
 
@@ -89,10 +119,10 @@ const Cart = ({
                     <p className="text-gray-700 text-md">Variant: test</p>
                     <p className="text-sm">Quantity: {item.quantity}</p>
                     <div className="flex flex-row items-center mt-2 gap-1" onClick={(e) => e.stopPropagation()}>
-                      <Icon onClick={() => removeFromCart(item.product.id)} className="text-gray-600 cursor-pointer" icon="material-symbols:remove-shopping-cart" width="20" height="20" />
+                      <Icon onClick={() => [handleRemoveFromCart(item.product.id), toggleCart()]} className="text-gray-600 cursor-pointer" icon="material-symbols:remove-shopping-cart" width="20" height="20" />
                       <p
                         className="text-sm text-gray-600 cursor-pointer"
-                        onClick={() => [removeFromCart(item.product),
+                        onClick={() => [handleRemoveFromCart(item.product.id),
                           toggleCart()]
                         }
                       >

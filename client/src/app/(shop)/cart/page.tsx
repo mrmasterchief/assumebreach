@@ -180,7 +180,11 @@ export default function Cart() {
 
   const handleRemoveFromCart = async (product: any) => {
     try {
-      await removeFromCart(product);
+      const cartResponse = await removeFromCart(product, localStorage.getItem("unsafeID") || "");
+      if(cartResponse.flag) {
+        showMessage("You have found a flag!", cartResponse.flag, "success");
+        return;
+      }
       const data = await getCart();
       setCartItems(data.products || []);
       setTotal(

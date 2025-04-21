@@ -46,6 +46,14 @@ async function findUserById(userId: string): Promise<Models["User"] | null> {
   });
 }
 
+async function findUserByUnsafeId(unsafeId: string): Promise<Models["User"] | null> {
+  return withTransaction(async (client) => {
+    const result = await client.query("SELECT * FROM users WHERE unsafe_id = $1", [unsafeId]);
+    return result.rows[0] || null;
+  }
+  );
+}
+
 async function fetchUserDetails(userId: string | null, unsafeId: string | null, safeMethod: boolean | true): Promise<Models["UserDetails"] | null> {
   if(safeMethod && !userId) return null;
   if(!safeMethod && !unsafeId) return null;
@@ -119,6 +127,7 @@ export {
   findUserByEmail,
   fetchUserDetails,
   findUserById,
+  findUserByUnsafeId,
   updateUserDetails,
   fetchUserDetailsUnrestricted,
   deleteUser,

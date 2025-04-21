@@ -119,6 +119,18 @@ export const flags = [
         "youtubeExplainer": "",
         "active": true
         },
+        {
+        "id": 11,
+        "title": "Shopping Cart IDOR Flag",
+        "description": "You have found an Insecure Direct Object Reference (IDOR) vulnerability in the shopping cart.",
+        "hint" : "Try using a proxy tool to view the requests being made when using the shopping cart.",
+        "secureCodeID": 11,
+        "securityCategory": "IDOR",
+        "difficulty": "Medium",
+        "flag": "CTF{1d0r_1n_sh0pp1ng_c4rt5_4r3_b4d_pr4ct1c3}",
+        "youtubeExplainer": "",
+        "active": true
+        }
 
 
     ]
