@@ -39,7 +39,7 @@ const CartItemComponent = ({
             <div className="flex items-center w-[60%]">
                 <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[4/3] shadow-md w-[65px] h-[70px] group justify-center items-center flex" href={`/shop/${item.product.id}`}>
                     <Image
-                        src={`http://145.24.223.47/api/public${item.product.imagepath}`}
+                        src={`http://assumebreach.tech/api/public${item.product.imagepath}`}
                         alt={item.product.title}
                         width={100}
                         height={100}

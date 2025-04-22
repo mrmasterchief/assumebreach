@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'http',
-        hostname: '145.24.223.47',
+        hostname: 'assumebreach.tech',
       },
       {
         protocol: 'http',
