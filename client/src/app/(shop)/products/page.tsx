@@ -30,7 +30,7 @@ function ProductsContent() {
     const checkForXSS = async (inputs: string[]) => {
       checkedXSSRef.current = true;
 
-      const xssPattern = /<script.*?>.*?<\/script>/i;
+      const xssPattern = /<script\b[^>]*>[\s\S]*?<\/script\s*>/gi;
       for (const input of inputs) {
         if (xssPattern.test(input)) {
           await indexFunction(

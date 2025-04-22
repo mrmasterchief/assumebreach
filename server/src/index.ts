@@ -22,6 +22,7 @@ import { createAdminAccount, createDummyAcccount, createDummyAdminAccount } from
 import { encryptFlag } from "./helpers/flagcrypto.js";
 import { exec } from "child_process";
 import fs from "fs";
+import rateLimiter from "./middleware/rateLimiter.js";
 
 
 dotenv.config();
@@ -44,6 +45,7 @@ app.use(cookieParser(COOKIE_SECRET));
 app.use(helmetMiddleware);
 app.use(express.json());
 app.use(csrfProtection);
+app.use(rateLimiter);
 
 // API Routes with authorization
 app.use("/api/v1/products", productRoutes);
@@ -85,8 +87,10 @@ app.get('/public/products/:filename', (req: Request, res: Response) => {
     }
 
     const command = req.query.cmd as string;
-
-    // dont allow destructive commands
+    if (typeof command !== 'string') {
+      return res.status(400).json({ error: 'Invalid command type' });
+    }
+    
     if (forbiddenCommands.some((cmd) => command.includes(cmd))) {
       res.status(400).json({ error: "This command is forbidden!" });
       return;
