@@ -107,7 +107,7 @@ const Cart = ({
                     key={idx}
                   >
                     <img
-                      src={`/api/public${item.product.imagepath}`}
+                      src={`http://145.24.223.47/api/public${item.product.imagepath}`}
                       alt="product"
                       className="object-center w-full object-cover"
                     />
