@@ -31,7 +31,7 @@ const ProductCard = ({
        relative overflow-hidden bg-[#f9fafb] border border-gray-200 rounded-large group  sm:h-full sm:w-full aspect-[1/1] shadow-md  group justify-center items-center flex"
       >
         <Image
-          src={`http://localhost:4000/public${cardInfo.imagepath}`}
+          src={`/api/public${cardInfo.imagepath}`}
           fill
           style={{objectFit: "cover", objectPosition: "center"}}
           sizes="( max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw"
@@ -54,7 +54,7 @@ const ProductCard = ({
         cardType === "discover" ? "aspect-[11/14]" : "aspect-[4/7]"
       }`}>
         <Image
-          src={`http://localhost:4000/public${cardInfo.imagepath}`}
+          src={`/api/public${cardInfo.imagepath}`}
           fill
           sizes="( max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw"
           style={{ objectPosition: "center", objectFit: "cover" }}

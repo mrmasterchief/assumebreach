@@ -126,7 +126,7 @@ export default function OrderDetails() {
                                     {orderDetails.items.map((item, index) => (
                                         <div key={index} className="flex gap-4">
                                             <Image
-                                                src={`http://localhost:4000/public${item.product.imagepath}`}
+                                                src={`/api/public${item.product.imagepath}`}
                                                 alt={item.product.title}
                                                 width={100}
                                                 height={100}

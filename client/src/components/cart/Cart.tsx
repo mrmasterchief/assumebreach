@@ -107,7 +107,7 @@ const Cart = ({
                     key={idx}
                   >
                     <img
-                      src={`http://localhost:4000/public${item.product.imagepath}`}
+                      src={`/api/public${item.product.imagepath}`}
                       alt="product"
                       className="object-center w-full object-cover"
                     />

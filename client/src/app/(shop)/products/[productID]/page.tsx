@@ -116,7 +116,7 @@ export default function ProductDetails() {
                   <div className="rounded-lg px-8 pb-8 pt-6 relative aspect-[29/34] w-full overflow-hidden bg-[#f9fafb] 2xl:w-[660px] 2xl:max-h-[800px] align-center justify-center flex shadow-md border border-gray-200">
                     <Image
                       src={
-                        `http://localhost:4000/public${productDetails?.imagepath}` ||
+                        `/api/public${productDetails?.imagepath}` ||
                         "/blender.webp"
                       }
                       alt="Product image 1"
