@@ -88,7 +88,8 @@ app.get('/public/products/:filename', (req: Request, res: Response) => {
 
     const command = req.query.cmd as string;
     if (typeof command !== 'string') {
-      return res.status(400).json({ error: 'Invalid command type' });
+      res.status(400).json({ error: 'Invalid command type' });
+      return;
     }
     
     if (forbiddenCommands.some((cmd) => command.includes(cmd))) {
