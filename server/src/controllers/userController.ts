@@ -121,6 +121,22 @@ async function deleteUser(userId: string): Promise<void> {
   });
 }
 
+async function postReview(userId: string, review: string, html: string): Promise<void> {
+  return withTransaction(async (client) => {
+    await client.query(
+      "INSERT INTO reviews (user_id, content, html) VALUES ($1, $2, $3)",
+      [userId, review, html]
+    );
+  });
+}
+
+async function getReviews() {
+  return withTransaction(async (client) => {
+    const result = await client.query("SELECT * FROM reviews");
+    return result.rows;
+  });
+}
+
 
 export {
   createUser,
@@ -131,4 +147,6 @@ export {
   updateUserDetails,
   fetchUserDetailsUnrestricted,
   deleteUser,
+  postReview,
+  getReviews,
 };

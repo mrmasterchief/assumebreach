@@ -155,6 +155,17 @@ export const flags = [
         "youtubeExplainer": "",
         "active": true
         },
-
-
+        {
+        "id": 14,
+        "title": "Vulnerable NPM Package Flag",
+        "description": "You have found a vulnerable NPM package in the application. This could allow an attacker to exploit the vulnerability and inject malicious code into the application.",
+        "hint" : "You are allowed to check the GitHub page of the project. Look for the package.json file and check the dependencies.",
+        "secureCodeID": 14,
+        "securityCategory": "Vulnerable NPM Package",
+        "difficulty": "Medium",
+        "flag": "CTF{vulner4bl3_npm_p4ck4g3_4r3_c00l}",
+        "youtubeExplainer": "", 
+        "active": true
+        },
+        
     ]

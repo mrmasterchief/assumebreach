@@ -384,7 +384,7 @@ export default function Account() {
           You can find frequently asked questions and answers on our customer
           service page.
         </p>
-        <Link href="/account/help" passHref className="flex flex-row gap-2">
+        <Link href="/customer-service" passHref className="flex flex-row gap-2">
           <p className="text-blue-700 hover:underline">Customer Service</p>
           <Icon
             icon="material-symbols:arrow-outward-rounded"

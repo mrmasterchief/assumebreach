@@ -265,7 +265,7 @@ export default function Cart() {
                 <p className="text-base font-small text-gray-500 max-w-[50%]">
                   Your shopping bag is empty. Start exploring our products by clicking the button below. You need to be logged in to add products to your cart.
                 </p>
-                <Link href="/account/help" passHref className="flex flex-row gap-2">
+                <Link href="/customer-service" passHref className="flex flex-row gap-2">
                   <p className="text-blue-700 hover:underline">Explore Products</p>
                   <Icon
                     icon="material-symbols:arrow-outward-rounded"

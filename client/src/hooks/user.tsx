@@ -71,6 +71,26 @@ export const getAllUsers = async (page: number) => {
   }
 }
 
+export const getReviews = async () => {
+  try {
+    const response = await axiosInstance.get(`/products/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+  }
+}
+
+export const postReview = async (review: string) => {
+  try {
+    const response = await axiosInstance.post("/user/post-review", {
+      review: review,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error posting review:", error);
+  }
+}
+
 
 export const logout = async () => {
   try {

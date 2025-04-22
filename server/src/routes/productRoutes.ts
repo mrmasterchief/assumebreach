@@ -7,6 +7,7 @@ import {
   fetchProductsByCategory,
   searchProducts,
 } from "../controllers/productController";
+import { getReviews } from "../controllers/userController";
 
 const router = express.Router();
 
@@ -58,6 +59,16 @@ router.get("/search", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: errors[500] });
   }
+});
+
+router.get('/reviews', async (req: Request, res: Response) => {
+  try {
+    const reviews = await getReviews();
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: errors[500] });
+  }
+
 });
 
 export default router;
