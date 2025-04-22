@@ -276,7 +276,6 @@ export default function Account() {
         ]
         ,
         (results) => {
-          console.log("results", results);
           if (!results[0] || !results[1]) {
             window.location.href = "/account/authenticate";
           }

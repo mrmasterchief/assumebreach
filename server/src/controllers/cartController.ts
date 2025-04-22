@@ -34,7 +34,8 @@ export async function getCartItems(userId: string): Promise<Models["Cart"][]> {
 export async function addCartItem(
   userId: string,
   productId: string,
-  quantity: number
+  quantity: number,
+  variant: string
 ): Promise<void> {
   return withTransaction(async (client) => {
     let cartID: { rows: { id: string }[] };
@@ -48,8 +49,8 @@ export async function addCartItem(
       userId,
     ]);
     await client.query(
-      "INSERT INTO cart_items (cart_id, product_id, quantity) VALUES ($1, $2, $3) ON CONFLICT (cart_id, product_id) DO UPDATE SET quantity = cart_items.quantity + $3",
-      [cartID.rows[0].id, productId, quantity]
+      "INSERT INTO cart_items (cart_id, product_id, quantity, variant) VALUES ($1, $2, $3, $4) ON CONFLICT (cart_id, product_id) DO UPDATE SET quantity = cart_items.quantity + $3",
+      [cartID.rows[0].id, productId, quantity, variant]
     );
   });
 }

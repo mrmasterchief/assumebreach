@@ -25,8 +25,8 @@ export const searchProducts = async (query: string) => {
   return response.data;
 };
 
-export const createProduct = async (product: FormData) => {
-  const response = await axiosInstance.post("/cms/product", product, {
+export const createProduct = async (product: FormData, endpoint: string) => {
+  const response = await axiosInstance.post(endpoint, product, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

@@ -130,7 +130,31 @@ export const flags = [
         "flag": "CTF{1d0r_1n_sh0pp1ng_c4rt5_4r3_b4d_pr4ct1c3}",
         "youtubeExplainer": "",
         "active": true
-        }
+        },
+        {
+        "id": 12,
+        "title": "Remote Code Execution Flag",
+        "description": "You have found a Remote Code Execution (RCE) vulnerability in the application. This could allow an attacker to execute arbitrary code on the server.",
+        "hint" : "Try using a reverse shell to gain access to the server. Find a file upload functionality and upload a reverse shell.",
+        "secureCodeID": 12,
+        "securityCategory": "RCE",
+        "difficulty": "Hard",
+        "flag": "CTF{r3m0t3_c0d3_3x3cut10n_15_d4ng3r0u5}",
+        "youtubeExplainer": "",
+        "active": true
+        },
+        {
+        "id": 13,
+        "title": "Reverse Shell Flag",
+        "description": "You have exploited a dangerous file upload vulnerability to upload a reverse shell. You then used the reverse shell to gain access to the server files.",
+        "hint" : "Try using a reverse shell to gain access to the server. Find a file upload functionality and upload a reverse shell.",
+        "secureCodeID": 13,
+        "securityCategory": "RCE",
+        "difficulty": "Medium",
+        "flag": "CTF{vulner4b13_f113_up104d5_4r3_4w3some}",
+        "youtubeExplainer": "",
+        "active": true
+        },
 
 
     ]

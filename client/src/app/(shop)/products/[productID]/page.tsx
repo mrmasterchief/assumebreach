@@ -10,6 +10,8 @@ import { Product } from "@/ProductTypes";
 import { useCart } from "@/context/CartContext";
 import ContentContainer from "@/components/content-container";
 import { indexFunction } from "@/hooks";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { MenuItem } from "@mui/material";
 import {
   ProductSection,
   ProductInfoContent,
@@ -20,6 +22,7 @@ export default function ProductDetails() {
   const [isProductInfoOpen, setIsProductInfoOpen] = useState(false);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [isShippingReturnsOpen, setIsShippingReturnsOpen] = useState(false);
+  const [variant, setVariant] = useState("");
   const params = useParams();
   const productID = Array.isArray(params?.productID)
     ? params.productID[0]
@@ -59,6 +62,15 @@ export default function ProductDetails() {
       setRecommendedProducts(filteredResponse.slice(0, 3));
     });
   }, [productDetails]);
+
+  if (!productDetails.imagepath) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+     
+      </div>
+    );
+  }
+
 
   return (
     <ContentContainer>
@@ -104,7 +116,7 @@ export default function ProductDetails() {
                   <div className="rounded-lg px-8 pb-8 pt-6 relative aspect-[29/34] w-full overflow-hidden bg-[#f9fafb] 2xl:w-[660px] 2xl:max-h-[800px] align-center justify-center flex shadow-md border border-gray-200">
                     <Image
                       src={
-                        `http://localhost:4000/public/${productDetails?.imagepath}` ||
+                        `http://localhost:4000/public${productDetails?.imagepath}` ||
                         "/blender.webp"
                       }
                       alt="Product image 1"
@@ -121,8 +133,58 @@ export default function ProductDetails() {
           </div>
 
           <div className="flex flex-col lg:sticky lg:top-48 lg:py-0 lg:max-w-[250px] w-full py-8 gap-y-12">
+          {productDetails.options.includes("Size") && (
+              <div className="flex flex-col gap-y-2">
+                <h1
+                  className={`text-xl leading-10`}
+                >
+                  Select Size
+                </h1>
+                  <Select
+                    value={variant}
+                    onChange={(e: SelectChangeEvent) => {
+                      setVariant(e.target.value);
+                    }}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    className="w-full"
+                    >
+                    <MenuItem value="" disabled>
+                      Size
+                    </MenuItem>
+                    <MenuItem value ="Small">Small</MenuItem>
+                    <MenuItem value ="Medium">Medium</MenuItem>
+                    <MenuItem value ="Large">Large</MenuItem>
+                    </Select> 
+              </div>
+            )}
+            {productDetails.options.includes("Color") && (
+              <div className="flex flex-col gap-y-2">
+                <h1
+                  className={`text-xl leading-10`}
+                >
+                  Select Color
+                </h1>
+                  <Select
+                    value={variant}
+                    onChange={(e: SelectChangeEvent) => {
+                      setVariant(e.target.value);
+                    }}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    className="w-full"
+                    >
+                    <MenuItem value="" disabled>
+                      Color
+                    </MenuItem>
+                    <MenuItem value ="Black">Black</MenuItem>
+                    <MenuItem value ="Brown">Brown</MenuItem>
+                    </Select> 
+              </div>
+            )}
             <div className="flex flex-col gap-y-2">
               <div className="flex flex-row gap-x-2">
+    
                 <h1
                   className={`font-sans font-medium h1-core text-4xl leading-10`}
                 >
@@ -150,11 +212,13 @@ export default function ProductDetails() {
             <div className="flex flex-col gap-y-4">
               <button
                 type="button"
-                className="flex items-center bg-black px-4 py-2 rounded-lg text-white align-center justify-center"
+                className={`flex items-center bg-black px-4 py-2 rounded-lg text-white align-center justify-center 
+                  ${variant ? "hover:bg-gray-800" : "bg-gray-400 cursor-not-allowed"}
+                  `}
                 onClick={async () => {
                   await indexFunction(
                     [
-                  () => addToCart(productDetails),
+                  () => addToCart(productDetails, 1, variant),
                   async () => toggleCart()
                     ],
                     () => {
@@ -162,6 +226,7 @@ export default function ProductDetails() {
                     true
                   );
                 }}
+                disabled={!variant}
               >
                 Add to Cart
               </button>

@@ -24,8 +24,10 @@ interface ProductFormValues {
 
 const ProductForm = ({
   setFormActive,
+  formType
 }: {
   setFormActive: (active: boolean) => void;
+  formType: "cms" | "admin";
 }) => {
   const initialValues: ProductFormValues = {
     title: "",
@@ -74,7 +76,8 @@ const ProductForm = ({
     formData.append("information", JSON.stringify(values.information));
 
     try {
-      const response = await createProduct(formData);
+      const endpoint = formType === "cms" ? "/cms/product" : "/admin/product";
+      const response = await createProduct(formData, endpoint);
 
       if (response.status !== 200) {
         throw new Error("Error creating product");

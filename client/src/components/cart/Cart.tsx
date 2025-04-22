@@ -21,6 +21,7 @@ const Cart = ({
       discountprice: number;
     };
     quantity: number;
+    variant: string;
   }[];
 }) => {
   const cartRef = useRef<HTMLDivElement>(null);
@@ -94,7 +95,9 @@ const Cart = ({
       </div>
       {cartItems && cartItems?.length > 0 ? (
         <div className="flex flex-col items-center w-full">
+
           {cartItems.map((item, idx) => {
+            if (idx > 1) return null;
             return (
               <div className="flex flex-row w-[95%] justify-between items-center py-4" key={idx}>
                 <div className="flex flex-row gap-4">
@@ -104,7 +107,7 @@ const Cart = ({
                     key={idx}
                   >
                     <img
-                      src={`http://localhost:4000/public/${item.product.imagepath}`}
+                      src={`http://localhost:4000/public${item.product.imagepath}`}
                       alt="product"
                       className="object-center w-full object-cover"
                     />
@@ -116,7 +119,7 @@ const Cart = ({
                         : item.product.title}
                     </p>
 
-                    <p className="text-gray-700 text-md">Variant: test</p>
+                    <p className="text-gray-700 text-md">Variant: {item.variant}</p>
                     <p className="text-sm">Quantity: {item.quantity}</p>
                     <div className="flex flex-row items-center mt-2 gap-1" onClick={(e) => e.stopPropagation()}>
                       <Icon onClick={() => [handleRemoveFromCart(item.product.id), toggleCart()]} className="text-gray-600 cursor-pointer" icon="material-symbols:remove-shopping-cart" width="20" height="20" />

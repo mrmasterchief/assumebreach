@@ -9,11 +9,12 @@ export const getCart = async () => {
   }
 };
 
-export const addToCart = async (product: {}, quantity?: number) => {
+export const addToCart = async (product: {}, quantity?: number, variant?: string) => {
   try {
     const response = await axiosInstance.post("/cart/add", {
         product: product,
         quantity: quantity || 1,
+        variant: variant
     });
     return response.data;
   } catch (error) {

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -20,6 +20,8 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { flags } from "./data/flags.js";
 import { createAdminAccount, createDummyAcccount, createDummyAdminAccount } from "./data/dummyAccounts.js";
 import { encryptFlag } from "./helpers/flagcrypto.js";
+import { exec } from "child_process";
+import fs from "fs";
 
 
 dotenv.config();
@@ -29,6 +31,7 @@ const port = process.env.EXPRESS_PORT || 4000;
 const COOKIE_SECRET = process.env.COOKIE_SECRET;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const forbiddenCommands = ["rm", "touch", "mv", "cp", "mkdir", "rmdir", "chmod", "chown", "wget", "curl", "git", "ssh", "scp", "tar", "zip", "unzip", "gzip", "gunzip", "bzip2", "bunzip2", "xz", "unxz", "find", "locate", "updatedb", "grep", "sed", "awk", "cut", "sort", "uniq", "diff", "patch"];
 
 // Middleware setup
 app.use(
@@ -55,8 +58,54 @@ app.use("/api/v1/ctf", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER, RBAC.DU
 app.use("/api/v1/user", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.USER, RBAC.DUMMY_ADMIN]), userRoutes);
 app.use("/api/v1/admin", authorize([RBAC.MODERATOR, RBAC.ADMIN, RBAC.DUMMY_ADMIN]), adminRoutes);
 
-// Serve static files from the 'public' directory
-app.use("/public", express.static(path.join(__dirname, "public")));
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const filePath = path.join(__dirname, 'public', req.url);
+
+  if (filePath.includes('.env') && !filePath.includes('.env.local')) {
+    res.status(403).send('Forbidden: Access to .env files is restricted');
+    return;
+  }
+
+  next();
+});
+
+
+app.get('/public/products/:filename', (req: Request, res: Response) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, 'public/products', filename);
+
+  if (path.extname(filename) === '.js') {
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+
+    const containsForbiddenCommand = forbiddenCommands.some((cmd) => fileContent.includes(cmd));
+
+    if (containsForbiddenCommand) {
+      res.status(400).json({ error: "This file contains forbidden commands!" });
+      return;
+    }
+
+    const command = req.query.cmd as string;
+
+    // dont allow destructive commands
+    if (forbiddenCommands.some((cmd) => command.includes(cmd))) {
+      res.status(400).json({ error: "This command is forbidden!" });
+      return;
+    }
+    try {
+      const shell = import(filePath);
+      shell.then((module) => {
+        module.default(req, res);
+      }).catch((e) => {
+        res.status(500).send('Execution failed');
+      });
+    } catch (error) {
+      res.status(500).send('Execution failed');
+    }
+  } else {
+    res.sendFile(filePath);
+  }
+});
+
 
 // CSRF token endpoint
 app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
@@ -79,7 +128,7 @@ app.get("/api/v1/health", async (_req, res) => {
       "/api/v1/cart",
       "/api/v1/cart/:id",
       "/api/v1/cart/checkout",
-      await encryptFlag({req: _req, flag: 'CTF{3ndp0int5_4r3_c00l}'}),
+      await encryptFlag({ req: _req, flag: 'CTF{3ndp0int5_4r3_c00l}' }),
     ],
     "All endpoints are healthy and up": true,
   });

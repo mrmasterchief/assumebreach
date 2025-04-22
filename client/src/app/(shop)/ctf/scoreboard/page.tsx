@@ -25,6 +25,8 @@ export default function ScoreBoard() {
   const [fullName, setFullName] = useState<string>("");
   const [liveScoreBoard, setLiveScoreBoard] = useState<any[]>([]);
 
+
+
   interface Flag {
     title: string;
     collected: boolean;
@@ -48,6 +50,14 @@ export default function ScoreBoard() {
   >("difficulty");
   const [unsafeID, setUnsafeID] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("flags");
+  const pageSize = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(flagList.length / pageSize);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
 
   const tabs = [
     { id: 0, label: "Flags", icon: "material-symbols:flag" },
@@ -229,8 +239,13 @@ export default function ScoreBoard() {
     );
   };
 
-  const FlagsList = () => {
-    return flagList.map((flag, index) => (
+  const FlagsList = ({
+    flags,
+  }: {
+    flags: Flag[];
+  }) => {
+
+    return flags.map((flag, index) => (
       <NestedList
         key={index}
         title={flag.title}
@@ -361,7 +376,28 @@ export default function ScoreBoard() {
               </div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Flags to Collect</h2>                  
               <Filters />
-              <FlagsList />
+              <div className="flex justify-between items-center w-full mt-4">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all duration-200 ${currentPage === 1 ? "cursor-not-allowed" : ""
+                    }`}
+                >
+                  Previous
+                </button>
+                <span className="text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all duration-200 ${currentPage === totalPages ? "cursor-not-allowed" : ""
+                    }`}
+                >
+                  Next
+                </button>
+              </div>
+              <FlagsList flags={flagList.slice(startIndex, endIndex)} />
             </div>
 
           ) : (

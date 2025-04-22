@@ -23,7 +23,6 @@ router.post("/login", async (req: Request, res: Response) => {
   const { email, password, cms, admin } = req.body;
   let user: any;
   let flag: string | undefined = undefined;
-  console.log(email ,password , cms, admin);
 
   try {
     let data = await sqlInjectionFilter(email, password);

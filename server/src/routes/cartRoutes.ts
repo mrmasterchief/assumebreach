@@ -37,7 +37,7 @@ router.post("/add", async (req: Request, res: Response) => {
     return;
   }
 
-  let { product, quantity } = req.body;
+  let { product, quantity, variant } = req.body;
   const productID = product?.id;
 
   if (!productID) {
@@ -48,7 +48,7 @@ router.post("/add", async (req: Request, res: Response) => {
   quantity = quantity || 1;
 
   try {
-    await addCartItem(userId, productID, quantity);
+    await addCartItem(userId, productID, quantity, variant);
     res.status(200).json({ message: errors[200] });
     return;
   } catch (error) {
@@ -60,8 +60,7 @@ router.post("/add", async (req: Request, res: Response) => {
 router.post("/remove", async (req: Request, res: Response) => {
   let flag;
   const realUserId = await getUserIdFromToken(req);
-  const { product, unsafeID } = req.body;
-  const productID = product?.id;
+  const { productID, unsafeID } = req.body;
   const user = await findUserByUnsafeId(unsafeID);
   if (!user) {
     res.status(401).json({ message: errors[401] });
