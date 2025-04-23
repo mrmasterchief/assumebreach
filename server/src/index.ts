@@ -168,7 +168,7 @@ app.post("/api/v1/open-ai", (req, res) => {
     });
     return;
   }
-  if (prompt.includes("flag")) {
+  if (prompt == "flag" || prompt.includes("flag")) {
     res.status(200).json({
       id: "cmpl-1234567890",
       object: "text_completion",
