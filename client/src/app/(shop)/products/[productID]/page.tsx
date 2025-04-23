@@ -118,9 +118,9 @@ export default function ProductDetails() {
                       src={
                         `${process.env.NEXT_PUBLIC_IMAGE_ROUTE}/public${productDetails.imagepath}`
                       }
-                      alt="Product image 1"
-                      width={1000}
-                      height={1000}
+                      alt={productDetails.title}
+                      fill
+                      style={{ objectFit: "cover", objectPosition: "center" }}
                       className="absolute inset-0 rounded-rounded object-cover object-center"
                       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
                       priority
