@@ -97,6 +97,7 @@ export default function OrderDetails() {
                                                 alt={item.product.title}
                                                 width={100}
                                                 height={100}
+                                                unoptimized
                                                 className="rounded-lg object-cover"
                                             />
                                             <div className="flex flex-col justify-between">
