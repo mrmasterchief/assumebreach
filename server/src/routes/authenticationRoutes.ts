@@ -114,7 +114,6 @@ router.post("/login", async (req: Request, res: Response) => {
       res.status(403).json({ message: [errors[403.1]] });
       return;
     }
-    // Check if admin is true and if userdetailsrole is not admin or dummy admin
     if(admin && userDetails.role !== RBAC.ADMIN && userDetails.role !== RBAC.DUMMY_ADMIN) {
       res.status(403).json({ message: [errors[403.1]] });
       return;

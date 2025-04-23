@@ -67,8 +67,6 @@ router.post("/remove", async (req: Request, res: Response) => {
     return;
   }
   const userId = user?.id;
-  console.log("userId", userId);
-  console.log(productID)
 
   if (realUserId !== userId) {
     flag = flags.find((flag) => flag.secureCodeID === 11)?.flag;
