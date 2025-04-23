@@ -99,7 +99,7 @@ const Cart = ({
                     key={idx}
                   >
                     <img
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
+                      src={`${process.env.NEXT_PUBLIC_IMAGE_ROUTE}/public${item.product.imagepath}`}
                       alt="product"
                       className="object-center w-full object-cover"
                     />

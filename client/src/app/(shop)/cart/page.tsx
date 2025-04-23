@@ -41,7 +41,7 @@ const CartItemComponent = ({
       <div className="flex items-center w-[28%]">
         <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/products/${item.product.id}`}>
           <Image
-            src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
+            src={`${process.env.NEXT_PUBLIC_IMAGE_ROUTE}/public${item.product.imagepath}`}
             alt={item.product.title}
             width={100}
             height={100}

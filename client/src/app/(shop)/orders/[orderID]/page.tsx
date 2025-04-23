@@ -93,7 +93,7 @@ export default function OrderDetails() {
                                     {orderDetails.items.map((item, index) => (
                                         <div key={index} className="flex gap-4">
                                             <Image
-                                                src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
+                                                src={`${process.env.NEXT_PUBLIC_IMAGE_ROUTE}/public${item.product.imagepath}`}
                                                 alt={item.product.title}
                                                 width={100}
                                                 height={100}
