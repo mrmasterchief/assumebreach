@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -31,8 +32,8 @@ const CartItemComponent = ({
   onUpdateCartQuantity,
 }: {
   item: CartItem;
-  onRemove: (product: any) => void;
-  onUpdateCartQuantity: (product: any, quantity: number) => void;
+  onRemove: (productID: string) => void;
+  onUpdateCartQuantity: (product: string, quantity: number) => void;
 }) => (
 
   <div className="flex items-center justify-between w-full border-b border-gray-200 py-4 pr-4">
@@ -40,7 +41,7 @@ const CartItemComponent = ({
       <div className="flex items-center w-[28%]">
         <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[1/1] shadow-md w-[100px] h-[100px] group justify-center items-center flex" href={`/products/${item.product.id}`}>
           <Image
-            src={`http://assumebreach.tech/api/public${item.product.imagepath}`}
+            src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
             alt={item.product.title}
             width={100}
             height={100}
@@ -68,9 +69,9 @@ const CartItemComponent = ({
             onChange={async (e: SelectChangeEvent) => {
               const newQuantity = parseInt(e.target.value);
               if (newQuantity > 0) {
-                onUpdateCartQuantity(item.product, newQuantity);
+                onUpdateCartQuantity(item.product.id, newQuantity);
               } else {
-                onRemove(item.product);
+                onRemove(item.product.id);
               }
             }
             }
@@ -88,7 +89,7 @@ const CartItemComponent = ({
           className="text-gray-600 cursor-pointer"
           width="20"
           height="20"
-          onClick={() => onRemove(item.product)}
+          onClick={() => onRemove(item.product.id)}
         />
        
       </div>
@@ -164,7 +165,7 @@ export default function Cart() {
               results[0][i].product.calculatedPrice = results[0][i].product.price;
             }
           }
-          let totalPrice = results[0].reduce((sum: number, item: CartItem) => {
+          const totalPrice = results[0].reduce((sum: number, item: CartItem) => {
             return sum + Number(item.product.calculatedPrice) * item.quantity;
           }, 0);
           setTotal(totalPrice);
@@ -179,9 +180,9 @@ export default function Cart() {
     }
   }, []);
 
-  const handleRemoveFromCart = async (product: any) => {
+  const handleRemoveFromCart = async (productID: string) => {
     try {
-      const cartResponse = await removeFromCart(product, localStorage.getItem("unsafeID") || "");
+      const cartResponse = await removeFromCart(productID, localStorage.getItem("unsafeID") || "");
       if(cartResponse.flag) {
         showMessage("You have found a flag!", cartResponse.flag, "success");
         return;
@@ -202,9 +203,9 @@ export default function Cart() {
     }
   };
 
-  const handleUpdateCartQuantity = async (product: any, quantity: number) => {
+  const handleUpdateCartQuantity = async (productID: string, quantity: number) => {
     try {
-      await updateCartQuantity(product, quantity);
+      await updateCartQuantity(productID, quantity);
       const data = await getCart();
       setCartItems(data || []);
       for (let i = 0; i < data.length; i++) {
@@ -254,7 +255,7 @@ export default function Cart() {
                   <CartItemComponent
                     key={item.product.title}
                     item={item}
-                    onRemove={() => handleRemoveFromCart(item.product)}
+                    onRemove={() => handleRemoveFromCart(item.product.id)}
                     onUpdateCartQuantity={handleUpdateCartQuantity}
                   />
                 ))}

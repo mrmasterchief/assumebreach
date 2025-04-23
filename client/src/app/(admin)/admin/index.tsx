@@ -3,7 +3,6 @@ import "../../../styles/globals.css";
 import PageWrapper from "@/components/page-wrapper";
 import { ToastContainer } from "react-toastify";
 import { CMSProvider } from "@/context/CMSContext";
-import { useCMS } from "@/context/CMSContext";
 import React, { useEffect } from "react";
 import Header from "@/components/nav/Header";
 import { CTFProvider } from "@/context/CtfContext";
@@ -21,7 +20,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             () => getUserInfo({ unsafeID: localStorage.getItem("unsafeID") || "" }),
             
           ],
-          (results: any[]) => {
+          (results: { userInfo: 
+            {
+              id: string;
+              username: string;
+              email: string;
+              role: string;
+              created_at: string;
+              updated_at: string;
+            };
+           }[]) => {
             if(!results[0]) {
               if(window. location.pathname !== "/admin/login") {
               window.location.href = "/admin/login";
@@ -34,6 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
       catch (error) {
         window.location.href = "/admin/login";
+        console.error("Error fetching user info", error);
       }
     };
     checkAuth();

@@ -55,10 +55,10 @@ export default function RulesOfEngagement() {
                             <ul className="list-disc pl-5 space-y-1">
                                 <li>Do not attack infrastructure (e.g., server, network, or database outside the app scope).</li>
                                 <li>Do not perform denial-of-service (DoS) or spam attacks.</li>
-                                <li>Do not attempt to access or tamper with other users' flags or accounts unless explicitly allowed.</li>
+                                <li>Do not attempt to access or tamper with other users&apos; flags or accounts unless explicitly allowed.</li>
                                 <li>Do not share flags or solutions with others.</li>
                                 <li>Avoid using destructive SQL operations like DELETE, INSERT, or UPDATE.</li>
-                                <li>Please don't delete or modify cookies. They don't hide any flag and are there to make the CTF work properly.</li>
+                                <li>Please don&apos;t delete or modify cookies. They don&apos;t hide any flag and are there to make the CTF work properly.</li>
                                 <li>Only use this platform for ethical, educational purposes.</li>
                             </ul>
                         </Section>

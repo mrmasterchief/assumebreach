@@ -20,7 +20,7 @@ const SearchBar = ({
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [visible, setVisible] = useState(false);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false); /* eslint-disable-line */
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);

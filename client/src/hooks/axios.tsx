@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: `/api/api/v1`,
+  baseURL: `${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/api/v1`,
   withCredentials: true,
   timeoutErrorMessage: "Request timed out",
 });

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { axiosInstance } from "./axios";
 
 export const getCart = async () => {
@@ -9,7 +11,7 @@ export const getCart = async () => {
   }
 };
 
-export const addToCart = async (product: {}, quantity?: number, variant?: string) => {
+export const addToCart = async (product: object, quantity?: number, variant?: string) => {
   try {
     const response = await axiosInstance.post("/cart/add", {
         product: product,
@@ -22,10 +24,10 @@ export const addToCart = async (product: {}, quantity?: number, variant?: string
   }
 };
 
-export const removeFromCart = async (product: {}, unsafeID: string) => {
+export const removeFromCart = async (productID: string, unsafeID: string) => {
   try {
     const response = await axiosInstance.post("/cart/remove", {
-      product: product,
+      productID: productID,
       unsafeID: unsafeID,
     });
     return response.data;
@@ -34,10 +36,10 @@ export const removeFromCart = async (product: {}, unsafeID: string) => {
   }
 };
 
-export const updateCartQuantity = async (product: {}, quantity: number) => {
+export const updateCartQuantity = async (productID: string, quantity: number) => {
   try {
     const response = await axiosInstance.post("/cart/new-quantity", {
-      product: product,
+      productID: productID,
       quantity: quantity
     });
     return response.data;

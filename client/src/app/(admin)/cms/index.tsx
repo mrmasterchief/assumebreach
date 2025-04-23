@@ -20,8 +20,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             () => getUserInfo({ unsafeID: localStorage.getItem("unsafeID") || "" }),
             
           ],
-          (results: any[]) => {
-            if(!results[0]) {
+          ([userResult]) => {
+            if(!userResult) {
               if(window. location.pathname !== "/cms/login") {
               window.location.href = "/cms/login";
               }
@@ -33,6 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
       catch (error) {
         window.location.href = "/cms/login";
+        console.log("Error in CMS auth check", error);
       }
     };
     checkAuth();

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,14 +11,16 @@ import { logout } from "@/hooks/user";
 import { fetchOrders } from "@/hooks/cart";
 import EditTemplate from "@/components/form/Edit";
 import { axiosInstance } from "@/hooks/axios";
+import { Order } from "@/types/OrderTypes";
+import { User } from "@/types/User";
 
 
 const OverviewComponent = ({
   userDetails,
   orders,
 }: {
-  userDetails: any;
-  orders: any;
+  userDetails: User;
+  orders: Order[];
 }) => (
   <div className="flex flex-col gap-4 mb-10 w-[1080px]">
     <div className="flex flex-row items-center justify-between w-full border-b border-gray-200">
@@ -54,7 +58,7 @@ const OverviewComponent = ({
       <h1 className="text-xl font-semibold">Recent Orders</h1>
       {orders.length > 0 ? (
         <div className="flex flex-col gap-2">
-          {orders.map((order: any) => (
+          {orders.map((order: Order) => (
             <div
               key={order.id}
               className="flex flex-row items-center justify-between w-full border-b border-gray-200 py-4"

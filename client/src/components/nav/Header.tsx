@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import React, { ReactNode, useEffect, useRef, useState } from "react";
@@ -15,6 +17,7 @@ import { useCart } from "@/context/CartContext";
 import { indexFunction } from "@/hooks";
 import { useSidenav } from "@/context/SideNavContext";
 import Image from "next/image";
+import {CartItem} from "@/types/CartItem";
 
 type MenuItemWithSubMenuProps = {
   item: NavItem;
@@ -50,7 +53,7 @@ const Header = ({ type,
   const [isOpen, toggleOpen] = useCycle(false, true);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const { isCartOpen, toggleCart } = useCart();
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartItemsCount, setCartItemsCount] = useState(0);
   const { toggleSidenav } = useSidenav();
 
@@ -74,10 +77,10 @@ const Header = ({ type,
       [
         () => getCart(),
       ]
-      , (results: any) => {
-        if (!results[0]) return
-        setCartItemsCount(results[0].length);
-        setCartItems(results[0]);
+      , (cartResults) => {
+        if (!cartResults[0]) return
+        setCartItemsCount(cartResults[0].length);
+        setCartItems(cartResults[0]);
       }, true
     );
   }, [isCartOpen]);
@@ -216,7 +219,7 @@ const Header = ({ type,
 
 export default Header;
 
-const MenuToggle = ({ toggle }: { toggle: any }) => (
+const MenuToggle = ({ toggle }: { toggle: () => void }) => (
   <button
     onClick={toggle}
     className="pointer-events-auto md:hidden z-50 fixed top-4 left:10 p-4"
@@ -357,7 +360,6 @@ const useDimensions = (ref: any) => {
       dimensions.current.width = ref.current.offsetWidth;
       dimensions.current.height = ref.current.offsetHeight;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref]);
 
   return dimensions.current;

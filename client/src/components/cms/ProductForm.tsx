@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Multiselect from "multiselect-react-dropdown";
@@ -174,10 +175,13 @@ const ProductForm = ({
                         options={selectOptions}
                         displayValue="name"
                         selectedValues={values.categories}
-                        onSelect={(selectedList: any) =>
+                        onSelect={(selectedList: { name: string; id: string }[] | null[]
+                        ) =>
                           setFieldValue("categories", selectedList)
                         }
-                        onRemove={(selectedList: any) =>
+                        onRemove={(selectedList: 
+                          { name: string; id: string }[] | null[]
+                        ) =>
                           setFieldValue("categories", selectedList)
                         }
                       />

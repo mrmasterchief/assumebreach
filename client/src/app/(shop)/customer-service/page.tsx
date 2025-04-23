@@ -1,18 +1,11 @@
 "use client";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { showMessage } from "@/components/messages/Message";
-import { getCart, removeFromCart, updateCartQuantity } from "@/hooks/cart";
+import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { indexFunction } from "@/hooks";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 
 
 export default function CustomerService() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
 
 
 

@@ -1,18 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useCMS } from "@/context/CMSContext";
 import List from "@/components/cms/List";
-import { getAllProducts, searchProducts, getAllProductsDummy } from "@/hooks/products";
+import { getAllProductsDummy } from "@/hooks/products";
 import { indexFunction } from "@/hooks";
-import { onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/config';
-import { useCTF } from "@/context/CtfContext";
-import Switch from '@mui/material/Switch';
 import { showMessage } from "@/components/messages/Message";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { createCTFUsers, CTFCleanUp } from "@/hooks/ctf";
 import { getAllUsers } from "@/hooks/user";
 
 export default function AdminHomePage() {
@@ -32,7 +28,6 @@ export default function AdminHomePage() {
   const maxPerPage = 5;
   const pages = Math.ceil(products.totalProducts / maxPerPage);
 
-  const router = useRouter();
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -41,23 +36,23 @@ export default function AdminHomePage() {
             () => getAllProductsDummy(listPage),
             () => getAllUsers(listPage)
           ],
-          (results: any[]) => {
-            if (!results[0] || !results[1]) {
+          ([productsResult, userResult]) => {
+            if (!productsResult || !userResult) {
               window.location.href = "/admin/login";
               return;
             }
-            const productResponse = results[0] || { products: [], totalProducts: 0};
+            const productResponse = productsResult || { products: [], totalProducts: 0};
             setProducts({
               products: productResponse.products || [],
               totalProducts: productResponse.totalProducts || 0,
             });
-            const userResponse = results[1] || { users: [], totalUsers: 0};
+            const userResponse = userResult || { users: [], totalUsers: 0};
             setUsers({
               users: userResponse.users || [],
               totalUsers: userResponse.totalUsers || 0,
             });
             if(flag == "") {
-                setFlag(results[1].flag);
+                setFlag(userResult.flag);
             }
           },
           true
@@ -65,6 +60,7 @@ export default function AdminHomePage() {
       }
       catch (error) {
         window.location.href = "/admin/login";
+        console.error("Error fetching products:", error);
       }
     };
     checkAuth();

@@ -1,5 +1,4 @@
 "use client";
-import { ReactNode } from "react";
 import React from "react";
 import Link from "next/link";
 import ProductCard from "../productcard/ProductCard";
@@ -14,7 +13,13 @@ const ShowCaseContainer = ({
   headerTitle?: string;
   destination?: string;
   type: "related" | "discover";
-  data: any[];
+  data: {
+    id: string;
+    title: string;
+    price: string;
+    discountprice: string;
+    imagepath: string;
+  }[];
 }) => {
   return (
     <div className="flex flex-col w-full bg-white p-4">

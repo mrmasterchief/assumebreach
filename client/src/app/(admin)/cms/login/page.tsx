@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import FormTemplate from "@/components/form/Form";
 import { useRouter } from "next/navigation";
-import { useRefreshToken } from "@/hooks/user";
+import { fetchRefreshToken } from "@/hooks/user";
 import { indexFunction } from "@/hooks";
 import { authenticate } from "@/hooks/user";
 
@@ -18,7 +18,7 @@ export default function Authenticate() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        useRefreshToken();
+        fetchRefreshToken();
       }catch (error){
         console.error(error);
         window.location.href = "/cms/authenticate";
@@ -27,7 +27,14 @@ export default function Authenticate() {
     checkAuth();
   }, [router]);
 
-  const handleFormSubmit = async (values: any, formikHelpers: any) => {
+  const handleFormSubmit = async (values: {
+    login: {
+      email: string;
+      password: string;
+    };
+  }, formikHelpers: {
+    setSubmitting: (isSubmitting: boolean) => void;
+  }) => {
       try {
         let endpoint = "";
         let data = {};
@@ -44,13 +51,13 @@ export default function Authenticate() {
           [
             () => authenticate(endpoint, data)
           ],
-          (results: any[]) => {
-            if (!results[0]) {
+          ([authResult]) => {
+            if (!authResult) {
               showMessage("Error", "Error during authentication", "error");
               return;
             }
-            if (results[0].flag) {
-              showMessage("Success", "OSINT Flag found: " + results[0].flag, "success");
+            if (authResult.data.flag) {
+              showMessage("Success", "OSINT Flag found: " + authResult.data.flag, "success");
             }
             window.location.href = "/cms";
           },

@@ -6,11 +6,12 @@ import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 import { getProductsByCategory } from "@/hooks/products";
 import ContentContainer from "@/components/content-container";
 import { indexFunction } from "@/hooks";
+import { Product } from "@/types/ProductTypes";
 
 export default function Home() {
-  const [weeklyPicks, setWeeklyPicks] = useState<any[]>([]);
-  const [latestDrops, setLatestDrops] = useState<any[]>([]);
-  const [sale, setSale] = useState<any[]>([]);
+  const [weeklyPicks, setWeeklyPicks] = useState<Product[]>([]);
+  const [latestDrops, setLatestDrops] = useState<Product[]>([]);
+  const [sale, setSale] = useState<Product[]>([]);
 
   useEffect(() => {
     try {
@@ -20,11 +21,11 @@ export default function Home() {
           () => getProductsByCategory("Latest Drops"),
           () => getProductsByCategory("Sale"),
         ],
-        (results) => {
-          if (!results[0] || !results[1] || !results[2]) return;
-          setWeeklyPicks(results[0].sort(() => 0.5 - Math.random()).slice(0, 3));
-          setLatestDrops(results[1].sort(() => 0.5 - Math.random()).slice(0, 3));
-          setSale(results[2].sort(() => 0.5 - Math.random()).slice(0, 3));
+        ([weeklyPicks, latestDrops, saleResult]) => {
+          if (!weeklyPicks || !latestDrops || !saleResult) return;
+          setWeeklyPicks(weeklyPicks.sort(() => 0.5 - Math.random()).slice(0, 3));
+          setLatestDrops(latestDrops.sort(() => 0.5 - Math.random()).slice(0, 3));
+          setSale(saleResult.sort(() => 0.5 - Math.random()).slice(0, 3));
         },
         true
       );

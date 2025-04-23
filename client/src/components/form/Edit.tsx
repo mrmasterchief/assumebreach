@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Formik, Field, Form, FormikHelpers } from "formik";
 
 
@@ -29,7 +31,6 @@ interface Props {
 }
 
 const inputStyles = "border-2 border-gray-500 rounded-md p-2 w-[100%] h-[40px]";
-const inputStyle2 = "border-2 border-gray-500 rounded-md p-2 w-[50%] h-[40px] bg-gray-200 cursor-not-allowed";
 
 const EditTemplate = ({ formType, onSubmit, formVisible}: Props) => {
     return(

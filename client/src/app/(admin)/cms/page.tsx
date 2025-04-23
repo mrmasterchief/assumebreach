@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCMS } from "@/context/CMSContext";
 import List from "@/components/cms/List";
-import { getAllProducts, searchProducts } from "@/hooks/products";
+import { getAllProducts } from "@/hooks/products";
 import { indexFunction } from "@/hooks";
 import { onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
@@ -32,12 +32,12 @@ export default function CMSHomePage() {
           [
             () => getAllProducts(listPage)
           ],
-          (results: any[]) => {
-            if (!results[0]) {
+          ([productResult]) => {
+            if (!productResult) {
               window.location.href = "/cms/login";
               return;
             }
-            const response = results[0] || { products: [], totalProducts: 0 };
+            const response = productResult || { products: [], totalProducts: 0 };
             setData({
               products: response.products || [],
               totalProducts: response.totalProducts || 0,
@@ -48,6 +48,7 @@ export default function CMSHomePage() {
       }
       catch (error) {
         window.location.href = "/cms/login";
+        console.error("Error fetching products", error);
       }
     };
     checkAuth();
@@ -106,6 +107,7 @@ export default function CMSHomePage() {
       showMessage("Success", "CTF users created and file downloaded.", "success");
     } catch (error) {
       showMessage("Error", "Failed to create CTF users.", "error");
+      console.error("Error creating CTF users:", error);
     }
   };
 

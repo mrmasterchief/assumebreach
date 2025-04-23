@@ -1,17 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { axiosInstance } from "@/hooks/axios";
+import React, { useState } from "react";
 import { showMessage } from "@/components/messages/Message";
 import FormTemplate from "@/components/form/Form";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useRouter } from "next/navigation";
 import ContentContainer from "@/components/content-container";
 import { indexFunction } from "@/hooks";
 import { useCTF } from "@/context/CtfContext";
 import { resetCTFPassword } from "@/hooks/user";
 
 export default function ForgotPassword() {
-  const router = useRouter();
   const { ctfOpen } = useCTF();
   const [formType, setFormType] = useState<"forgotPassword" | "forgotPassword2">("forgotPassword");
   const [correctEmail, setCorrectEmail] = useState(false);
@@ -30,7 +26,17 @@ export default function ForgotPassword() {
 
 
 
-  const handleFormSubmit = async (values: any, formikHelpers: any) => {
+  const handleFormSubmit = async (values: 
+    {
+    forgotPassword: {
+      email: string;
+    };
+    forgotPassword2: {
+      securityQuestion: string;
+      newPassword: string;
+    };
+  }
+  ) => {
     if(formType == "forgotPassword" && values.forgotPassword.email == process.env.NEXT_PUBLIC_HACKABLE_EMAIL!) {
       setCorrectEmail(true);
       setEmail(values.forgotPassword.email);
@@ -48,13 +54,13 @@ export default function ForgotPassword() {
                 [
                     () => resetCTFPassword(email, values.forgotPassword2.securityQuestion, values.forgotPassword2.newPassword)
                 ],
-                (results: any[]) => {
-                    if (!results[0]) {
+                ([ctfResult]) => {
+                    if (!ctfResult) {
                         showMessage("Error", "Error resetting password", "error");
                         return;
                     }
-                    if(results[0].flag) {
-                        showMessage("Success", "OSINT Flag found. You can log in with this account now " + results[0].flag, "success");
+                    if(ctfResult.flag) {
+                        showMessage("Success", "OSINT Flag found. You can log in with this account now " + ctfResult.flag, "success");
                     }
                 },
                 false

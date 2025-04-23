@@ -26,3 +26,4 @@ export default function RootLayout({
 
   return <Layout>{children}</Layout>;
 }
+

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { fetchCsrfToken } from "../hooks/axios";
 import { createContext, useState, useEffect, useContext } from "react";
 

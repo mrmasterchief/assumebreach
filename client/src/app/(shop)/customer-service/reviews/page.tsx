@@ -1,20 +1,33 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { getUserInfo, postReview, getReviews } from "@/hooks/user";
 import { indexFunction } from "@/hooks";
-import { logout } from "@/hooks/user";
-import { fetchOrders } from "@/hooks/cart";
-import { axiosInstance } from "@/hooks/axios";
 import { showMessage } from "@/components/messages/Message";
 import TextField from "@mui/material/TextField";
+import { Review } from "@/types/Review";
+import { User } from "@/types/User";
 
 
 export default function Reviews() {
-  const [userDetails, setUserDetails] = useState<any>(null);
-  const [reviews, setReviews] = useState<any>(null);
+  const [userDetails, setUserDetails] = useState<User>({
+    id: "",
+    full_name: "",
+    email: "",
+    phone: "",
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      country: "",
+      zip: "",
+    },
+    created_at: "",
+    updated_at: "",
+    password_hash: "",
+  });
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewInput, setReviewInput] = useState<string>("");
   const [reviewPosted, setReviewPosted] = useState<boolean>(false);
 
@@ -24,28 +37,28 @@ export default function Reviews() {
       indexFunction(
         [
           () => getUserInfo({ unsafeID: localStorage.getItem("unsafeID") || "" }),
-            () => getReviews(),
+          () => getReviews(),
         ]
         ,
-        (results) => {
-          if (!results[0]) {
+        ([userResults, reviewResults]) => {
+          if (!userResults) {
             return;
           }
           const userDetails = {
-            ...results[0].user,
-            email: results[0].email,
+            ...userResults.user,
+            email: userResults.email,
           };
           setUserDetails(userDetails);
-        //   sort reviews by created_at from latest to oldest
-            results[1].sort((a: any, b: any) => {
+            reviewResults.sort((a: { created_at: string }, b: { created_at: string }) => {
                 return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
             });
-          setReviews(results[1]);
+          setReviews(reviewResults);
         },
         true
       );
     } catch (error) {
       window.location.href = "/account/authenticate";
+      console.error(error);
     }
   }, [reviewPosted]);
 
@@ -55,7 +68,7 @@ export default function Reviews() {
         return;
     }
     try {
-        const response = await postReview(reviewInput);
+        await postReview(reviewInput);
         showMessage("Success", "Review posted successfully", "success");
         setReviewPosted(true);
         setReviewInput("");
@@ -67,7 +80,6 @@ export default function Reviews() {
 
 
 
-  const router = useRouter();
 
 
 
@@ -76,7 +88,7 @@ export default function Reviews() {
         <div className="flex flex-col gap-4">
             {userDetails && (
                 <div className="flex flex-col gap-2">
-                    <h1 className="text-2xl font-semibold">Welcome, {userDetails.name}</h1>
+                    <h1 className="text-2xl font-semibold">Welcome, {userDetails.full_name}</h1>
                     <p className="text-gray-500">
                         Email: {userDetails.email}
                     </p>
@@ -102,7 +114,7 @@ export default function Reviews() {
                 Here you can find all the reviews you have posted. You can also post a new review by clicking the button below.
             </p>
             {reviews && reviews.length > 0 ? (
-                reviews.map((review: any) => (
+                reviews.map((review: Review) => (
                     <div key={review.id} className="flex flex-col gap-2 p-4 border border-gray-300 rounded-lg">
                         <div dangerouslySetInnerHTML={{__html: review.html}} className="text-gray-700 max-w-[100%] overflow-hidden" />
                         

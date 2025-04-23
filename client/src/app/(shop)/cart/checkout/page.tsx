@@ -1,15 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { showMessage } from "@/components/messages/Message";
-import { getCart, removeFromCart, updateCartQuantity } from "@/hooks/cart";
+import { getCart } from "@/hooks/cart";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { indexFunction } from "@/hooks";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
 import { getUserInfo, placeOrder } from "@/hooks/user";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -39,7 +36,7 @@ const CartItemComponent = ({
             <div className="flex items-center w-[60%]">
                 <Link className="rounded-lg relative overflow-hidden bg-[#f7f8f9] aspect-[4/3] shadow-md w-[65px] h-[70px] group justify-center items-center flex" href={`/shop/${item.product.id}`}>
                     <Image
-                        src={`http://assumebreach.tech/api/public${item.product.imagepath}`}
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
                         alt={item.product.title}
                         width={100}
                         height={100}
@@ -101,12 +98,29 @@ export default function Checkout() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const [userInfo, setUserInfo] = useState<any>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [userInfo, setUserInfo] = useState<{
+        user: {
+            full_name: string;
+            email: string;
+            address: string;
+        };
+        token: string;
+        unsafeID: string;
+    }>();
     const [address, setAddress] = useState<string | null>(null);
     const [radioOption, setRadioOption] = useState<number | null>(0);
     const [paymentMethod, setPaymentMethod] = useState<string | null>("Visa");
-    const [userAddress, setUserAddress] = useState<any>(null);
+    const [userAddress, setUserAddress] = useState<{
+        zip: string;
+        city: string;
+        state: string;
+        country: string;
+    }>({
+        zip: "",
+        city: "",
+        state: "",
+        country: "",
+    });
     const [zipCode, setZipCode] = useState<string | null>(null);
     const [city, setCity] = useState<string | null>(null);
     const [state, setState] = useState<string | null>(null);
@@ -177,26 +191,26 @@ export default function Checkout() {
                     () => getUserInfo({ unsafeID: localStorage.getItem("unsafeID") || "" }),
                 ]
                 ,
-                (results) => {
-                    if (!results[0] || !results[1]) {
+                ([cartResults, userInfoResults]) => {
+                    if (!cartResults || !userInfoResults) {
                         setIsLoading(false);
                         showMessage("error", "Error fetching cart items", "error");
                         return;
                     }
-                    setCartItems(results[0] || []);
-                    setUserInfo(results[1]);
-                    setUserAddress(JSON.parse(results[1].user.address));
+                    setCartItems(cartResults || []);
+                    setUserInfo(userInfoResults);
+                    setUserAddress(JSON.parse(userInfoResults.user.address));
 
 
-                    for (let i = 0; i < results[0].length; i++) {
-                        if (results[0][i].product.discountprice) {
-                            results[0][i].product.calculatedPrice = results[0][i].product.discountprice;
+                    for (let i = 0; i < cartResults.length; i++) {
+                        if (cartResults[i].product.discountprice) {
+                            cartResults[i].product.calculatedPrice = cartResults[i].product.discountprice;
                         }
                         else {
-                            results[0][i].product.calculatedPrice = results[0][i].product.price;
+                            cartResults[i].product.calculatedPrice = cartResults[i].product.price;
                         }
                     }
-                    let totalPrice = results[0].reduce((sum: number, item: CartItem) => {
+                    const totalPrice = cartResults.reduce((sum: number, item: CartItem) => {
                         return sum + Number(item.product.calculatedPrice) * item.quantity;
                     }, 0);
                     setTotal(totalPrice);
@@ -262,19 +276,19 @@ export default function Checkout() {
             showMessage("Error", "Please fill in all fields", "error");
             return;
         }
-        let orderObject = {
+        const orderObject = {
             address: address,
             paymentMethod: paymentMethod,
             cartItems: cartItems,
             totalPrice: total,
         };
         try {
-            const response = await indexFunction(
+            await indexFunction(
                 [
                     () => placeOrder(orderObject),
                 ],
-                (results) => {
-                    if (!results[0]) {
+                ([orderResults]) => {
+                    if (!orderResults) {
                         showMessage("Error", "Error placing order", "error");
                         return;
                     }
@@ -311,18 +325,18 @@ export default function Checkout() {
 
                                             {tabs.map((tab) => (
                                                 tab.id === 4 ? null :
-                                                <button
-                                                    key={tab.id}
-                                                    className={`flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg ${activeTab === tab.id ? "bg-gray-100 text-blue-600" : ""
-                                                        }`}
-                                                    onClick={() =>
-                                                        tab.id === 3 ? null :
-                                                            setActiveTab(tab.id)
-                                                    }
-                                                >
-                                                    <Icon icon={tab.icon} />
-                                                    <p>{tab.label}</p>
-                                                </button>
+                                                    <button
+                                                        key={tab.id}
+                                                        className={`flex flex-row items-center gap-2 px-4 py-3 w-full rounded-lg ${activeTab === tab.id ? "bg-gray-100 text-blue-600" : ""
+                                                            }`}
+                                                        onClick={() =>
+                                                            tab.id === 3 ? null :
+                                                                setActiveTab(tab.id)
+                                                        }
+                                                    >
+                                                        <Icon icon={tab.icon} />
+                                                        <p>{tab.label}</p>
+                                                    </button>
                                             ))}
 
                                         </div>
@@ -439,7 +453,7 @@ export default function Checkout() {
                                         <p className="text-lg">Your order has been placed successfully.</p>
                                         <Link href="/account" className="bg-black text-white px-4 py-2 rounded-lg mt-4 hover:bg-gray-800 transition duration-300">View Orders</Link>
                                     </div>
-                                )}  
+                                )}
 
                             </div>
                         ) : (

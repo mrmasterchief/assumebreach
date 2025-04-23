@@ -12,9 +12,8 @@ import { indexFunction } from "@/hooks";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
-import { useCTF } from "@/context/CtfContext";
 import { db } from "@/firebase/config";
-import { onSnapshot, doc, setDoc, getDoc, getDocs, collection } from "firebase/firestore";
+import { onSnapshot, doc, setDoc, getDoc, collection } from "firebase/firestore";
 import { getUserInfo } from "@/hooks/user";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,7 +22,12 @@ export default function ScoreBoard() {
   const [score, setScore] = useState<number>(0);
   const [flagInput, setFlagInput] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
-  const [liveScoreBoard, setLiveScoreBoard] = useState<any[]>([]);
+  const [liveScoreBoard, setLiveScoreBoard] = useState<
+    {
+      name: string;
+      score: number;
+    }[]
+  >([]);
 
 
 
@@ -79,18 +83,18 @@ export default function ScoreBoard() {
         await indexFunction(
           [() => getFlagsList({ unsafeID: unsafeID }),
           () => getUserInfo({ unsafeID: unsafeID })],
-          async (results) => {
-            if (!results[0] || !results[1]) {
+          async ([flagsResult, userResults]) => {
+            if (!flagsResult || !userResults) {
               showMessage("Error", "No flags found", "error");
               return;
             }
-            setFullName(results[1].user.full_name);
-            setFlagList(results[0].flags);
-            setScore(results[0].score);
+            setFullName(userResults.user.full_name);
+            setFlagList(flagsResult.flags);
+            setScore(flagsResult.score);
             await updateFireStore({
               unsafeID: unsafeID,
-              fullName: results[1].user.full_name,
-              score: results[0].score,
+              fullName: userResults.user.full_name,
+              score: flagsResult.score,
             });
           },
           true
@@ -190,9 +194,12 @@ export default function ScoreBoard() {
     const unsubscribe = onSnapshot(
       collection(db, "ctf"),
       (snapshot) => {
-        const data: any[] = [];
+        const data: {
+          name: string;
+          score: number;
+        }[] = [];
         snapshot.forEach((doc) => {
-          data.push(doc.data());
+          data.push(doc.data() as { name: string; score: number });
         });
         data.sort((a, b) => b.score - a.score);
         setLiveScoreBoard(data);

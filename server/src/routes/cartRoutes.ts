@@ -67,6 +67,8 @@ router.post("/remove", async (req: Request, res: Response) => {
     return;
   }
   const userId = user?.id;
+  console.log("userId", userId);
+  console.log(productID)
 
   if (realUserId !== userId) {
     flag = flags.find((flag) => flag.secureCodeID === 11)?.flag;
@@ -97,8 +99,7 @@ router.post("/new-quantity", async (req: Request, res: Response) => {
     res.status(401).json({ message: errors[401] });
     return;
   }
-  const { product, quantity } = req.body;
-  const productID = product?.id;
+  const { productID, quantity } = req.body;
   if (!productID) {
     res.status(400).json({ message: errors[400] });
     return;

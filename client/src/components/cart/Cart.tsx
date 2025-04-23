@@ -4,6 +4,7 @@ import { removeFromCart } from "@/hooks/cart";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { indexFunction } from "@/hooks";
 import { showMessage } from "../messages/Message";
+import { CartItem } from "@/types/CartItem";
 
 const Cart = ({
   toggleCart,
@@ -12,17 +13,7 @@ const Cart = ({
 }: {
   toggleCart: () => void;
   isCartOpen: boolean;
-  cartItems: {
-    product: {
-      id: string;
-      imagepath: string;
-      title: string;
-      price: number;
-      discountprice: number;
-    };
-    quantity: number;
-    variant: string;
-  }[];
+  cartItems: CartItem[];
 }) => {
   const cartRef = useRef<HTMLDivElement>(null);
 
@@ -63,12 +54,12 @@ const Cart = ({
       [
         () => removeFromCart(productId, unsafeID),
       ],
-      (results) => {
-        if (!results[0]) return;
-        if (results[0].flag) {
+      ([cartResult]) => {
+        if (!cartResult) return;
+        if (cartResult.flag) {
           showMessage(
             "You have found a flag!",
-            results[0].flag,
+            cartResult.flag,
             "success"
           );
         }
@@ -76,6 +67,7 @@ const Cart = ({
       true 
     );
   };
+
   
 
 
@@ -107,7 +99,7 @@ const Cart = ({
                     key={idx}
                   >
                     <img
-                      src={`http://assumebreach.tech/api/public${item.product.imagepath}`}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
                       alt="product"
                       className="object-center w-full object-cover"
                     />
@@ -138,11 +130,11 @@ const Cart = ({
                   {item.product.discountprice ? (
                     <span>
                       $
-                      {(item.product.discountprice * item.quantity).toFixed(2)}
+                      {(Number(item.product.discountprice) * item.quantity).toFixed(2)}
                     </span>
                   ) : (
                     <span>
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      ${(Number(item.product.price) * item.quantity).toFixed(2)}
                     </span>
                   )}
                 </p>
@@ -160,7 +152,7 @@ const Cart = ({
                   const price = item.product.discountprice
                     ? item.product.discountprice
                     : item.product.price;
-                  return acc + price * item.quantity;
+                  return acc + Number(price) * item.quantity;
                 }, 0)
                 .toFixed(2)}
             </p>

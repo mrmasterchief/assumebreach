@@ -1,5 +1,5 @@
 import { axiosInstance } from "./axios";
-import { onSnapshot, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
+import { getDocs, collection, deleteDoc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 
 

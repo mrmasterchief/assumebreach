@@ -8,6 +8,7 @@ import ContentContainer from "@/components/content-container";
 import { indexFunction } from "@/hooks";
 import { fetchOrderDetails } from "@/hooks/cart";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { OrderDetailsProps } from "@/types/OrderDetailProps";
 
 export default function OrderDetails() {
     const params = useParams();
@@ -31,40 +32,6 @@ export default function OrderDetails() {
         fetchDetails();
     }, [orderID]);
 
-    interface OrderDetailsProps {
-        orderDetails: {
-            id: number;
-            cart_id: string;
-            total_price: string;
-            address: {
-                zip: string;
-                city: string;
-                state: string;
-                country: string;
-            };
-            items: Array<{
-                product: {
-                    id: string;
-                    title: string;
-                    description: string;
-                    price: string;
-                    discountprice: string;
-                    imagepath: string;
-                    categories: Array<string>;
-                    style: string;
-                    created_at: string;
-                    updated_at: string;
-                };
-                quantity: number;
-            }>;
-            payment_method: string;
-            status: string;
-            created_at: string;
-            updated_at: string;
-            user_id: string;
-            flag?: string;
-        };
-    }
 
     return (
         <ContentContainer>
@@ -126,7 +93,7 @@ export default function OrderDetails() {
                                     {orderDetails.items.map((item, index) => (
                                         <div key={index} className="flex gap-4">
                                             <Image
-                                                src={`http://assumebreach.tech/api/public${item.product.imagepath}`}
+                                                src={`${process.env.NEXT_PUBLIC_BACKEND_ROUTE!}/public${item.product.imagepath}`}
                                                 alt={item.product.title}
                                                 width={100}
                                                 height={100}

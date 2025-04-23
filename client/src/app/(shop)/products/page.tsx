@@ -1,6 +1,5 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import React, { useState, useEffect, Suspense } from "react";
 import ShowCaseContainer from "@/components/container/ShowCaseContainer";
 import { getProductsByCategory } from "@/hooks/products";
@@ -8,10 +7,11 @@ import ContentContainer from "@/components/content-container";
 import { indexFunction } from "@/hooks";
 import { getFlag } from "@/hooks/ctf";
 import { useRef } from "react";
+import { Product } from "@/types/ProductTypes";
 
 function ProductsContent() {
   const checkedXSSRef = useRef(false);
-  const [productData, setProductData] = useState<any[]>([]);
+  const [productData, setProductData] = useState<Product[]>([]);
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const sex = searchParams.get("sex");
@@ -35,9 +35,9 @@ function ProductsContent() {
         if (xssPattern.test(input)) {
           await indexFunction(
             [() => getFlag(5)],
-            (results) => {
-              if (!results[0]) return;
-              alert("XSS detected: " + results[0].flag);
+            ([flagResult]) => {
+              if (!flagResult) return;
+              alert("XSS detected: " + flagResult.flag);
             },
             false
           );

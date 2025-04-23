@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { axiosInstance } from "./axios";
 
 export const getUserInfo = async ({ unsafeID }: { unsafeID: string }) => {
@@ -14,7 +15,7 @@ export const getUserInfo = async ({ unsafeID }: { unsafeID: string }) => {
   return null;
 };
 
-export const useRefreshToken = async () => {
+export const fetchRefreshToken = async () => {
   const refreshToken = async () => {
     try {
       const response = await axiosInstance.post("/auth/refresh-token");

@@ -43,7 +43,7 @@ router.get("/all-users/:page", async (req: Request, res: Response) => {
             [limit, offset]
         );
         const filteredUsers = users.rows.filter((user: any) => {
-            return !user.email.includes(process.env.ADMIN_EMAIL!) && !user.email.includes("@assumebreach.tech");
+            return !user.email.includes(process.env.ADMIN_EMAIL!) && !user.email.includes("@localhost:4000");
         });
         const totalUsersResult = await pool.query("SELECT COUNT(*) FROM users");
         const totalUsers = parseInt(totalUsersResult.rows[0].count, 10);

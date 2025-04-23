@@ -1,18 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "@/components/nav/Header";
 import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/SideNav";
 import Footer from "@/components/footer/Footer";
 import { ToastContainer } from "react-toastify";
 import { useSidenav } from "@/context/SideNavContext";
-import { onSnapshot, doc, setDoc } from 'firebase/firestore';
+import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../firebase/config'; 
 import { useCTF } from "@/context/CtfContext";
 import { v4 as uuidv4 } from 'uuid';
 
 export default function LayoutInner({ children }: { children: React.ReactNode }) {
-    const { isSidenavOpen, toggleSidenav } = useSidenav();  
+    const { isSidenavOpen } = useSidenav();  
     const { ctfOpen, setCTFOpen } = useCTF();
 
 

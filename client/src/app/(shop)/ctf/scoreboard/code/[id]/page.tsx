@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState } from "react";
 import { showMessage } from "@/components/messages/Message";
@@ -19,10 +20,18 @@ interface Resource {
 export default function CodeDetails() {
   const params = useParams();
   const secureCodeID = params?.id;
-  const [secureCode, setSecureCode] = useState<any>('');
-  const [explanation, setExplanation] = useState<any>('');
-  const [risks , setRisks] = useState<any>([]);
-  const [resources, setResources] = useState<any>([]);
+  // contains js and php in a string but in an object
+  const [secureCode, setSecureCode] = useState<{
+    id: number;
+    explanation: string;
+    risks: string[];
+    title: string;
+    js: string;
+    php: string;
+  } | null>(null);
+  const [explanation, setExplanation] = useState<string>('');
+  const [risks , setRisks] = useState<string[]>([]);
+  const [resources, setResources] = useState<{title: string; url: string}[]>([]);
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [activeTab, setActiveTab] = useState(0);
 
@@ -111,7 +120,7 @@ export default function CodeDetails() {
           {activeTab === 2 && (
             <Section title="Secure Code">
               <SyntaxHighlighter language={selectedLanguage} style={docco}>
-                {selectedLanguage === "javascript" ? secureCode?.js : secureCode?.php}
+                {selectedLanguage === "javascript" ? secureCode?.js || "" : secureCode?.php || ""}
               </SyntaxHighlighter>
             </Section>
           )}
