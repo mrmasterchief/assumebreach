@@ -61,6 +61,7 @@ const ProductCard = ({
           style={{ objectPosition: "center", objectFit: "cover" }}
           alt={cardInfo.title}
           className="absolute inset-0 object-cover object-center"
+          unoptimized
         />
       </div>
       <div className="flex flex-row justify-between group">
