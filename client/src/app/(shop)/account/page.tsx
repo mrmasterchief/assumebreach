@@ -131,7 +131,9 @@ const ProfileTab = ({
                 </h1>
                 {key === "address" ? (
                   <p className="font-bold text-sm">
-                    {JSON.parse(userDetails[key]).country ? JSON.parse(userDetails[key]).country : "N/A"}
+                    {userDetails[key] ?
+                    JSON.parse(userDetails[key]).country ? JSON.parse(userDetails[key]).country : "N/A"
+                    : "N/A"}
                   </p>
                 ) : (
                   <p className="font-bold text-sm">{userDetails[key] || "N/A"}</p>
