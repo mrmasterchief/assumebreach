@@ -63,14 +63,6 @@ export default function ProductDetails() {
     });
   }, [productDetails]);
 
-  if (!productDetails.imagepath) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-     
-      </div>
-    );
-  }
-
 
   return (
     <ContentContainer>
