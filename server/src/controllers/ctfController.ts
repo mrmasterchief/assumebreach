@@ -1,5 +1,6 @@
 import { Models } from "../models/Models";
 import withTransaction from "../functions/withTransaction";
+import jwt from "jsonwebtoken";
 
 export const addFlagAndScoreToUser = async (
     userId: string,
@@ -21,3 +22,31 @@ export const addFlagAndScoreToUser = async (
         return result.rows[0] || null;
     });
 }
+
+export const getAccessToken = async (
+    accessToken: string
+): Promise<any> => {
+    return withTransaction(async (client) => {
+        const result = await client.query(
+            "SELECT * FROM accesstokens WHERE accesstoken = $1",
+            [accessToken]
+        );
+        return result.rows[0] || null;
+    });
+}
+
+export const createAccessToken = async (): Promise<any> => {
+    const randomToken = Math.random().toString(36).substring(2, 15);
+    const accessToken = jwt.sign(
+        { data: randomToken },
+        process.env.ACCESS_TOKEN_SECRET!
+    );
+    return withTransaction(async (client) => {
+        const result = await client.query(
+            "INSERT INTO accesstokens (accesstoken) VALUES ($1) RETURNING *",
+            [accessToken]
+        );
+        return result.rows[0] || null;
+    });
+}
+

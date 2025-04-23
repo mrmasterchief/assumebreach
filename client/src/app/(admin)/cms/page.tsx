@@ -12,7 +12,7 @@ import Switch from '@mui/material/Switch';
 import { showMessage } from "@/components/messages/Message";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { createCTFUsers, CTFCleanUp } from "@/hooks/ctf";
+import { createCTFUsers, CTFCleanUp, createAccessToken } from "@/hooks/ctf";
 
 export default function CMSHomePage() {
   const { activePage, toggleActivePage } = useCMS();
@@ -111,6 +111,28 @@ export default function CMSHomePage() {
     }
   };
 
+  const handleCreateAccessToken = async () => {
+    try {
+      await indexFunction(
+        [
+          () => createAccessToken()
+        ],
+        ([response]) => {
+          console.log("Response:", response);
+          if (!response) {
+            showMessage("Error", "Failed to create access token.", "error");
+            return;
+          }
+          showMessage("Success", response.accessToken, "success");
+        },
+        true
+      );
+    } catch (error) {
+      showMessage("Error", "Failed to create access token.", "error");
+      console.error("Error creating access token:", error);
+    }
+  };
+
 
   return (
     <>
@@ -205,6 +227,10 @@ export default function CMSHomePage() {
                 >
                   Clean Up CTF
                 </button>
+                <button
+                  className="bg-green-400 text-white" onClick={handleCreateAccessToken}>
+                    Generate Access Token
+                  </button>
               </div>
             </div>
 

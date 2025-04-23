@@ -20,9 +20,10 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { flags } from "./data/flags.js";
 import { createAdminAccount, createDummyAcccount, createDummyAdminAccount } from "./data/dummyAccounts.js";
 import { encryptFlag } from "./helpers/flagcrypto.js";
-import { exec } from "child_process";
 import fs from "fs";
 import rateLimiter from "./middleware/rateLimiter.js";
+import { getAccessToken } from "./controllers/ctfController.js";
+import jwt from "jsonwebtoken";
 
 
 dotenv.config();
@@ -187,6 +188,99 @@ app.post("/api/v1/open-ai", (req, res) => {
   }
 }
 );
+
+app.post("/api/v1/accessToken", async (req, res) => {
+  const { accessToken } = req.body;
+  if (!accessToken) {
+    res.status(400).json({ error: "Access token is required" });
+    return;
+  }
+  try {
+    const tokenData = await getAccessToken(accessToken);
+    if (!tokenData) {
+      res.status(404).json({ error: "Access token not found" });
+      return;
+    }
+    const createdAt = new Date(tokenData.created_at);
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(now.getDate() - 7);
+    if (createdAt < oneWeekAgo) {
+      res.status(403).json({ error: "Access token is invalid" });
+      return;
+    }
+    const jwtToken = jwt.sign(
+      { data: [
+        tokenData.accesstoken,
+        process.env.ACCESS_TOKEN_KEYWORD,
+      ]
+    },
+      process.env.ACCESS_TOKEN_SECRET!,
+      { expiresIn: "7d" }
+    );
+      
+    res.cookie("x-assumebreach-access", jwtToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000, 
+    });
+    res.json({message: "Access token is valid"});
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/v1/token-validation", async (req, res) => {
+  const token = req.cookies["x-assumebreach-access"];
+  if (!token) {
+    res.status(403).json({ error: "Access token is required" });
+    return;
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+    if (typeof decoded !== "string" && "data" in decoded) {
+      const [accessToken, keyword] = decoded.data;
+    if (keyword !== process.env.ACCESS_TOKEN_KEYWORD) {
+      res.status(403).json({ error: "Access token is invalid" });
+      return;
+    }
+    const tokenData = await getAccessToken(accessToken);
+    if (!tokenData) {
+      res.status(404).json({ error: "Access token not found" });
+      return;
+    }
+    const createdAt = new Date(tokenData.created_at);
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(now.getDate() - 7);
+    if (createdAt < oneWeekAgo) {
+      res.status(403).json({ error: "Access token is invalid" });
+      return;
+    }
+    const jwtToken = jwt.sign(
+      { data: [
+        tokenData.accesstoken,
+        process.env.ACCESS_TOKEN_KEYWORD,
+      ]
+    },
+      process.env.ACCESS_TOKEN_SECRET!,
+      { expiresIn: "7d" }
+    );
+    res.cookie("x-assumebreach-access", jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    res.json({ message: "Access token is valid" });
+    return;
+    }
+  } catch (error) {
+    res.status(403).json({ error: "Access token is invalid" });
+    return;
+  }
+  res.json({ message: "Access token is valid" });
+});
+
 
 // Error Handling Middleware - Placed after all other routes
 app.use(errorHandling);

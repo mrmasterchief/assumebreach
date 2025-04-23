@@ -105,5 +105,32 @@ export const getFlag = async (secureCodeID: number) => {
   }
 }
 
+export const createAccessToken = async () => {
+  try {
+    const response = await axiosInstance.post("/cms/generate-access-token");
+    return response.data;
+  } catch (error) {
+    console.error("Error creating access token:", error);
+  }
+}
 
+export const submitAccessToken = async (accessToken: string) => {
+  try {
+    const response = await axiosInstance.post("/accesstoken", {
+      accessToken: accessToken,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error submitting access token:", error);
+  }
+}
+
+export const tokenValidation = async () => {
+  try {
+    const response = await axiosInstance.get("/token-validation");
+    return response.data;
+  } catch (error) {
+    console.error("Error validating token:", error);
+  }
+}
 

@@ -8,6 +8,7 @@ import { randomNameGenerator } from "../functions/randomNameGenerator";
 import fs from "fs";
 import { RBAC } from "../middleware/rbac";
 import { createDummyAcccount, createDummyAdminAccount } from "../data/dummyAccounts";
+import { createAccessToken } from "../controllers/ctfController";
 
 const router = express.Router();
 
@@ -254,6 +255,22 @@ router.delete("/delete-ctf-users", async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error("Error deleting users:", error);
     res.status(500).json({ error: error.message });
+    return;
+  }
+});
+
+router.post("/generate-access-token", async (req: Request, res: Response) => {
+  try {
+    const response = await createAccessToken();
+    if (!response) {
+      res.status(500).json({ error: "Failed to create access token" });
+      return;
+    }
+    res.status(200).json({ accessToken: response.accesstoken });
+    return;
+  } catch (error) {
+    console.error("Error generating access token:", error);
+    res.status(500).json({ error: "Failed to create access token" });
     return;
   }
 });

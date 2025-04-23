@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "@/components/nav/Header";
 import PageWrapper from "@/components/page-wrapper";
 import SideNav from "@/components/nav/SideNav";
@@ -10,10 +10,12 @@ import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../firebase/config'; 
 import { useCTF } from "@/context/CtfContext";
 import { v4 as uuidv4 } from 'uuid';
+import { tokenValidation } from "@/hooks/ctf";
 
 export default function LayoutInner({ children }: { children: React.ReactNode }) {
     const { isSidenavOpen } = useSidenav();  
     const { ctfOpen, setCTFOpen } = useCTF();
+    const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
         setCTFOpen(true);        
       } else {
         setCTFOpen(false);
-        if (window.location.pathname === "/account/authenticate") return;
+        if (window.location.pathname === "/account/authenticate" || window.location.pathname === "/") return;
         window.location.href = "/account/authenticate";
       }
     });
@@ -39,8 +41,34 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
         document.cookie = `${cookieName}=${cookieValue}; path=/; max-age=31536000;`;
     }
   }, []);
+
+  useEffect(() => {
+    const tokenValid = async () => {
+      try {
+       const result = await tokenValidation();
+        if (!result) {
+          window.location.href = "/";
+          return;
+        }
+        setLoading(false);
+      }
+      catch (error) {
+        console.error("Error in token validation", error);
+        window.location.href = "/";
+      }
+    };
+
+    tokenValid();
+  }, []);
     
 
+  if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="loader"></div>
+            </div>
+        );
+    }
 
     return (
         <html lang="en">
