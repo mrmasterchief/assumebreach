@@ -116,6 +116,7 @@ export default function ProductDetails() {
                       className="absolute inset-0 rounded-rounded object-cover object-center"
                       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
                       priority
+                      unoptimized
                     />
                   </div>
                 </div>
