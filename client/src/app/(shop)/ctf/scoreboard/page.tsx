@@ -113,7 +113,15 @@ export default function ScoreBoard() {
     try {
       await indexFunction(
         [() => submitFlag({ unsafeID: unsafeID || "", flag: flagInput })],
-        async () => {
+        async ([flagResults]) => {
+          if (!flagResults) {
+            showMessage(
+              "Error",
+              "You have already collected this flag or this flag is not valid.",
+              "error"
+            );
+            return;
+          }
           setFlagCorrect(true);
           await updateFireStore({
             unsafeID: unsafeID,
@@ -126,12 +134,13 @@ export default function ScoreBoard() {
         true
       );
     } catch (e) {
-      console.error(e);
+      console.log('tet')
       showMessage(
         "Error",
         "You have already collected this flag or this flag is not valid.",
         "error"
       );
+      console.error(e);
     }
   };
   const sortFlagsList = ({

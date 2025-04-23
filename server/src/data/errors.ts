@@ -6,6 +6,7 @@ export const errors = {
   201.1: "The request was successful, but no content was returned.",
   201.2: "User created successfully.",
   400: "The request is invalid.",
+  400.1: "You have already collected this flag.",
   401: "You are not authorized to access this resource.",
   401.1: "Invalid credentials. Please try again.",
   401.2: "Invalid token. Please try again.",

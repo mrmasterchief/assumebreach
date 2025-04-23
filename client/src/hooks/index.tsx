@@ -19,6 +19,7 @@ export const indexFunction = async <T extends unknown[]>(
   }
   const results = await Promise.all(functions.map((fn) => fn())) as T;
   callback(results);
+  return;
   }
 
   const results = await Promise.all(functions.map((fn) => fn())) as T;

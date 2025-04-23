@@ -53,8 +53,8 @@ router.post("/flag", async (req: Request, res: Response) => {
     res.status(400).json({ error: errors[400] });
     return;
   }
-  if(flag !== 'CTF{57394n09r4phy_15_c001}') {
-  flag = await decryptFlag({ req, flag });
+  if (flag !== 'CTF{57394n09r4phy_15_c001}' && flag !== 'CTF{3nv_v4r14bl3s_4r3_1mp0rt4nt}') {
+    flag = await decryptFlag({ req, flag });
   }
   try {
     const userDetails = await fetchUserDetailsUnrestricted(userId, unsafeId);
@@ -64,7 +64,7 @@ router.post("/flag", async (req: Request, res: Response) => {
     }
     const collected = userDetails.collected_flags.includes(flag);
     if (collected) {
-      res.status(400).json({ error: errors[400] });
+      res.status(400).json({ error: errors[400.1] });
       return;
     }
     const flagDetails = flags.find((f) => f.flag === flag);
@@ -107,7 +107,7 @@ router.post("/securecode", async (req: Request, res: Response) => {
         return;
       }
     });
-   return;
+    return;
   } catch (error) {
     res.status(500).json({ error: errors[500] });
     return;
@@ -120,7 +120,7 @@ router.get("/securecode/:id", async (req: Request, res: Response) => {
     res.status(400).json({ error: errors[400] });
     return;
   }
-  if(secureCodeID !== '5') {
+  if (secureCodeID !== '5') {
     res.status(400).json({ error: errors[400] });
     return;
   }
