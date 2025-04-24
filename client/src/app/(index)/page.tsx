@@ -51,17 +51,17 @@ export default function Index() {
             {
               title: "About",
               href: "/about",
-              icon: <IconQuote size={24} />,
+              icon: <IconQuote color="white" className="h-full w-full"/>,
             },
             {
               title: "Github",
               href: "https://github.com/mrmasterchief/AssumeBreach",
-              icon: <IconBrandGithub size={24} />,
+              icon: <IconBrandGithub color="white" className="h-full w-full"/>,
             },
             {
               title: "Products",
               href: "/our-products",
-              icon: <IconTerminal2 size={24} />,
+              icon: <IconTerminal2 color="white" className="h-full w-full"/>,
             },
           ]
         }/>
@@ -78,9 +78,9 @@ export default function Index() {
             className="rounded-full"
           />
         </div>
-        <div className="space-y-3">
-          <h1 className="text-7xl tracking-tight h-20 font-semibold bg-clip-text bg-gradient-to-r from-[#0f172a]  to-[#334155] text-transparent">Assume Breach</h1>
-          <h3 className="text-7xl tracking-tight bg-clip-text bg-gradient-to-r from-[#0f172a]  to-[#334155] text-transparent h-20 font-semibold">A Safer Web Experience</h3>
+        <div className="">
+          <h1 className="text-5xl lg:text-7xl tracking-tight h-20 font-semibold bg-clip-text bg-gradient-to-r from-[#0f172a]  to-[#334155] text-transparent">Assume Breach</h1>
+          <h3 className="text-5xl lg:text-7xl tracking-tight bg-clip-text bg-gradient-to-r from-[#0f172a]  to-[#334155] text-transparent h-30 font-semibold">A Safer Web Experience</h3>
           </div>
 
           <p className="text-gray-600 text-pretty text-lg">
