@@ -8,7 +8,7 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
 
   return (
     <html lang="en">
-      <body>
+      <body className="bg-black-100">
           <ToastContainer aria-label={"alert"} />
           {children}
 
