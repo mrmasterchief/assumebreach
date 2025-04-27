@@ -3,7 +3,6 @@ import { Timeline } from "@/components/ui/timeline";
 import { BentoGrid, BentoGridItem } from "./Bentogrid";
 import {
     IconBrandGithub,
-    IconTerminal2,
     IconShieldLock,
     IconFileCheck,
     IconChartInfographic,
@@ -11,13 +10,15 @@ import {
     IconBrandNextjs,
     IconBrandReact,
     IconBrandNodejs,
-    IconBrandMongodb,
     IconBrandFirebase,
     IconBrandCypress,
     IconFlag2,
-    IconVideo
-    
+    IconVideo,
+    IconMail
+
 } from "@tabler/icons-react";
+import { SkillCard } from "../ui/grey-card";
+import Image from "next/image";
 
 export function TimelineComponent() {
     const data = [
@@ -38,7 +39,7 @@ export function TimelineComponent() {
                             title="Confidentiality"
                             description="Knowing how to protect your data is important."
                             icon={<IconShieldLock color="white" />}
-                        />
+                            />
                         <BentoGridItem
                             title="Integrity"
                             description="How do we know that our data is not being tampered with?"
@@ -50,7 +51,7 @@ export function TimelineComponent() {
                             icon={<IconChartInfographic color="white" />}
                         />
                     </BentoGrid>
-                    <p className="mb-8 text-md font-normal text-neutral-200">
+                    <p className="mb-8 text-md font-normal text-neutral-200 mt-8">
                         We are also trying to raise awareness about the importance of
                         secure coding practices and how they can help you prevent
                         vulnerabilities in your code. We are doing this by providing
@@ -88,6 +89,13 @@ export function TimelineComponent() {
                             icon={<IconVideo color="white" />}
                         />
                     </BentoGrid>
+                    <Image
+                        src={"/ctf.png"}
+                        alt="Capture The Flag"
+                        width={1920}
+                        height={1080}
+                        className="rounded-lg mt-10 w-full h-auto"
+                    />
                 </div>
             ),
         },
@@ -106,77 +114,72 @@ export function TimelineComponent() {
                         I want to share with others.
                     </p>
                     <BentoGrid
-                        className="grid-rows-3 lg:grid-cols-3 gap-4"
+                        className="grid-rows-2 lg:grid-cols-2 gap-4"
                     >
-                        <BentoGridItem
-                            title="Skills"
-                            description="Here are some languages/frameworks/tools I am familiar with."
-                            icon={<IconTerminal2 color="white" />}
-                            header={
-                                <div className="grid grid-flow-col grid-rows-2 gap-4 align-center justify-center">
-                                    <IconBrandNextjs
-                                        color="white"
-                                        className="h-8 w-8"
-                                    />
-                                    <IconBrandReact
-                                        color="white"
-                                        className="h-8 w-8"
-                                    />
-                                    <IconBrandNodejs
-                                        color="white"
-                                        className="h-8 w-8"
-                                    />
-                                    <IconBrandMongodb
-                                        color="white"
-                                        className="h-8 w-8"
-                                    />
-                                    <IconBrandFirebase
-                                        color="white"
-                                        className="h-8 w-8"
-                                    />
-                                    <IconBrandCypress
-                                        color="white"
-                                        className="h-8 w-8"
-                                    />
+                        <SkillCard
+                            title="My Skills"
+                            description="Here are some of the skills I have acquired over the years. These include
+        programming languages, frameworks, and tools that I have used in my projects."
+                            icons={
+                                [
+                                    {
+                                        icon: <IconBrandReact color="#61DBFB" />,
+                                    },
+                                    {
+                                        icon: <IconBrandNextjs color="white" />,
+                                    },
+                                    {
+                                        icon: <IconBrandNodejs color="#68A063" />,
+                                    },
+                                    {
+                                        icon: <IconBrandFirebase color="#F5820D" />,
+                                    },
+                                    {
+                                        icon: <IconBrandCypress color="white" />,
+                                    }
 
-                                </div>
+                                ]
                             }
                         />
-                        <BentoGridItem
-                            title="GitHub"
-                            description="Check out my GitHub profile for more information about me."
-                            icon={<IconBrandGithub color="white" />}
-                            header={
-                                <button className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
-                                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-                                    <a href="https://github.com/mrmasterchief" target="_blank" rel="noopener noreferrer">
-                                        <IconBrandGithub color="white" className="h-8 w-8" />
-                                    </a>
-                                </span>
-                            </button>
+                        <SkillCard
+                            title="Let's Connect"
+                            description="Here are some of the platforms I am active on. Feel free to reach out to me if you have any questions or just want to chat!"
+                            links={
+                                [
+                                    {
+                                        title: "LinkedIn",
+                                        href: "https://www.linkedin.com/in/camryn-van-der-linden/",
+                                    },
+                                    {
+                                        title: "GitHub",
+                                        href: "https://github.com/mrmasterchief",
+                                    },
+                                    {
+                                        title: "Outlook",
+                                        href: "mailto:cft07904@gmail.com",
+                                    },
+                                ]
+                            }
+                            icons={
+                                [
+                                    {
+                                        icon: <IconBrandLinkedin color="#0077B5" />,
+                                    },
+                                    {
+                                        icon: <IconBrandGithub color="white" />,
+                                    },
+                                    {
+                                        icon: <IconMail color="white" />,
+                                    },
+                                ]
                             }
                         />
-                        <BentoGridItem
-                            title="LinkedIn"
-                            description="Let's connect on LinkedIn and keep up-to-date with each other."
-                            icon={<IconBrandLinkedin color="white" />}
-                            header={
-                                <button className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
-                                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-                                    <a href="https://www.linkedin.com/in/camryn-terlouw-907788226/" target="_blank" rel="noopener noreferrer">
-                                        <IconBrandLinkedin color="white" className="h-8 w-8" />
-                                    </a>
-                                </span>
-                            </button>
-                            }
-                        />
+
                     </BentoGrid>
                 </div>
             ),
         },
-        
+
     ];
     return (
         <div className="relative w-full overflow-clip">

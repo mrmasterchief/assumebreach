@@ -4,7 +4,6 @@ import Image from "next/image";
 import React from "react";
 import { FloatingDock } from "@/components/hero/Dock";
 import {
-  IconBrandGithub,
   IconQuote,
   IconTerminal2,
   IconCertificate2
@@ -53,22 +52,17 @@ export default function Index() {
             [
               {
                 title: "Goals",
-                href: "/goals",
+                href: "#Goals",
                 icon: <IconCertificate2 color="white" className="h-full w-full" />,
               },
               {
                 title: "About",
-                href: "/about",
+                href: "#About",
                 icon: <IconQuote color="white" className="h-full w-full" />,
               },
               {
-                title: "Github",
-                href: "https://github.com/mrmasterchief/AssumeBreach",
-                icon: <IconBrandGithub color="white" className="h-full w-full" />,
-              },
-              {
-                title: "Products",
-                href: "/our-products",
+                title: "Product",
+                href: "#Our Product",
                 icon: <IconTerminal2 color="white" className="h-full w-full" />,
               },
             ]
@@ -91,8 +85,9 @@ export default function Index() {
             <h1 className="text-5xl lg:text-7xl bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">Assume Breach</h1>
             <h3 className="text-4xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">A Safer Web Experience</h3>
           </div>
-          <span className="text-neutral-200 text-lg text-pretty sm:m-10">Join me in my mission to make the web a<FlipWords words={words} />place.</span>
-
+          <div className="flex flex-col items-center">
+          <span className="text-neutral-200 text-lg text-pretty xs:px-10 md:px-0">Join us in our mission to make the web a<FlipWords words={words} />place.</span>
+</div>
 
           <div className="space-x-3 hidden md:block">
             <input
@@ -107,11 +102,11 @@ export default function Index() {
               Start Hacking
             </Button>
           </div>
-          <div className="">
+          <div className="flex flex-col items-center">
           <MagicButton
             title="Book a Demo"
             onClick={() => {
-              window.open("mailto:cft07904@gmail.com", "_blank");
+              window.open("mailto:cft07904@gmail.com");
             }}
           />
           </div>

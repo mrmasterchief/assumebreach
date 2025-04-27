@@ -11,7 +11,8 @@ export default {
   	extend: {
       animation: {
         aurora: "aurora 60s linear infinite",
-      },
+		move: "move 5s linear infinite",
+		  },
       keyframes: {
         aurora: {
           from: {
@@ -21,6 +22,10 @@ export default {
             backgroundPosition: "350% 50%, 350% 50%",
           },
         },
+		move: {
+			"0%": { transform: "translateX(-200px)" },
+			"100%": { transform: "translateX(200px)" },
+		  },
       },
   		colors: {
   			background: 'hsl(var(--background))',
@@ -28,6 +33,9 @@ export default {
   			black: {
   				'100': '#000319'
   			},
+			grey: {
+				'100': '#282828b3;',
+			},
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
