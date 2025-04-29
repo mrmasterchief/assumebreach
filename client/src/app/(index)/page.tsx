@@ -68,7 +68,7 @@ export default function Index() {
             ]
           } />
       </div>
-      <div className="relative flex flex-col items-center overflow-hidden mx-auto sm:px-10 px-5 min-h-screen w-full">
+      <div className="relative flex flex-col items-center overflow-hidden mx-auto sm:px-10 px-5 min-h-[80vh] w-full">
         <div className="text-center space-y-5 max-w-2xl z-10 mt-10">
           <div className="py-1 px-2 inline-block">
             <Spotlight />
