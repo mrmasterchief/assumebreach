@@ -3,8 +3,13 @@
 		"concurrently": "^9.1.2"
 	},
 	"scripts": {
-      "start:client": "cd client && npm run dev",
-      "start:server": "cd server && npm run dev",
-      "dev": "concurrently \"npm run start:client\" \"npm run start:server\""
-}
+		"start:client": "cd client && npm run dev",
+		"start:server": "cd server && npm run dev",
+		"test": "nodemon webhook.js"
+	},
+	"dependencies": {
+		"dotenv": "^16.5.0",
+		"express": "^5.1.0",
+		"nodemon": "^3.1.10"
+	}
 }
