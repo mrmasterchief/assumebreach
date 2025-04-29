@@ -17,6 +17,7 @@ marked.setOptions({
     mangle: false,
 });
 
+
 router.get("/details", async (req: Request, res: Response) => {
     const unsafeID = typeof req.query.unsafeID === "string" ? req.query.unsafeID : null;
     const userId = await getUserIdFromToken(req);
