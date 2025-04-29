@@ -16,9 +16,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <SidenavProvider>
         <AuthProvider>
           <CartProvider>
-            <LayoutInner>
-              {children}
-            </LayoutInner>
+            <html lang="en">
+              <body>
+                <LayoutInner>
+
+                  {children}
+                </LayoutInner>
+              </body>
+            </html>
           </CartProvider>
         </AuthProvider>
       </SidenavProvider>

@@ -71,8 +71,7 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
     }
 
     return (
-        <html lang="en">
-            <body>
+
                 <div className="flex ">
                     <main className="flex-1">
                         {ctfOpen ? (
@@ -97,7 +96,5 @@ export default function LayoutInner({ children }: { children: React.ReactNode })
                         )}
                     </main>
                 </div>
-            </body>
-        </html>
     );
 }

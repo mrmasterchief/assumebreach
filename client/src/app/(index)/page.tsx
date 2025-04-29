@@ -56,15 +56,15 @@ export default function Index() {
                 icon: <IconCertificate2 color="white" className="h-full w-full" />,
               },
               {
-                title: "About",
-                href: "#About",
-                icon: <IconQuote color="white" className="h-full w-full" />,
-              },
-              {
-                title: "Product",
+                title: "Our Product",
                 href: "#Our Product",
                 icon: <IconTerminal2 color="white" className="h-full w-full" />,
               },
+              {
+                title: "About",
+                href: "#About",
+                icon: <IconQuote color="white" className="h-full w-full" />,
+              }
             ]
           } />
       </div>

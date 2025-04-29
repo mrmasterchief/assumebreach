@@ -1,7 +1,7 @@
 /* eslint-disable */
 "use client";
 import { animate, motion } from "motion/react";
-import React, { useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { LinkPreview } from "./link-preview";
 
@@ -101,7 +101,7 @@ const Skeleton = ({
       repeatDelay: 1,
     });
   }, []);
-  
+
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center bg-black-100">
       <div className="flex flex-row shrink-0 justify-center items-center gap-2">
@@ -109,7 +109,7 @@ const Skeleton = ({
             <div
               key={index}
             >
-                <Container className={`h-8 w-8 circle-${index + 1} ${index !== 0 && index !== 4 ? "h-12 w-12" : ""}`}>
+                <Container className={`h-12 w-12 circle-${index + 1}`}>
                     {links.length >= 1 && links[index] && (
                         <LinkPreview
                             url={links[index].href}
@@ -133,40 +133,55 @@ const Skeleton = ({
   );
 };
 const Sparkles = () => {
-  const randomMove = () => Math.random() * 2 - 1;
-  const randomOpacity = () => Math.random();
-  const random = () => Math.random();
-  return (
-    <div className="absolute inset-0">
-      {[...Array(12)].map((_, i) => (
-        <motion.span
-          key={`star-${i}`}
-          animate={{
-            top: `calc(${random() * 100}% + ${randomMove()}px)`,
-            left: `calc(${random() * 100}% + ${randomMove()}px)`,
-            opacity: randomOpacity(),
-            scale: [1, 1.2, 0],
-          }}
-          transition={{
-            duration: random() * 2 + 4,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          style={{
-            position: "absolute",
-            top: `${random() * 100}%`,
-            left: `${random() * 100}%`,
-            width: `2px`,
-            height: `2px`,
-            borderRadius: "50%",
-            zIndex: 1,
-          }}
-          className="inline-block bg-white"
-        ></motion.span>
-      ))}
-    </div>
-  );
-};
+    const [randomValues, setRandomValues] = useState<any[]>([]);
+  
+    useEffect(() => {
+      // Generate random values once after the initial render
+      const generateRandomValues = () => {
+        return [...Array(12)].map(() => ({
+          move: Math.random() * 2 - 1,
+          opacity: Math.random(),
+          scale: [1, 1.2, 0],
+          top: Math.random() * 100,
+          left: Math.random() * 100,
+        }));
+      };
+  
+      setRandomValues(generateRandomValues());
+    }, []); // Empty dependency array means this only runs once on the client-side
+  
+    return (
+      <div className="absolute inset-0">
+        {randomValues.map((value, i) => (
+          <motion.span
+            key={`star-${i}`}
+            animate={{
+              top: `calc(${value.top}% + ${value.move}px)`,
+              left: `calc(${value.left}% + ${value.move}px)`,
+              opacity: value.opacity,
+              scale: value.scale,
+            }}
+            transition={{
+              duration: Math.random() * 2 + 4,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            style={{
+              position: "absolute",
+              top: `${value.top}%`,
+              left: `${value.left}%`,
+              width: `2px`,
+              height: `2px`,
+              borderRadius: "50%",
+              zIndex: 1,
+            }}
+            className="inline-block bg-white"
+          ></motion.span>
+        ))}
+      </div>
+    );
+  };
+  
 
 export const Card = ({
   className,

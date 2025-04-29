@@ -31,6 +31,7 @@ export default {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			black: {
+				DEFAULT: '#000000',	
   				'100': '#000319'
   			},
 			grey: {
