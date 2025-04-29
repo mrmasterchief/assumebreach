@@ -45,6 +45,7 @@ app.post('/github-webhook', (req, res) => {
       }
       console.log('Next.js build output:', stdout);
 
+
       exec(`pm2 restart assumebreach-client && pm2 restart assumebreach-server`, (err, stdout, stderr) => {
         if (err) {
           console.error('PM2 restart error:', stderr);
