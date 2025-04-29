@@ -70,8 +70,6 @@ const Cart = ({
 
   
 
-
-
   return (
     <div
       ref={cartRef}
