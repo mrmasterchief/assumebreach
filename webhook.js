@@ -30,6 +30,8 @@ app.post('/github-webhook', (req, res) => {
   if (!verifySignature(req)) {
     return res.status(401).send('Invalid signature');
   }
+  
+  res.status(200).send('Webhook received. Deploying in background.');
 
   exec(`cd ${SERVER_PATH}/.. && git pull`, (err, stdout, stderr) => {
     if (err) {
