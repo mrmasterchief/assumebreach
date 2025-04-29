@@ -105,7 +105,7 @@ const NestedList = ({
               </ListItemIcon>
             </Tooltip>
           <Tooltip title="View improved safe code" arrow placement="top" className='cursor-pointer'>
-              <ListItemIcon className='gap-2' onClick={() => window.open(`process.env.NEXT_PUBLIC_FRONTEND_ROUTE!/ctf/scoreboard/code/${secureCodeID}`, '_blank')}>
+              <ListItemIcon className='gap-2' onClick={() => window.open(`${process.env.NEXT_PUBLIC_FRONTEND_ROUTE!}/ctf/scoreboard/code/${secureCodeID}`, '_blank')}>
                 <p>View Code</p>
                 <CodeIcon />
               </ListItemIcon>

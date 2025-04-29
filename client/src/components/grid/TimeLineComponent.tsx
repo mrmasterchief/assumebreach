@@ -18,7 +18,8 @@ import {
 
 } from "@tabler/icons-react";
 import { SkillCard } from "../ui/grey-card";
-import Image from "next/image";
+import { FeaturesSectionDemo } from "../ui/test";
+import { AppleCardsCarouselDemo } from "../ui/carousel";
 
 export function TimelineComponent() {
     const data = [
@@ -33,7 +34,7 @@ export function TimelineComponent() {
                         the three pillars of security into the platform.
                     </p>
                     <BentoGrid
-                        className="grid-rows-3 lg:grid-cols-3 gap-4"
+                        className="grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 gap-4"
                     >
                         <BentoGridItem
                             title="Confidentiality"
@@ -51,27 +52,22 @@ export function TimelineComponent() {
                             icon={<IconChartInfographic color="white" />}
                         />
                     </BentoGrid>
-                    <p className="mb-8 text-md font-normal text-neutral-200 mt-8">
-                        We are also trying to raise awareness about the importance of
-                        secure coding practices and how they can help you prevent
-                        vulnerabilities in your code. We are doing this by providing
-                        secure coding practices for each vulnerability we have built into
-                        the application.
-                    </p>
+                    <AppleCardsCarouselDemo/>
                 </div>
             ),
         },
         {
             title: "Our Product",
             content: (
-                <div>
+                <div className="flex flex-col items-center">
+                                        <FeaturesSectionDemo/>
                     <p className="mb-8 text-md font-normal text-neutral-200">
                         Assume Breach is currently a Damn Vulnerable Web Application
                         (DVWA) that is being developed to help developers learn about web
                         security. It contains the following features:
                     </p>
                     <BentoGrid
-                        className="grid-rows-3 lg:grid-cols-3 gap-4"
+                        className="grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 gap-4"
                     >
                         <BentoGridItem
                             title="Capture The Flag"
@@ -89,13 +85,6 @@ export function TimelineComponent() {
                             icon={<IconVideo color="white" />}
                         />
                     </BentoGrid>
-                    <Image
-                        src={"/ctf.png"}
-                        alt="Capture The Flag"
-                        width={1920}
-                        height={1080}
-                        className="rounded-lg mt-10 w-full h-auto"
-                    />
                 </div>
             ),
         },
@@ -175,7 +164,7 @@ export function TimelineComponent() {
                             }
                         />
 
-                    </BentoGrid>
+                    </BentoGrid>                    
                 </div>
             ),
         },

@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
 import { FloatingDock } from "@/components/hero/Dock";
@@ -14,6 +13,7 @@ import { Spotlight } from "@/components/hero/Spotlight";
 import { FlipWords } from "@/components/ui/text";
 import { TimelineComponent } from "@/components/grid/TimeLineComponent";
 import MagicButton from "@/components/ui/MagicButton";
+import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 
 export default function Index() {
   const [accessCode, setAccessCode] = React.useState<string>("");
@@ -90,17 +90,15 @@ export default function Index() {
 </div>
 
           <div className="space-x-3 hidden md:block">
-            <input
-              type="text"
-              placeholder="Enter Access Code"
-              value={accessCode}
+            <PlaceholdersAndVanishInput
+              placeholders={[
+                "Enter Access Code",
+                "e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+              ]}
               onChange={(e) => setAccessCode(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-
+              onSubmit={handleAccessCodeSubmit}
             />
-            <Button variant="default" className="rounded-lg border-neutral-300, border" onClick={handleAccessCodeSubmit}>
-              Start Hacking
-            </Button>
+        
           </div>
           <div className="flex flex-col items-center">
           <MagicButton

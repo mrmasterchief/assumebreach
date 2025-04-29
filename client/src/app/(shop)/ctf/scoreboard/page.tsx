@@ -390,7 +390,7 @@ export default function ScoreBoard() {
                   <SendIcon className="text-white" />
                 </button>
               </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Flags to Collect</h2>                  
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Flags to collect</h2>                  
               <Filters />
               <div className="flex justify-between items-center w-full mt-4">
                 <button
