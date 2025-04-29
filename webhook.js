@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
 const { exec } = require('child_process');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,7 @@ app.use(express.json({
     req.rawBody = buf.toString();
   }
 }));
+app.use(bodyParser.json());
 
 function verifySignature(req) {
   const sig = req.headers['x-hub-signature-256'];
