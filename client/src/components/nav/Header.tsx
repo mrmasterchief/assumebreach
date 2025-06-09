@@ -169,7 +169,7 @@ const Header = ({ type,
           )}
 
           <Link
-            href="/"
+            href="/shop"
             className="flex items-center space-x-3 absolute left-1/2 transform -translate-x-1/2"
           >
             <Image
