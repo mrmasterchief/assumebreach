@@ -348,7 +348,7 @@ export default function Checkout() {
                                         <RadioGroup
                                             aria-labelledby="address-radio-buttons-group"
                                             name="address-radio-buttons-group"
-                                            defaultValue={userAddress.zip ? 0 : 1}
+                                            defaultValue={userAddress?.zip ? 0 : 1}
                                             className="gap-4"
                                         >
                                             {userInfo && userInfo.user.address && (
